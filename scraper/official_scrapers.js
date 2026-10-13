@@ -145,7 +145,7 @@ async function scrapeUPPSC() {
 async function scrapeMPPSC() {
   let items = [];
   try {
-    const html = await fetchHtml("https://mppsc.mp.gov.in/", 15000);
+    const html = await fetchHtml("https://mppsc.mp.gov.in/", 12000);
     const regex = /href="(https:\/\/mppsc\.mp\.gov\.in\/uploads\/[^"]+\.pdf)"[^>]*>([^<]*)<\/a>/gi;
     let match;
     while ((match = regex.exec(html)) !== null && items.length < 8) {
@@ -169,9 +169,7 @@ async function scrapeMPPSC() {
         });
       }
     }
-  } catch (e) {
-    // If MP State Data Center geofence blocks cloud runner, fallback to Google real-time MPPSC feed
-  }
+  } catch (e) {}
 
   if (items.length === 0) {
     try {
@@ -208,41 +206,74 @@ async function scrapeMPPSC() {
 // 4. Scrape RPSC (Rajasthan)
 async function scrapeRPSC() {
   let html = "";
-  try {
-    html = await fetchHtml("https://rpsc.rajasthan.gov.in/", 15000);
-  } catch (e) {
-    // Cloud fallback: fetch through our Indian Cloudflare Worker proxy
-    try {
-      html = await fetchHtml("https://pw-exam-intelligence.deepansh-gup124.workers.dev/api/proxy?url=https%3A%2F%2Frpsc.rajasthan.gov.in%2F", 20000);
-    } catch (err) {
-      throw e;
-    }
-  }
-
   const items = [];
-  const regex = /<a\s+href=['"](Static\/News\/[^'"]+\.pdf)['"][^>]*>([\s\S]*?)<\/a>/gi;
-  let match;
-  while ((match = regex.exec(html)) !== null && items.length < 8) {
-    const pdfPath = match[1];
-    const rawContent = match[2];
-    const title = cleanText(rawContent);
-    const pdfUrl = `https://rpsc.rajasthan.gov.in/${pdfPath}`;
 
-    if (title.length > 5 && !items.some(i => i.url === pdfUrl)) {
-      const category = classifyCategory(title);
-      items.push({
-        jurisdiction: "RPSC",
-        state: "Rajasthan",
-        exam: title.includes("RAS") ? "RPSC RAS / RTS Exam" : "RPSC State Recruitment",
-        title: title,
-        url: pdfUrl,
-        category: category,
-        priority: category === "Result" || category === "Admit Card" ? "CRITICAL" : "HIGH",
-        marketingAction: generateMarketingHook(category, "RPSC"),
-        hash: generateHash(title, pdfUrl)
-      });
+  // Tier 1: Direct fetch
+  try {
+    html = await fetchHtml("https://rpsc.rajasthan.gov.in/", 12000);
+  } catch (e) {
+    // Tier 2: Cloudflare Indian Edge Proxy
+    try {
+      html = await fetchHtml("https://pw-exam-intelligence.deepansh-gup124.workers.dev/api/proxy?url=https%3A%2F%2Frpsc.rajasthan.gov.in%2F", 25000);
+    } catch (err) {}
+  }
+
+  if (html && html.length > 500) {
+    const regex = /<a\s+href=['"](Static\/News\/[^'"]+\.pdf)['"][^>]*>([\s\S]*?)<\/a>/gi;
+    let match;
+    while ((match = regex.exec(html)) !== null && items.length < 8) {
+      const pdfPath = match[1];
+      const rawContent = match[2];
+      const title = cleanText(rawContent);
+      const pdfUrl = `https://rpsc.rajasthan.gov.in/${pdfPath}`;
+
+      if (title.length > 5 && !items.some(i => i.url === pdfUrl)) {
+        const category = classifyCategory(title);
+        items.push({
+          jurisdiction: "RPSC",
+          state: "Rajasthan",
+          exam: title.includes("RAS") ? "RPSC RAS / RTS Exam" : "RPSC State Recruitment",
+          title: title,
+          url: pdfUrl,
+          category: category,
+          priority: category === "Result" || category === "Admit Card" ? "CRITICAL" : "HIGH",
+          marketingAction: generateMarketingHook(category, "RPSC"),
+          hash: generateHash(title, pdfUrl)
+        });
+      }
     }
   }
+
+  // Tier 3: Official Google News Feed Fallback
+  if (items.length === 0) {
+    try {
+      const feedUrl = "https://news.google.com/rss/search?q=site:rpsc.rajasthan.gov.in+OR+(RPSC+RAS+admit+card+OR+result+OR+exam)+when:14d&hl=en-IN&gl=IN&ceid=IN:en";
+      const feedRes = await fetchHtml(feedUrl, 15000);
+      const itemRegex = /<item>[\s\S]*?<title>([\s\S]*?)<\/title>[\s\S]*?<link>([\s\S]*?)<\/link>[\s\S]*?<pubDate>([\s\S]*?)<\/pubDate>[\s\S]*?<\/item>/gi;
+      let fMatch;
+      while ((fMatch = itemRegex.exec(feedRes)) !== null && items.length < 8) {
+        let title = cleanText(fMatch[1]).replace(/ - [^-]+$/g, "").replace(/ - RPSC/gi, "").trim();
+        const link = fMatch[2].trim();
+        const pubDate = fMatch[3].trim();
+        if (title.length > 5 && !items.some(i => i.title === title)) {
+          const category = classifyCategory(title);
+          items.push({
+            jurisdiction: "RPSC",
+            state: "Rajasthan",
+            exam: title.includes("RAS") ? "RPSC RAS / RTS Exam" : "RPSC State Recruitment",
+            title: title,
+            url: link,
+            date: pubDate ? pubDate.split(" ").slice(1, 4).join(" ") : "",
+            category: category,
+            priority: category === "Result" || category === "Admit Card" ? "CRITICAL" : "HIGH",
+            marketingAction: generateMarketingHook(category, "RPSC"),
+            hash: generateHash(title, link)
+          });
+        }
+      }
+    } catch (e) {}
+  }
+
   return items;
 }
 
