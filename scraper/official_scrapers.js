@@ -27,31 +27,81 @@ const GOOGLE_WEBAPP_CONFIG = {
   url: process.env.GOOGLE_WEBAPP_URL || 'https://script.google.com/macros/s/AKfycbyRZAvIjfSSTzmQgB1-WVjoSsXmBv80Tu0zeEuofNJ3gbFvFbPmCVlvbPbExKwE3_e6/exec'
 };
 
-function fetchHtml(url) {
+function fetchHtml(url, retryCount = 1) {
   return new Promise((resolve, reject) => {
-    const parsed = new URL(url);
-    const options = {
-      hostname: parsed.hostname,
-      port: 443,
-      path: parsed.pathname + (parsed.search || ''),
-      method: 'GET',
-      headers: {
-        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-        'Accept-Language': 'en-IN,en;q=0.9'
-      },
-      timeout: 20000,
-      rejectUnauthorized: false
-    };
+    function attempt(targetUrl, redirectsLeft, retriesLeft) {
+      try {
+        const parsed = new URL(targetUrl);
+        const isHttps = parsed.protocol === "https:";
+        const transport = isHttps ? https : require("http");
+        const options = {
+          hostname: parsed.hostname,
+          port: parsed.port || (isHttps ? 443 : 80),
+          path: parsed.pathname + (parsed.search || ""),
+          method: "GET",
+          headers: {
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36",
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
+            "Accept-Language": "en-US,en;q=0.9,hi;q=0.8",
+            "Sec-Ch-Ua": "\"Google Chrome\";v=\"123\", \"Chromium\";v=\"123\"",
+            "Sec-Ch-Ua-Mobile": "?0",
+            "Sec-Ch-Ua-Platform": "\"Windows\"",
+            "Sec-Fetch-Dest": "document",
+            "Sec-Fetch-Mode": "navigate",
+            "Sec-Fetch-Site": "none",
+            "Sec-Fetch-User": "?1",
+            "Upgrade-Insecure-Requests": "1"
+          },
+          timeout: 35000,
+          rejectUnauthorized: false
+        };
 
-    const req = https.request(options, (res) => {
-      let data = '';
-      res.on('data', chunk => data += chunk);
-      res.on('end', () => resolve(data));
-    });
-    req.on('timeout', () => { req.destroy(); reject(new Error('Timeout')); });
-    req.on('error', reject);
-    req.end();
+        const req = transport.request(options, (res) => {
+          if ([301, 302, 307, 308].includes(res.statusCode) && res.headers.location && redirectsLeft > 0) {
+            const redirectUrl = new URL(res.headers.location, targetUrl).toString();
+            res.resume();
+            return attempt(redirectUrl, redirectsLeft - 1, retriesLeft);
+          }
+          let data = "";
+          res.setEncoding("utf8");
+          res.on("data", chunk => data += chunk);
+          res.on("end", () => {
+            if (res.statusCode >= 400 && retriesLeft > 0) {
+              setTimeout(() => attempt(targetUrl, redirectsLeft, retriesLeft - 1), 1500);
+            } else {
+              resolve(data);
+            }
+          });
+        });
+
+        req.on("timeout", () => {
+          req.destroy();
+          if (retriesLeft > 0) {
+            setTimeout(() => attempt(targetUrl, redirectsLeft, retriesLeft - 1), 2000);
+          } else {
+            reject(new Error("Timeout (35s)"));
+          }
+        });
+
+        req.on("error", (err) => {
+          if (retriesLeft > 0) {
+            setTimeout(() => attempt(targetUrl, redirectsLeft, retriesLeft - 1), 1500);
+          } else {
+            reject(err);
+          }
+        });
+
+        req.end();
+      } catch (err) {
+        if (retriesLeft > 0) {
+          setTimeout(() => attempt(targetUrl, redirectsLeft, retriesLeft - 1), 1500);
+        } else {
+          reject(err);
+        }
+      }
+    }
+
+    attempt(url, 3, retryCount);
   });
 }
 
@@ -187,7 +237,7 @@ async function scrapeMPPSC() {
 
 // 4. Scrape RPSC (Rajasthan)
 async function scrapeRPSC() {
-  const html = await fetchHtml('https://rpsc.rajasthan.gov.in/news');
+  const html = await fetchHtml('https://rpsc.rajasthan.gov.in/');
   const items = [];
   // Match: <a href='Static/News/....pdf'...>...title</a>
   const regex = /<a\s+href=['"](Static\/News\/[^'"]+\.pdf)['"][^>]*>([\s\S]*?)<\/a>/gi;
@@ -480,24 +530,43 @@ async function runAllOfficialScrapers() {
     fs.writeFileSync(cacheFile, JSON.stringify(Array.from(seen), null, 2));
   } catch (e) {}
 
-  // Save complete structured notices database
+  // Save complete structured notices database with Smart Cache Merging
   try {
+    let finalNotices = [...allUpdates];
+
+    // If any portal temporarily failed or timed out, retain its notices from the previous cache
+    if (fs.existsSync(fullNoticesFile)) {
+      try {
+        const previousData = JSON.parse(fs.readFileSync(fullNoticesFile, "utf8"));
+        const previousNotices = previousData.notices || [];
+        const currentJurisdictions = new Set(allUpdates.map(n => n.jurisdiction.toLowerCase()));
+
+        for (const prev of previousNotices) {
+          if (!currentJurisdictions.has(prev.jurisdiction.toLowerCase())) {
+            finalNotices.push(prev);
+          }
+        }
+      } catch (err) {
+        // Fallback to allUpdates if reading previous cache fails
+      }
+    }
+
     const formattedData = {
       lastUpdated: new Date().toISOString(),
-      totalNotices: allUpdates.length,
+      totalNotices: finalNotices.length,
       commissionsCovered: [
-        'BPSC (Bihar)',
-        'UPPSC (Uttar Pradesh)',
-        'MPPSC (Madhya Pradesh)',
-        'RPSC (Rajasthan)',
-        'OPSC (Odisha)',
-        'MPSC (Maharashtra)',
-        'Allahabad High Court (Judiciary)'
+        "BPSC (Bihar)",
+        "UPPSC (Uttar Pradesh)",
+        "MPPSC (Madhya Pradesh)",
+        "RPSC (Rajasthan)",
+        "OPSC (Odisha)",
+        "MPSC (Maharashtra)",
+        "Allahabad High Court (Judiciary)"
       ],
-      notices: allUpdates
+      notices: finalNotices
     };
     fs.writeFileSync(fullNoticesFile, JSON.stringify(formattedData, null, 2));
-    console.log(`📁 Complete notices database written to: ${fullNoticesFile}`);
+    console.log(`📁 Complete notices database (${finalNotices.length} notices across all 7 portals) written to: ${fullNoticesFile}`);
   } catch (e) {}
 
   if (isFirstRun) {
