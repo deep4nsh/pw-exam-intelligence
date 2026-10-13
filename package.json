@@ -1,0 +1,21 @@
+{
+  "name": "pw-exam-intelligence",
+  "version": "1.0.0",
+  "description": "Physics Wallah 24/7 State PSC & Judiciary Official Exam Intelligence Monitor",
+  "main": "scraper/official_scrapers.js",
+  "scripts": {
+    "scrape": "node scraper/official_scrapers.js",
+    "probe": "node scraper/probe_portals.js"
+  },
+  "keywords": [
+    "physics-wallah",
+    "exam-intelligence",
+    "psc",
+    "judiciary",
+    "scraper",
+    "telegram-alerts"
+  ],
+  "author": "Physics Wallah Marketing Team",
+  "license": "UNLICENSED",
+  "private": true
+}

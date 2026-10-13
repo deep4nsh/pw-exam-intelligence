@@ -1,0 +1,47 @@
+name: "24/7 Official Exam Intelligence Radar"
+
+on:
+  schedule:
+    # Runs every 20 minutes round the clock (₹0 server cost)
+    - cron: '*/20 * * * *'
+  workflow_dispatch: # Allows manual trigger from GitHub Actions tab anytime
+
+concurrency:
+  group: exam-intelligence-scrape
+  cancel-in-progress: false
+
+jobs:
+  scrape-and-alert:
+    name: "Scrape Official PSC Portals & Dispatch Alerts"
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: "Checkout repository"
+        uses: actions/checkout@v4
+
+      - name: "Setup Node.js"
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: "Run Official Commissions & Judiciary Scraper"
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: |
+          node scraper/official_scrapers.js
+
+      - name: "Persist Deduplication Cache & Notices Database"
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add scraper/seen_hashes.json scraper/latest_official_notices.json
+          if ! git diff --cached --quiet; then
+            git commit -m "chore(radar): sync verified official circulars [skip ci]"
+            git push
+            echo "✅ Successfully synced new circulars to repository."
+          else
+            echo "ℹ️ No changes in circular cache. Everything up to date."
+          fi
