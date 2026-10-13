@@ -5,7 +5,10 @@
   "main": "scraper/official_scrapers.js",
   "scripts": {
     "scrape": "node scraper/official_scrapers.js",
-    "probe": "node scraper/probe_portals.js"
+    "probe": "node scraper/probe_portals.js",
+    "dashboard:dev": "npm --prefix dashboard run dev",
+    "dashboard:build": "npm --prefix dashboard run build",
+    "dashboard:preview": "npm --prefix dashboard run preview"
   },
   "keywords": [
     "physics-wallah",
