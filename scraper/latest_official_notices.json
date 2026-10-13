@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-10-13T09:43:16.237Z",
+  "lastUpdated": "2026-10-13T09:51:52.267Z",
   "totalNotices": 49,
   "commissionsCovered": [
     "BPSC (Bihar)",
@@ -198,6 +198,94 @@
       "priority": "HIGH",
       "marketingAction": "Review circular details and prepare student guidance/community update.",
       "hash": "af95e75b095f7471c060"
+    },
+    {
+      "jurisdiction": "RPSC",
+      "state": "Rajasthan",
+      "exam": "RPSC State Recruitment",
+      "title": "17/08/2026 Appointment Letter Regarding Direct Recruitment of Fourth Class Employee -2024 (RPSC)",
+      "url": "https://rpsc.rajasthan.gov.in/Static/News/A3A52409810D46A0A2A0262947DCED36.pdf",
+      "category": "Notification / Recruitment",
+      "priority": "HIGH",
+      "marketingAction": "Schedule YouTube Live notification breakdown (<45m) and launch Target Batch ad creatives.",
+      "hash": "14a65d78c1f1023735e2"
+    },
+    {
+      "jurisdiction": "RPSC",
+      "state": "Rajasthan",
+      "exam": "RPSC State Recruitment",
+      "title": "31/07/2026 Press Note regarding warning against misleading/false information sharing over various social media platforms",
+      "url": "https://rpsc.rajasthan.gov.in/Static/News/6B40D76BDB6346AFADDCFD16E648C1C1.pdf",
+      "category": "Important Notice",
+      "priority": "HIGH",
+      "marketingAction": "Review circular details and prepare student guidance/community update.",
+      "hash": "a55738e9342c8878daab"
+    },
+    {
+      "jurisdiction": "RPSC",
+      "state": "Rajasthan",
+      "exam": "RPSC State Recruitment",
+      "title": "02/07/2026 Press Note Regarding Pre-Litigation Committee",
+      "url": "https://rpsc.rajasthan.gov.in/Static/News/DDBBF709FA084177A9DC0E323933A614.pdf",
+      "category": "Important Notice",
+      "priority": "HIGH",
+      "marketingAction": "Review circular details and prepare student guidance/community update.",
+      "hash": "3e489ebe4295ced95e17"
+    },
+    {
+      "jurisdiction": "RPSC",
+      "state": "Rajasthan",
+      "exam": "RPSC State Recruitment",
+      "title": "05/06/2026 Press Note Regarding Candidate Grievance Portal For Candidates Complaints Disposal Process",
+      "url": "https://rpsc.rajasthan.gov.in/Static/News/E8B17BD099F3403CAC90A775F03CC8B5.pdf",
+      "category": "Important Notice",
+      "priority": "HIGH",
+      "marketingAction": "Review circular details and prepare student guidance/community update.",
+      "hash": "fc8f852e15df4348016d"
+    },
+    {
+      "jurisdiction": "RPSC",
+      "state": "Rajasthan",
+      "exam": "RPSC State Recruitment",
+      "title": "30/01/2026 Press Note Regarding Pre-Litigation Committee",
+      "url": "https://rpsc.rajasthan.gov.in/Static/News/C84A4680F70F46E2AE40E1C3F3632A53.pdf",
+      "category": "Important Notice",
+      "priority": "HIGH",
+      "marketingAction": "Review circular details and prepare student guidance/community update.",
+      "hash": "efda000b3c5368db3439"
+    },
+    {
+      "jurisdiction": "RPSC",
+      "state": "Rajasthan",
+      "exam": "RPSC State Recruitment",
+      "title": "11/07/2025 Press Note Regarding Pre-Litigation Committee",
+      "url": "https://rpsc.rajasthan.gov.in/Static/News/74105F0AB9494A95927F6C7C470E7D10.pdf",
+      "category": "Important Notice",
+      "priority": "HIGH",
+      "marketingAction": "Review circular details and prepare student guidance/community update.",
+      "hash": "0069ba0b6294d8eca5ed"
+    },
+    {
+      "jurisdiction": "RPSC",
+      "state": "Rajasthan",
+      "exam": "RPSC State Recruitment",
+      "title": "04/06/2025 Press Note regarding advise to E-mitra operators for filling forms of eligible candidates only.",
+      "url": "https://rpsc.rajasthan.gov.in/Static/News/44D0A2752B10437CB7CDA2A56DF4AAE8.pdf",
+      "category": "Important Notice",
+      "priority": "HIGH",
+      "marketingAction": "Review circular details and prepare student guidance/community update.",
+      "hash": "19b238282406b9994733"
+    },
+    {
+      "jurisdiction": "RPSC",
+      "state": "Rajasthan",
+      "exam": "RPSC State Recruitment",
+      "title": "06/11/2023 Press Note Regarding Pre-Litigation Committee",
+      "url": "https://rpsc.rajasthan.gov.in/Static/News/BA39488125184D1BBD24C0E201ACEC84.pdf",
+      "category": "Important Notice",
+      "priority": "HIGH",
+      "marketingAction": "Review circular details and prepare student guidance/community update.",
+      "hash": "b7dec4f15322b601e22b"
     },
     {
       "jurisdiction": "OPSC (Odisha)",
@@ -478,94 +566,6 @@
       "priority": "HIGH",
       "marketingAction": "Review circular details and prepare student guidance/community update.",
       "hash": "f71d254af8544729f5c6"
-    },
-    {
-      "jurisdiction": "RPSC",
-      "state": "Rajasthan",
-      "exam": "RPSC State Recruitment",
-      "title": "17/08/2026 Appointment Letter Regarding Direct Recruitment of Fourth Class Employee -2024 (RPSC)",
-      "url": "https://rpsc.rajasthan.gov.in/Static/News/A3A52409810D46A0A2A0262947DCED36.pdf",
-      "category": "Notification / Recruitment",
-      "priority": "HIGH",
-      "marketingAction": "Schedule YouTube Live notification breakdown (<45m) and launch Target Batch ad creatives.",
-      "hash": "14a65d78c1f1023735e2"
-    },
-    {
-      "jurisdiction": "RPSC",
-      "state": "Rajasthan",
-      "exam": "RPSC State Recruitment",
-      "title": "31/07/2026 Press Note regarding warning against misleading/false information sharing over various social media platforms",
-      "url": "https://rpsc.rajasthan.gov.in/Static/News/6B40D76BDB6346AFADDCFD16E648C1C1.pdf",
-      "category": "Important Notice",
-      "priority": "HIGH",
-      "marketingAction": "Review circular details and prepare student guidance/community update.",
-      "hash": "a55738e9342c8878daab"
-    },
-    {
-      "jurisdiction": "RPSC",
-      "state": "Rajasthan",
-      "exam": "RPSC State Recruitment",
-      "title": "02/07/2026 Press Note Regarding Pre-Litigation Committee",
-      "url": "https://rpsc.rajasthan.gov.in/Static/News/DDBBF709FA084177A9DC0E323933A614.pdf",
-      "category": "Important Notice",
-      "priority": "HIGH",
-      "marketingAction": "Review circular details and prepare student guidance/community update.",
-      "hash": "3e489ebe4295ced95e17"
-    },
-    {
-      "jurisdiction": "RPSC",
-      "state": "Rajasthan",
-      "exam": "RPSC State Recruitment",
-      "title": "05/06/2026 Press Note Regarding Candidate Grievance Portal For Candidates Complaints Disposal Process",
-      "url": "https://rpsc.rajasthan.gov.in/Static/News/E8B17BD099F3403CAC90A775F03CC8B5.pdf",
-      "category": "Important Notice",
-      "priority": "HIGH",
-      "marketingAction": "Review circular details and prepare student guidance/community update.",
-      "hash": "fc8f852e15df4348016d"
-    },
-    {
-      "jurisdiction": "RPSC",
-      "state": "Rajasthan",
-      "exam": "RPSC State Recruitment",
-      "title": "30/01/2026 Press Note Regarding Pre-Litigation Committee",
-      "url": "https://rpsc.rajasthan.gov.in/Static/News/C84A4680F70F46E2AE40E1C3F3632A53.pdf",
-      "category": "Important Notice",
-      "priority": "HIGH",
-      "marketingAction": "Review circular details and prepare student guidance/community update.",
-      "hash": "efda000b3c5368db3439"
-    },
-    {
-      "jurisdiction": "RPSC",
-      "state": "Rajasthan",
-      "exam": "RPSC State Recruitment",
-      "title": "11/07/2025 Press Note Regarding Pre-Litigation Committee",
-      "url": "https://rpsc.rajasthan.gov.in/Static/News/74105F0AB9494A95927F6C7C470E7D10.pdf",
-      "category": "Important Notice",
-      "priority": "HIGH",
-      "marketingAction": "Review circular details and prepare student guidance/community update.",
-      "hash": "0069ba0b6294d8eca5ed"
-    },
-    {
-      "jurisdiction": "RPSC",
-      "state": "Rajasthan",
-      "exam": "RPSC State Recruitment",
-      "title": "04/06/2025 Press Note regarding advise to E-mitra operators for filling forms of eligible candidates only.",
-      "url": "https://rpsc.rajasthan.gov.in/Static/News/44D0A2752B10437CB7CDA2A56DF4AAE8.pdf",
-      "category": "Important Notice",
-      "priority": "HIGH",
-      "marketingAction": "Review circular details and prepare student guidance/community update.",
-      "hash": "19b238282406b9994733"
-    },
-    {
-      "jurisdiction": "RPSC",
-      "state": "Rajasthan",
-      "exam": "RPSC State Recruitment",
-      "title": "06/11/2023 Press Note Regarding Pre-Litigation Committee",
-      "url": "https://rpsc.rajasthan.gov.in/Static/News/BA39488125184D1BBD24C0E201ACEC84.pdf",
-      "category": "Important Notice",
-      "priority": "HIGH",
-      "marketingAction": "Review circular details and prepare student guidance/community update.",
-      "hash": "b7dec4f15322b601e22b"
     }
   ]
 }
