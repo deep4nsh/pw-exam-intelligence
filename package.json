@@ -9,7 +9,9 @@
     "dashboard:dev": "npm --prefix dashboard run dev",
     "dashboard:build": "npm --prefix dashboard run build",
     "dashboard:preview": "npm --prefix dashboard run preview",
-    "build": "cd dashboard && npm install && npm run build && cd .. && rm -rf dist && cp -r dashboard/dist dist"
+    "build": "cd dashboard && npm install && npm run build && cd .. && rm -rf dist && cp -r dashboard/dist dist",
+    "start": "node scraper/cloud_daemon.js",
+    "daemon": "node scraper/cloud_daemon.js"
   },
   "keywords": [
     "physics-wallah",
