@@ -8,7 +8,8 @@
     "probe": "node scraper/probe_portals.js",
     "dashboard:dev": "npm --prefix dashboard run dev",
     "dashboard:build": "npm --prefix dashboard run build",
-    "dashboard:preview": "npm --prefix dashboard run preview"
+    "dashboard:preview": "npm --prefix dashboard run preview",
+    "build": "cd dashboard && npm install && npm run build && cd .. && rm -rf dist && cp -r dashboard/dist dist"
   },
   "keywords": [
     "physics-wallah",
