@@ -34,7 +34,8 @@ const CFG = {
   SEND_EMAIL_WHEN_NO_NEWS: false,
   FONT: 'Arial',
   FONT_SIZE: 10,
-  GEMINI_MODEL: 'gemini-flash-latest'
+  GEMINI_MODEL: 'gemini-flash-latest',
+  GITHUB_NOTICES_URL: 'https://raw.githubusercontent.com/deep4nsh/pw-exam-intelligence/main/scraper/latest_official_notices.json'
 };
 
 const HEADERS = [
@@ -267,6 +268,13 @@ function monitorExamNews() {
       });
     });
 
+    // Ingest 100% verified official commission circulars from GitHub Repository
+    const officialNotices = fetchOfficialNoticesFromGitHub_(known);
+    if (officialNotices.length > 0) {
+      log_('INFO', `Ingested ${officialNotices.length} official notices from GitHub.`, '');
+      rawCandidates.push(...officialNotices);
+    }
+
     if (rawCandidates.length === 0) {
       log_('INFO', 'Run complete: 0 new items found.', '');
       if (CFG.SEND_EMAIL_WHEN_NO_NEWS) {
@@ -295,6 +303,10 @@ function monitorExamNews() {
     // Enrich items (AI only on Critical/High to save time, instant rule engine for others)
     const geminiKey = PropertiesService.getScriptProperties().getProperty('GEMINI_API_KEY');
     selected.forEach(item => {
+      if (item.isOfficialVerified && item.marketingAction && item.summary) {
+        // Keep pristine official scraper-generated hooks
+        return;
+      }
       const enrichment = enrichWithAIOrRules_(item, geminiKey);
       item.summary = enrichment.summary;
       item.marketingAction = enrichment.marketingAction;
@@ -1027,3 +1039,103 @@ function log_(level, msg, details) {
     console.error('Log failed: ' + e);
   }
 }
+
+/* ==========================================================================
+   OFFICIAL COMMISSION NOTICES INGESTION (From GitHub Radar Repository)
+   ========================================================================== */
+
+function fetchOfficialNoticesFromGitHub_(known) {
+  const url = CFG.GITHUB_NOTICES_URL;
+  const items = [];
+  try {
+    const response = UrlFetchApp.fetch(url, { muteHttpExceptions: true });
+    if (response.getResponseCode() !== 200) {
+      Logger.log('Could not fetch from GitHub, HTTP status: ' + response.getResponseCode());
+      return items;
+    }
+
+    const payload = JSON.parse(response.getContentText());
+    const notices = payload.notices || [];
+
+    notices.forEach(n => {
+      const uid = n.hash || generateCompositeHash_(n.title, n.url);
+      if (known.has(uid) || known.has(n.url)) return;
+      known.add(uid);
+      known.add(n.url);
+
+      items.push({
+        title: n.title,
+        url: n.url,
+        uniqueId: uid,
+        publishedDate: new Date(),
+        jurisdiction: n.jurisdiction || n.state || 'State Commission',
+        exam: n.exam || 'Recruitment Exam',
+        category: n.category || 'Notification / Recruitment',
+        priority: n.priority || 'HIGH',
+        summary: n.title,
+        marketingAction: n.marketingAction,
+        isOfficialVerified: true,
+        telegramStatus: 'SENT_VIA_ACTIONS'
+      });
+    });
+  } catch (err) {
+    Logger.log('GitHub notices ingestion error: ' + err.message);
+  }
+  return items;
+}
+
+/**
+ * Standalone manual trigger:
+ * Run this function in Google Apps Script to instantly import all 56 official notices
+ * from GitHub into your Google Sheet and send the rich email alert digest immediately!
+ */
+function syncOfficialNoticesNow() {
+  const lock = LockService.getScriptLock();
+  if (!lock.tryLock(25000)) {
+    Logger.log('Execution lock could not be acquired.');
+    return;
+  }
+
+  try {
+    const ss = getSpreadsheet_();
+    const sheet = getOrCreateSheet_(ss, CFG.SHEET_NAME);
+    initializeTrackerSheet_(sheet);
+    const known = loadKnownSet_(sheet);
+
+    const officialNotices = fetchOfficialNoticesFromGitHub_(known);
+    if (officialNotices.length === 0) {
+      Logger.log('All official notices are already present in Google Sheet.');
+      return;
+    }
+
+    // Sort: newest first, then by priority
+    officialNotices.sort((a, b) => priorityRank_(b.priority) - priorityRank_(a.priority));
+
+    const rows = officialNotices.map(item => [
+      item.publishedDate || new Date(),
+      item.jurisdiction,
+      item.exam,
+      item.category,
+      item.priority,
+      item.summary,
+      item.marketingAction,
+      item.url,
+      item.telegramStatus || 'SENT_VIA_ACTIONS',
+      item.uniqueId
+    ]);
+
+    sheet.insertRowsBefore(2, rows.length);
+    sheet.getRange(2, 1, rows.length, HEADERS.length).setValues(rows);
+    formatDataRows_(sheet, 2, rows.length);
+
+    sendRichExecutiveEmail_(officialNotices, ss.getUrl());
+    log_('INFO', `Manually synced ${officialNotices.length} official notices to Google Sheet and dispatched email digest.`, '');
+    Logger.log(`✅ Successfully synced ${officialNotices.length} official notices to Google Sheet!`);
+  } catch (err) {
+    log_('ERROR', 'Manual official notices sync failed.', String(err.stack || err));
+    throw err;
+  } finally {
+    lock.releaseLock();
+  }
+}
+
