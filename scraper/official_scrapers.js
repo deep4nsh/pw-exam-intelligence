@@ -171,9 +171,10 @@ async function scrapeMPPSC() {
     }
   } catch (e) {}
 
-  if (items.length === 0) {
+  // Ensure full 8 items via real-time feed if direct geofence limits extraction
+  if (items.length < 8) {
     try {
-      const feedUrl = "https://news.google.com/rss/search?q=site:mppsc.mp.gov.in+OR+(MPPSC+admit+card+OR+result+OR+exam)+when:14d&hl=en-IN&gl=IN&ceid=IN:en";
+      const feedUrl = "https://news.google.com/rss/search?q=MPPSC+when:30d&hl=en-IN&gl=IN&ceid=IN:en";
       const feedRes = await fetchHtml(feedUrl, 15000);
       const itemRegex = /<item>[\s\S]*?<title>([\s\S]*?)<\/title>[\s\S]*?<link>([\s\S]*?)<\/link>[\s\S]*?<pubDate>([\s\S]*?)<\/pubDate>[\s\S]*?<\/item>/gi;
       let fMatch;
@@ -181,7 +182,7 @@ async function scrapeMPPSC() {
         let title = cleanText(fMatch[1]).replace(/ - [^-]+$/g, "").replace(/ - MPPSC/gi, "").trim();
         const link = fMatch[2].trim();
         const pubDate = fMatch[3].trim();
-        if (title.length > 5 && !items.some(i => i.title === title)) {
+        if (title.length > 5 && !items.some(i => i.title === title || i.url === link)) {
           const category = classifyCategory(title);
           items.push({
             jurisdiction: "MPPSC",
