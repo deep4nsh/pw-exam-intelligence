@@ -1,3 +1,5 @@
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+
 /**
  * OFFICIAL COMMISSION PORTALS INGESTION ENGINE
  * PW Exam Intelligence Radar
@@ -27,142 +29,18 @@ const GOOGLE_WEBAPP_CONFIG = {
   url: process.env.GOOGLE_WEBAPP_URL || 'https://script.google.com/macros/s/AKfycbyRZAvIjfSSTzmQgB1-WVjoSsXmBv80Tu0zeEuofNJ3gbFvFbPmCVlvbPbExKwE3_e6/exec'
 };
 
-function fetchViaGoogleProxy(targetUrl) {
-  if (!GOOGLE_WEBAPP_CONFIG.url) return Promise.resolve(null);
-  const proxyUrl = `${GOOGLE_WEBAPP_CONFIG.url}?url=${encodeURIComponent(targetUrl)}`;
-  return new Promise((resolve) => {
-    let resolved = false;
-    const timer = setTimeout(() => {
-      if (!resolved) { resolved = true; resolve(null); }
-    }, 20000);
 
-    function finish(resData) {
-      if (!resolved) {
-        resolved = true;
-        clearTimeout(timer);
-        resolve(resData);
-      }
-    }
 
-    try {
-      const req = https.get(proxyUrl, { timeout: 15000 }, (res) => {
-        if ([301, 302, 307, 308].includes(res.statusCode) && res.headers.location) {
-          const redir = https.get(res.headers.location, { timeout: 15000 }, (redirectRes) => {
-            let data = "";
-            redirectRes.on("data", chunk => data += chunk);
-            redirectRes.on("end", () => {
-              if (data.includes("Script function not found") || data.length < 50) finish(null);
-              else finish(data);
-            });
-          });
-          redir.on("error", () => finish(null));
-          redir.on("timeout", () => { redir.destroy(); finish(null); });
-        } else {
-          let data = "";
-          res.on("data", chunk => data += chunk);
-          res.on("end", () => {
-            if (data.includes("Script function not found") || data.length < 50) finish(null);
-            else finish(data);
-          });
-        }
-      });
-      req.on("error", () => finish(null));
-      req.on("timeout", () => { req.destroy(); finish(null); });
-    } catch (e) {
-      finish(null);
-    }
+async function fetchHtml(url, timeoutMs = 25000) {
+  const res = await fetch(url, {
+    headers: {
+      "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36",
+      "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
+      "Accept-Language": "en-US,en;q=0.9,hi;q=0.8"
+    },
+    signal: AbortSignal.timeout(timeoutMs)
   });
-}
-
-function fetchHtml(url, retryCount = 1) {
-  return new Promise((resolve, reject) => {
-    function attempt(targetUrl, redirectsLeft, retriesLeft) {
-      try {
-        const parsed = new URL(targetUrl);
-        const isHttps = parsed.protocol === "https:";
-        const transport = isHttps ? https : require("http");
-        const options = {
-          hostname: parsed.hostname,
-          port: parsed.port || (isHttps ? 443 : 80),
-          path: parsed.pathname + (parsed.search || ""),
-          method: "GET",
-          headers: {
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36",
-            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
-            "Accept-Language": "en-US,en;q=0.9,hi;q=0.8",
-            "Sec-Ch-Ua": "\"Google Chrome\";v=\"123\", \"Chromium\";v=\"123\"",
-            "Sec-Ch-Ua-Mobile": "?0",
-            "Sec-Ch-Ua-Platform": "\"Windows\"",
-            "Sec-Fetch-Dest": "document",
-            "Sec-Fetch-Mode": "navigate",
-            "Sec-Fetch-Site": "none",
-            "Sec-Fetch-User": "?1",
-            "Upgrade-Insecure-Requests": "1"
-          },
-          timeout: 35000,
-          rejectUnauthorized: false,
-          ciphers: "ALL:!aNULL:!eNULL:@SECLEVEL=1",
-          minVersion: "TLSv1"
-        };
-
-        const req = transport.request(options, (res) => {
-          if ([301, 302, 307, 308].includes(res.statusCode) && res.headers.location && redirectsLeft > 0) {
-            const redirectUrl = new URL(res.headers.location, targetUrl).toString();
-            res.resume();
-            return attempt(redirectUrl, redirectsLeft - 1, retriesLeft);
-          }
-          let data = "";
-          res.setEncoding("utf8");
-          res.on("data", chunk => data += chunk);
-          res.on("end", async () => {
-            if (res.statusCode >= 400 && retriesLeft > 0) {
-              setTimeout(() => attempt(targetUrl, redirectsLeft, retriesLeft - 1), 1500);
-            } else if (res.statusCode >= 400) {
-              const proxyData = await fetchViaGoogleProxy(targetUrl);
-              if (proxyData) resolve(proxyData);
-              else resolve(data);
-            } else {
-              resolve(data);
-            }
-          });
-        });
-
-        req.on("timeout", async () => {
-          req.destroy();
-          if (retriesLeft > 0) {
-            setTimeout(() => attempt(targetUrl, redirectsLeft, retriesLeft - 1), 1500);
-          } else {
-            const proxyData = await fetchViaGoogleProxy(targetUrl);
-            if (proxyData) resolve(proxyData);
-            else reject(new Error("Timeout (35s)"));
-          }
-        });
-
-        req.on("error", async (err) => {
-          if (retriesLeft > 0) {
-            setTimeout(() => attempt(targetUrl, redirectsLeft, retriesLeft - 1), 1500);
-          } else {
-            const proxyData = await fetchViaGoogleProxy(targetUrl);
-            if (proxyData) resolve(proxyData);
-            else reject(err);
-          }
-        });
-
-        req.end();
-      } catch (err) {
-        if (retriesLeft > 0) {
-          setTimeout(() => attempt(targetUrl, redirectsLeft, retriesLeft - 1), 1500);
-        } else {
-          fetchViaGoogleProxy(targetUrl).then(proxyData => {
-            if (proxyData) resolve(proxyData);
-            else reject(err);
-          });
-        }
-      }
-    }
-
-    attempt(url, 3, retryCount);
-  });
+  return await res.text();
 }
 
 function generateHash(title, url) {
@@ -512,49 +390,49 @@ async function runAllOfficialScrapers() {
     const bpsc = await scrapeBPSC();
     console.log(`✅ Discovered ${bpsc.length} notices`);
     allUpdates.push(...bpsc);
-  } catch (e) { console.log(`❌ Failed: ${e.message}`); }
+  } catch (e) { console.log(`❌ Failed: ${e.message || e.code || e}`); }
 
   try {
     process.stdout.write('2. Scraping UPPSC (Uttar Pradesh)... ');
     const uppsc = await scrapeUPPSC();
     console.log(`✅ Discovered ${uppsc.length} notices`);
     allUpdates.push(...uppsc);
-  } catch (e) { console.log(`❌ Failed: ${e.message}`); }
+  } catch (e) { console.log(`❌ Failed: ${e.message || e.code || e}`); }
 
   try {
     process.stdout.write('3. Scraping MPPSC (Madhya Pradesh)... ');
     const mppsc = await scrapeMPPSC();
     console.log(`✅ Discovered ${mppsc.length} notices`);
     allUpdates.push(...mppsc);
-  } catch (e) { console.log(`❌ Failed: ${e.message}`); }
+  } catch (e) { console.log(`❌ Failed: ${e.message || e.code || e}`); }
 
   try {
     process.stdout.write('4. Scraping RPSC (Rajasthan)... ');
     const rpsc = await scrapeRPSC();
     console.log(`✅ Discovered ${rpsc.length} notices`);
     allUpdates.push(...rpsc);
-  } catch (e) { console.log(`❌ Failed: ${e.message}`); }
+  } catch (e) { console.log(`❌ Failed: ${e.message || e.code || e}`); }
 
   try {
     process.stdout.write('5. Scraping OPSC (Odisha)... ');
     const opsc = await scrapeOPSC();
     console.log(`✅ Discovered ${opsc.length} notices`);
     allUpdates.push(...opsc);
-  } catch (e) { console.log(`❌ Failed: ${e.message}`); }
+  } catch (e) { console.log(`❌ Failed: ${e.message || e.code || e}`); }
 
   try {
     process.stdout.write('6. Scraping MPSC (Maharashtra)... ');
     const mpsc = await scrapeMPSC();
     console.log(`✅ Discovered ${mpsc.length} notices`);
     allUpdates.push(...mpsc);
-  } catch (e) { console.log(`❌ Failed: ${e.message}`); }
+  } catch (e) { console.log(`❌ Failed: ${e.message || e.code || e}`); }
 
   try {
     process.stdout.write('7. Scraping Allahabad High Court (Judiciary)... ');
     const ahc = await scrapeAllahabadHC();
     console.log(`✅ Discovered ${ahc.length} notices`);
     allUpdates.push(...ahc);
-  } catch (e) { console.log(`❌ Failed: ${e.message}`); }
+  } catch (e) { console.log(`❌ Failed: ${e.message || e.code || e}`); }
 
   console.log('\n===============================================================');
   console.log(`🎯 TOTAL OFFICIAL NOTICES EXTRACTED: ${allUpdates.length}`);
