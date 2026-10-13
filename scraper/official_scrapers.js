@@ -22,6 +22,11 @@ const TELEGRAM_CONFIG = {
   chatId: process.env.TELEGRAM_CHAT_ID || '-5324420343' // Deepansh & Aditya Sir, Akshay Pw
 };
 
+const GOOGLE_WEBAPP_CONFIG = {
+  deploymentId: 'AKfycbyRZAvIjfSSTzmQgB1-WVjoSsXmBv80Tu0zeEuofNJ3gbFvFbPmCVlvbPbExKwE3_e6',
+  url: process.env.GOOGLE_WEBAPP_URL || 'https://script.google.com/macros/s/AKfycbyRZAvIjfSSTzmQgB1-WVjoSsXmBv80Tu0zeEuofNJ3gbFvFbPmCVlvbPbExKwE3_e6/exec'
+};
+
 function fetchHtml(url) {
   return new Promise((resolve, reject) => {
     const parsed = new URL(url);
@@ -556,7 +561,7 @@ function sendTelegramNotice(item) {
 
 function sendGoogleWebAppSync(items) {
   return new Promise((resolve) => {
-    const webAppUrl = process.env.GOOGLE_WEBAPP_URL;
+    const webAppUrl = process.env.GOOGLE_WEBAPP_URL || GOOGLE_WEBAPP_CONFIG.url;
     if (!webAppUrl) return resolve(false);
 
     try {
@@ -574,7 +579,9 @@ function sendGoogleWebAppSync(items) {
         timeout: 15000
       }, (res) => {
         res.resume();
-        res.on('end', () => resolve(res.statusCode >= 200 && res.statusCode < 400));
+        // Google Apps Script Web Apps return 302 Found redirect on successful POST execution
+        const isSuccess = (res.statusCode >= 200 && res.statusCode < 400);
+        res.on('end', () => resolve(isSuccess));
       });
       req.on('timeout', () => { req.destroy(); resolve(false); });
       req.on('error', () => resolve(false));
