@@ -504,6 +504,12 @@ async function runAllOfficialScrapers() {
       await sendTelegramNotice(item);
       await new Promise(r => setTimeout(r, 1200)); // Respect Telegram rate limits
     }
+
+    if (process.env.GOOGLE_WEBAPP_URL) {
+      console.log(`\n📊 Syncing ${brandNewItems.length} notices directly to Google Sheet Tracker & Email...`);
+      const synced = await sendGoogleWebAppSync(brandNewItems);
+      console.log(synced ? '✅ Google Sheet & Email sync complete.' : '⚠️ Google Sheet sync skipped or failed.');
+    }
   } else {
     console.log('\n✅ All official portals checked. 0 new notices since last check.');
   }
@@ -545,6 +551,38 @@ function sendTelegramNotice(item) {
     req.on('error', () => resolve(false));
     req.write(data);
     req.end();
+  });
+}
+
+function sendGoogleWebAppSync(items) {
+  return new Promise((resolve) => {
+    const webAppUrl = process.env.GOOGLE_WEBAPP_URL;
+    if (!webAppUrl) return resolve(false);
+
+    try {
+      const parsed = new URL(webAppUrl);
+      const data = JSON.stringify({ notices: items });
+      const req = https.request({
+        hostname: parsed.hostname,
+        port: 443,
+        path: parsed.pathname + (parsed.search || ''),
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Content-Length': Buffer.byteLength(data)
+        },
+        timeout: 15000
+      }, (res) => {
+        res.resume();
+        res.on('end', () => resolve(res.statusCode >= 200 && res.statusCode < 400));
+      });
+      req.on('timeout', () => { req.destroy(); resolve(false); });
+      req.on('error', () => resolve(false));
+      req.write(data);
+      req.end();
+    } catch (e) {
+      resolve(false);
+    }
   });
 }
 

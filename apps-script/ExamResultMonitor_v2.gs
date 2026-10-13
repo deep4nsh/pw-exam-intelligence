@@ -1045,12 +1045,25 @@ function log_(level, msg, details) {
    ========================================================================== */
 
 function fetchOfficialNoticesFromGitHub_(known) {
-  const url = CFG.GITHUB_NOTICES_URL;
+  const token = PropertiesService.getScriptProperties().getProperty('GITHUB_TOKEN');
+  let url = CFG.GITHUB_NOTICES_URL;
+  const options = { muteHttpExceptions: true };
+
+  if (token) {
+    // Private repo authentication via GitHub API
+    url = 'https://api.github.com/repos/deep4nsh/pw-exam-intelligence/contents/scraper/latest_official_notices.json';
+    options.headers = {
+      'Authorization': 'Bearer ' + token,
+      'Accept': 'application/vnd.github.raw',
+      'User-Agent': 'PW-Exam-Radar-AppsScript'
+    };
+  }
+
   const items = [];
   try {
-    const response = UrlFetchApp.fetch(url, { muteHttpExceptions: true });
+    const response = UrlFetchApp.fetch(url, options);
     if (response.getResponseCode() !== 200) {
-      Logger.log('Could not fetch from GitHub, HTTP status: ' + response.getResponseCode());
+      Logger.log('GitHub fetch returned status: ' + response.getResponseCode());
       return items;
     }
 
@@ -1082,6 +1095,89 @@ function fetchOfficialNoticesFromGitHub_(known) {
     Logger.log('GitHub notices ingestion error: ' + err.message);
   }
   return items;
+}
+
+/**
+ * Web App Webhook Receiver:
+ * Allows the GitHub Action / scraper to POST brand-new verified official notices directly.
+ * Appends them into the Google Sheet and dispatches the rich HTML email digest!
+ */
+function doPost(e) {
+  const lock = LockService.getScriptLock();
+  if (!lock.tryLock(20000)) {
+    return ContentService.createTextOutput(JSON.stringify({ status: 'error', message: 'Locked' }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+
+  try {
+    const postData = JSON.parse(e.postData.contents);
+    const incoming = Array.isArray(postData) ? postData : (postData.notices || [postData]);
+    if (!incoming || incoming.length === 0) {
+      return ContentService.createTextOutput(JSON.stringify({ status: 'ok', inserted: 0 }))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+
+    const ss = getSpreadsheet_();
+    const sheet = getOrCreateSheet_(ss, CFG.SHEET_NAME);
+    initializeTrackerSheet_(sheet);
+    const known = loadKnownSet_(sheet);
+
+    const newItems = [];
+    incoming.forEach(n => {
+      const uid = n.hash || generateCompositeHash_(n.title, n.url);
+      if (known.has(uid) || known.has(n.url)) return;
+      known.add(uid);
+      known.add(n.url);
+
+      newItems.push({
+        title: n.title,
+        url: n.url,
+        uniqueId: uid,
+        publishedDate: new Date(),
+        jurisdiction: n.jurisdiction || n.state || 'State Commission',
+        exam: n.exam || 'Recruitment Exam',
+        category: n.category || 'Notification / Recruitment',
+        priority: n.priority || 'HIGH',
+        summary: n.title,
+        marketingAction: n.marketingAction,
+        isOfficialVerified: true,
+        telegramStatus: 'SENT_VIA_ACTIONS'
+      });
+    });
+
+    if (newItems.length > 0) {
+      newItems.sort((a, b) => priorityRank_(b.priority) - priorityRank_(a.priority));
+
+      const rows = newItems.map(item => [
+        item.publishedDate || new Date(),
+        item.jurisdiction,
+        item.exam,
+        item.category,
+        item.priority,
+        item.summary,
+        item.marketingAction,
+        item.url,
+        item.telegramStatus,
+        item.uniqueId
+      ]);
+
+      sheet.insertRowsBefore(2, rows.length);
+      sheet.getRange(2, 1, rows.length, HEADERS.length).setValues(rows);
+      formatDataRows_(sheet, 2, rows.length);
+
+      sendRichExecutiveEmail_(newItems, ss.getUrl());
+      log_('INFO', `Webhook inserted ${newItems.length} official notices into Google Sheet and dispatched email digest.`, '');
+    }
+
+    return ContentService.createTextOutput(JSON.stringify({ status: 'success', inserted: newItems.length }))
+      .setMimeType(ContentService.MimeType.JSON);
+  } catch (err) {
+    log_('ERROR', 'Webhook error', String(err.stack || err));
+    return ContentService.createTextOutput(JSON.stringify({ status: 'error', message: err.message }))
+      .setMimeType(ContentService.MimeType.JSON);
+  } finally {
+    lock.releaseLock();
+  }
 }
 
 /**
@@ -1138,4 +1234,5 @@ function syncOfficialNoticesNow() {
     lock.releaseLock();
   }
 }
+
 
