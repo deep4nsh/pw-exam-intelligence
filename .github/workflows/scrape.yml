@@ -2,8 +2,8 @@ name: "24/7 Official Exam Intelligence Radar"
 
 on:
   schedule:
-    # Runs every 20 minutes round the clock (₹0 server cost)
-    - cron: '*/20 * * * *'
+    # Runs every 5 minutes round the clock (₹0 server cost)
+    - cron: '*/5 * * * *'
   workflow_dispatch: # Allows manual trigger from GitHub Actions tab anytime
 
 concurrency:
