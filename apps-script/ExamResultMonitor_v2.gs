@@ -1236,3 +1236,37 @@ function syncOfficialNoticesNow() {
 }
 
 
+
+
+/**
+ * GET Webhook Handler / Reverse Proxy Fallback
+ * Allows cloud runners to fetch Indian portals through Google Workspace IPs
+ */
+function doGet(e) {
+  const targetUrl = (e && e.parameter && e.parameter.url);
+  if (!targetUrl) {
+    return ContentService.createTextOutput(JSON.stringify({
+      status: "ok",
+      service: "PW Exam Intelligence Radar Webhook & Proxy",
+      timestamp: new Date().toISOString()
+    })).setMimeType(ContentService.MimeType.JSON);
+  }
+
+  try {
+    const res = UrlFetchApp.fetch(targetUrl, {
+      muteHttpExceptions: true,
+      validateHttpsCertificates: false,
+      followRedirects: true,
+      headers: {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36",
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+        "Accept-Language": "en-IN,en;q=0.9"
+      }
+    });
+    return ContentService.createTextOutput(res.getContentText())
+      .setMimeType(ContentService.MimeType.TEXT);
+  } catch (err) {
+    return ContentService.createTextOutput(JSON.stringify({ error: err.toString() }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}

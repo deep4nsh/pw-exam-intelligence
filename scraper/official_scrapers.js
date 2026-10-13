@@ -27,6 +27,53 @@ const GOOGLE_WEBAPP_CONFIG = {
   url: process.env.GOOGLE_WEBAPP_URL || 'https://script.google.com/macros/s/AKfycbyRZAvIjfSSTzmQgB1-WVjoSsXmBv80Tu0zeEuofNJ3gbFvFbPmCVlvbPbExKwE3_e6/exec'
 };
 
+function fetchViaGoogleProxy(targetUrl) {
+  if (!GOOGLE_WEBAPP_CONFIG.url) return Promise.resolve(null);
+  const proxyUrl = `${GOOGLE_WEBAPP_CONFIG.url}?url=${encodeURIComponent(targetUrl)}`;
+  return new Promise((resolve) => {
+    let resolved = false;
+    const timer = setTimeout(() => {
+      if (!resolved) { resolved = true; resolve(null); }
+    }, 20000);
+
+    function finish(resData) {
+      if (!resolved) {
+        resolved = true;
+        clearTimeout(timer);
+        resolve(resData);
+      }
+    }
+
+    try {
+      const req = https.get(proxyUrl, { timeout: 15000 }, (res) => {
+        if ([301, 302, 307, 308].includes(res.statusCode) && res.headers.location) {
+          const redir = https.get(res.headers.location, { timeout: 15000 }, (redirectRes) => {
+            let data = "";
+            redirectRes.on("data", chunk => data += chunk);
+            redirectRes.on("end", () => {
+              if (data.includes("Script function not found") || data.length < 50) finish(null);
+              else finish(data);
+            });
+          });
+          redir.on("error", () => finish(null));
+          redir.on("timeout", () => { redir.destroy(); finish(null); });
+        } else {
+          let data = "";
+          res.on("data", chunk => data += chunk);
+          res.on("end", () => {
+            if (data.includes("Script function not found") || data.length < 50) finish(null);
+            else finish(data);
+          });
+        }
+      });
+      req.on("error", () => finish(null));
+      req.on("timeout", () => { req.destroy(); finish(null); });
+    } catch (e) {
+      finish(null);
+    }
+  });
+}
+
 function fetchHtml(url, retryCount = 1) {
   return new Promise((resolve, reject) => {
     function attempt(targetUrl, redirectsLeft, retriesLeft) {
@@ -53,7 +100,9 @@ function fetchHtml(url, retryCount = 1) {
             "Upgrade-Insecure-Requests": "1"
           },
           timeout: 35000,
-          rejectUnauthorized: false
+          rejectUnauthorized: false,
+          ciphers: "ALL:!aNULL:!eNULL:@SECLEVEL=1",
+          minVersion: "TLSv1"
         };
 
         const req = transport.request(options, (res) => {
@@ -65,29 +114,37 @@ function fetchHtml(url, retryCount = 1) {
           let data = "";
           res.setEncoding("utf8");
           res.on("data", chunk => data += chunk);
-          res.on("end", () => {
+          res.on("end", async () => {
             if (res.statusCode >= 400 && retriesLeft > 0) {
               setTimeout(() => attempt(targetUrl, redirectsLeft, retriesLeft - 1), 1500);
+            } else if (res.statusCode >= 400) {
+              const proxyData = await fetchViaGoogleProxy(targetUrl);
+              if (proxyData) resolve(proxyData);
+              else resolve(data);
             } else {
               resolve(data);
             }
           });
         });
 
-        req.on("timeout", () => {
+        req.on("timeout", async () => {
           req.destroy();
-          if (retriesLeft > 0) {
-            setTimeout(() => attempt(targetUrl, redirectsLeft, retriesLeft - 1), 2000);
-          } else {
-            reject(new Error("Timeout (35s)"));
-          }
-        });
-
-        req.on("error", (err) => {
           if (retriesLeft > 0) {
             setTimeout(() => attempt(targetUrl, redirectsLeft, retriesLeft - 1), 1500);
           } else {
-            reject(err);
+            const proxyData = await fetchViaGoogleProxy(targetUrl);
+            if (proxyData) resolve(proxyData);
+            else reject(new Error("Timeout (35s)"));
+          }
+        });
+
+        req.on("error", async (err) => {
+          if (retriesLeft > 0) {
+            setTimeout(() => attempt(targetUrl, redirectsLeft, retriesLeft - 1), 1500);
+          } else {
+            const proxyData = await fetchViaGoogleProxy(targetUrl);
+            if (proxyData) resolve(proxyData);
+            else reject(err);
           }
         });
 
@@ -96,7 +153,10 @@ function fetchHtml(url, retryCount = 1) {
         if (retriesLeft > 0) {
           setTimeout(() => attempt(targetUrl, redirectsLeft, retriesLeft - 1), 1500);
         } else {
-          reject(err);
+          fetchViaGoogleProxy(targetUrl).then(proxyData => {
+            if (proxyData) resolve(proxyData);
+            else reject(err);
+          });
         }
       }
     }
