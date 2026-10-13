@@ -1,8 +1,10 @@
 {
   "name": "pw-exam-intelligence",
+  "main": "src/worker.js",
   "compatibility_date": "2024-11-01",
   "assets": {
     "directory": "./dist",
+    "binding": "ASSETS",
     "not_found_handling": "single-page-application"
   }
 }
