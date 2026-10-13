@@ -535,10 +535,13 @@ function sendTelegramNotice(item) {
       headers: {
         'Content-Type': 'application/json',
         'Content-Length': Buffer.byteLength(data)
-      }
+      },
+      timeout: 10000
     }, (res) => {
-      resolve(res.statusCode === 200);
+      res.resume();
+      res.on('end', () => resolve(res.statusCode === 200));
     });
+    req.on('timeout', () => { req.destroy(); resolve(false); });
     req.on('error', () => resolve(false));
     req.write(data);
     req.end();
