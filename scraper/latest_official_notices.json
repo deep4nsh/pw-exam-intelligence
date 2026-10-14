@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-10-14T19:29:26.154Z",
+  "lastUpdated": "2026-10-14T22:33:37.628Z",
   "totalNotices": 64,
   "commissionsCovered": [
     "BPSC (Bihar)",
@@ -621,6 +621,18 @@
     },
     {
       "jurisdiction": "Pan-India Judiciary",
+      "state": "Pan-India Judiciary",
+      "exam": "High Court Judicial Recruitment",
+      "title": "BJSC sets dope test, medical exam dates for 200 civil judge candidates",
+      "url": "https://news.google.com/rss/articles/CBMisgFBVV95cUxQRFJzRmNEU3dRY1MtMnhwUnJzX0hfMFA4bW9zdks3bWc5WTI1OGgtYXV6cG5aMDRFUTdEVzRValdEeklwZV9pQ2ZtbldSUGdJd21tR2x3MHZkRE04a1VMUFNZNXVhS3dXNm9vcnVXVllTcWNiRjhtWkJucFVqX3lNZXdjbUNsbzZLR0R5TUE5bEhyUWVsRXlFdVBEdlMyTGt0aDE2cm90UU45cjhtXzlBWUhR?oc=5",
+      "date": "14 Oct 2026",
+      "category": "Exam Schedule",
+      "priority": "HIGH",
+      "marketingAction": "Push 'Countdown Begins' campaign; offer 20% discount on test series and mock exams.",
+      "hash": "1b5e54cf140db504bde4"
+    },
+    {
+      "jurisdiction": "Pan-India Judiciary",
       "state": "Rajasthan High Court (HCRAJ)",
       "exam": "Rajasthan High Court Recruitment",
       "title": "Rajasthan High Court Stenographer Admit Card 2026 Released; Skill Test From October 28",
@@ -642,18 +654,6 @@
       "priority": "CRITICAL",
       "marketingAction": "Blast student app push notification with direct download instructions; launch 7-day revision marathon promo.",
       "hash": "6634e34f92f5efb8179e"
-    },
-    {
-      "jurisdiction": "Pan-India Judiciary",
-      "state": "Rajasthan High Court (HCRAJ)",
-      "exam": "Rajasthan High Court Recruitment",
-      "title": "Rajasthan High Court Stenographer admit card 2026 out for 163 vacancies, direct link here",
-      "url": "https://news.google.com/rss/articles/CBMi2AFBVV95cUxONmlQYkVrdjBhY0JPQUk3aDZEUG9hVlVQUWctWU45V1dWNWRQSERjajk2ZGRBLXJfN1BmNUlHd2FpS2kxRU12cWVVc01LcG1aOGRIM0M4UmxlSXMtLUpFRmxYQVlfem1NOTBnclRMczNMRVhuc3Iydkljdm8wRDd2R0Q2R0VSQXgyYlprUzBGVzhjb3BfT2k2YmhVcnFoM3czd3lzVnRDUEwwcl9MU3FUR0oxRzM1WTBTYTRpaFpkVDNCN3AzdGpSUW9Lb0JZbld6Yk50QjVvR24?oc=5",
-      "date": "13 Oct 2026",
-      "category": "Admit Card",
-      "priority": "CRITICAL",
-      "marketingAction": "Blast student app push notification with direct download instructions; launch 7-day revision marathon promo.",
-      "hash": "208626dda9df69ea122b"
     },
     {
       "jurisdiction": "Allahabad High Court",
