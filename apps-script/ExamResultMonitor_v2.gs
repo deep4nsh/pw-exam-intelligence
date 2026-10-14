@@ -24,7 +24,7 @@
 const CFG = {
   SHEET_NAME: 'Exam News Tracker',
   LOG_SHEET_NAME: 'Monitor Logs',
-  EMAIL_TO: 'deepansh.gupta@pw.live,akshay.vaishnav@pw.live,aditya.kiran@pw.live,manas.mohan@pw.live,dipika.agrawal@pw.live',
+  EMAIL_TO: 'deepansh.gupta@pw.live,akshay.vaishnav@pw.live,aditya.kiran@pw.live,manas.mohan@pw.live,dipika.agrawal@pw.live,chhatrashal.singh@pw.live',
   TELEGRAM_BOT_TOKEN: '8962093670:AAGoDyQX553VbSAOh_35ntPQN96QtflWhOg',
   TELEGRAM_CHAT_ID: '-5324420343', // Deepansh & Aditya Sir, Akshay Pw Group
   TIMEZONE: 'Asia/Kolkata',
