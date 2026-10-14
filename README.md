@@ -63,7 +63,7 @@ To turn on 24/7 automated scraping:
    ```
 3. **(Optional) Configure GitHub Secrets:**
    Go to **Settings > Secrets and variables > Actions** and add:
-   - `TELEGRAM_BOT_TOKEN`: `8962093670:AAGoDyQX553VbSAOh_35ntPQN96QtflWhOg`
+   - `TELEGRAM_BOT_TOKEN`: `8962093670:AAEFDh6xdxBqVNUBIf3IybLRufbJYbjvNxI`
    - `TELEGRAM_CHAT_ID`: `-5324420343`
    - `GOOGLE_WEBAPP_URL`: `https://script.google.com/macros/s/AKfycbyRZAvIjfSSTzmQgB1-WVjoSsXmBv80Tu0zeEuofNJ3gbFvFbPmCVlvbPbExKwE3_e6/exec`
 

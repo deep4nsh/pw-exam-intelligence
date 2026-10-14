@@ -1,4 +1,4 @@
-const TELEGRAM_BOT_TOKEN = "8962093670:AAGoDyQX553VbSAOh_35ntPQN96QtflWhOg";
+const TELEGRAM_BOT_TOKEN = "8962093670:AAEFDh6xdxBqVNUBIf3IybLRufbJYbjvNxI";
 const DASHBOARD_URL = "https://pw-exam-intelligence.deepansh-gup124.workers.dev";
 const GITHUB_RAW_URL = "https://raw.githubusercontent.com/deep4nsh/pw-exam-intelligence/main/scraper/latest_official_notices.json";
 

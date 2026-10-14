@@ -20,7 +20,7 @@ const https = require('https');
 const crypto = require('crypto');
 
 const TELEGRAM_CONFIG = {
-  token: process.env.TELEGRAM_BOT_TOKEN || '8962093670:AAGoDyQX553VbSAOh_35ntPQN96QtflWhOg',
+  token: process.env.TELEGRAM_BOT_TOKEN || '8962093670:AAEFDh6xdxBqVNUBIf3IybLRufbJYbjvNxI',
   chatId: process.env.TELEGRAM_CHAT_ID || '-5324420343' // Deepansh & Aditya Sir, Akshay Pw
 };
 
