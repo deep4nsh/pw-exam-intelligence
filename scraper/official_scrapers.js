@@ -603,14 +603,57 @@ async function runAllOfficialScrapers() {
   return allUpdates;
 }
 
+function escapeHtml(str) {
+  if (!str) return "";
+  return String(str)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
+function cleanTitle(raw) {
+  if (!raw) return "Official Notice";
+  let t = raw
+    .replace(/&#8216;/g, ")
+    .replace(/&#8217;/g, ")
+    .replace(/&#8220;/g, ')
+    .replace(/&#8221;/g, ')
+    .replace(/&amp;/g, "&")
+    .replace(/&nbsp;/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+
+  t = t.replace(/^(important\s+notice[s]?\s*[:\-]+\s*)/i, "");
+  t = t.replace(/^(notice\s*[:\-]+\s*)/i, "");
+  t = t.replace(/^(press\s+note\s*[:\-]+\s*)/i, "");
+  t = t.replace(/^(regarding\s+)/i, "");
+  t = t.trim();
+
+  if (t.length > 0) {
+    t = t.charAt(0).toUpperCase() + t.slice(1);
+  }
+  return t;
+}
+
 function sendTelegramNotice(item) {
   return new Promise((resolve) => {
+    const cleanHead = cleanTitle(item.title);
+    const priorityBadge = item.priority === "CRITICAL" ? "🚨 <b>CRITICAL NEW EXAM NOTICE</b>" : (item.priority === "HIGH" ? "⚠️ <b>HIGH PRIORITY CIRCULAR</b>" : "📢 <b>NEW OFFICIAL CIRCULAR</b>");
+    const stateName = item.state || item.jurisdiction;
+
     const text =
-      `🏛️ <b>[OFFICIAL VERIFIED] ${item.jurisdiction.toUpperCase()}</b>\n` +
-      `📌 <b>${item.category.toUpperCase()}</b> • ${item.exam}\n\n` +
-      `📋 <b>Notice:</b> ${item.title}\n\n` +
-      `🎯 <b>SUGGESTED MARKETING PLAY:</b>\n<i>"${item.marketingAction}"</i>\n\n` +
-      `📄 <a href="${item.url}">Download Official Notice / PDF ↗</a>`;
+      `${priorityBadge}\n` +
+      `━━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
+      `🏛️ <b>Commission:</b> ${escapeHtml(item.jurisdiction)} (${escapeHtml(stateName)})\n` +
+      `📌 <b>Exam:</b> ${escapeHtml(item.exam)}\n` +
+      `🏷️ <b>Category:</b> <b>${escapeHtml(item.category)}</b>\n\n` +
+      `📋 <b>Notice Headline:</b>\n<b>${escapeHtml(cleanHead)}</b>\n\n` +
+      `🎯 <b>RECOMMENDED MARKETING PLAY:</b>\n` +
+      `<i>"${escapeHtml(item.marketingAction)}"</i>\n\n` +
+      `━━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
+      `📄 <a href="${escapeHtml(item.url)}"><b>📥 Download Official Notice (PDF) ↗</b></a>\n` +
+      `🌐 <a href="https://pw-exam-intelligence.deepansh-gup124.workers.dev"><b>Open Live Web Dashboard ↗</b></a>`;
 
     const data = JSON.stringify({
       chat_id: TELEGRAM_CONFIG.chatId,

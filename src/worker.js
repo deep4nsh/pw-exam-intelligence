@@ -2,6 +2,49 @@ const TELEGRAM_BOT_TOKEN = "8962093670:AAGoDyQX553VbSAOh_35ntPQN96QtflWhOg";
 const DASHBOARD_URL = "https://pw-exam-intelligence.deepansh-gup124.workers.dev";
 const GITHUB_RAW_URL = "https://raw.githubusercontent.com/deep4nsh/pw-exam-intelligence/main/scraper/latest_official_notices.json";
 
+function escapeHtml(str) {
+  if (!str) return "";
+  return String(str)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
+function cleanTitle(raw) {
+  if (!raw) return "Official Notice";
+  let t = raw
+    .replace(/&#8216;/g, "'")
+    .replace(/&#8217;/g, "'")
+    .replace(/&#8220;/g, '"')
+    .replace(/&#8221;/g, '"')
+    .replace(/&amp;/g, '&')
+    .replace(/&nbsp;/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+
+  // Strip bureaucratic prefixes
+  t = t.replace(/^(important\s+notice[s]?\s*[:\-]+\s*)/i, '');
+  t = t.replace(/^(notice\s*[:\-]+\s*)/i, '');
+  t = t.replace(/^(press\s+note\s*[:\-]+\s*)/i, '');
+  t = t.replace(/^(regarding\s+)/i, '');
+  t = t.trim();
+
+  if (t.length > 0) {
+    t = t.charAt(0).toUpperCase() + t.slice(1);
+  }
+  return t;
+}
+
+function getLatestHeadline(notices, key) {
+  const found = notices.find(n =>
+    (n.jurisdiction && n.jurisdiction.toLowerCase().includes(key.toLowerCase())) ||
+    (n.state && n.state.toLowerCase().includes(key.toLowerCase()))
+  );
+  if (!found) return "Circulars verified & monitored";
+  return cleanTitle(found.title);
+}
+
 function getMenuMarkup() {
   return {
     inline_keyboard: [
@@ -31,7 +74,7 @@ async function sendTelegramMessage(chatId, text, replyMarkup = null) {
   const payload = {
     chat_id: chatId,
     text: text,
-    parse_mode: "Markdown",
+    parse_mode: "HTML",
     disable_web_page_preview: true
   };
   if (replyMarkup) payload.reply_markup = replyMarkup;
@@ -48,7 +91,7 @@ async function editTelegramMessage(chatId, messageId, text, replyMarkup = null) 
     chat_id: chatId,
     message_id: messageId,
     text: text,
-    parse_mode: "Markdown",
+    parse_mode: "HTML",
     disable_web_page_preview: true
   };
   if (replyMarkup) payload.reply_markup = replyMarkup;
@@ -126,7 +169,7 @@ export default {
       if (request.method === "GET") {
         return new Response(JSON.stringify({
           status: "online",
-          service: "PW Exam Intelligence Telegram Webhook",
+          service: "PW Exam Intelligence Telegram Webhook (Enhanced Clear News)",
           timestamp: new Date().toISOString()
         }), {
           headers: { "Content-Type": "application/json" }
@@ -137,7 +180,12 @@ export default {
         try {
           const update = await request.json();
           const notices = await fetchLatestNotices(env, url.origin);
-          const nowStr = new Date().toLocaleTimeString("en-IN", { timeZone: "Asia/Kolkata", hour: "2-digit", minute: "2-digit", second: "2-digit" });
+          const nowStr = new Date().toLocaleTimeString("en-IN", {
+            timeZone: "Asia/Kolkata",
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit"
+          });
 
           // Handle Button Clicks (Callback Query)
           if (update.callback_query) {
@@ -147,32 +195,48 @@ export default {
             const messageId = cb.message.message_id;
 
             const JURISDICTION_MAP = {
-              "sync_bpsc": { name: "BPSC (Bihar)", key: "BPSC", icon: "🏛️" },
-              "sync_uppsc": { name: "UPPSC (Uttar Pradesh)", key: "UPPSC", icon: "🏛️" },
-              "sync_mppsc": { name: "MPPSC (Madhya Pradesh)", key: "MPPSC", icon: "🏛️" },
-              "sync_rpsc": { name: "RPSC (Rajasthan)", key: "RPSC", icon: "🏛️" },
-              "sync_opsc": { name: "OPSC (Odisha)", key: "OPSC", icon: "🏛️" },
-              "sync_mpsc": { name: "MPSC (Maharashtra)", key: "MPSC", icon: "🏛️" },
-              "sync_ahc": { name: "Allahabad High Court (Judiciary)", key: "Allahabad", icon: "⚖️" }
+              "sync_bpsc": { name: "BPSC", state: "Bihar", key: "BPSC", icon: "🏛️" },
+              "sync_uppsc": { name: "UPPSC", state: "Uttar Pradesh", key: "UPPSC", icon: "🏛️" },
+              "sync_mppsc": { name: "MPPSC", state: "Madhya Pradesh", key: "MPPSC", icon: "🏛️" },
+              "sync_rpsc": { name: "RPSC", state: "Rajasthan", key: "RPSC", icon: "🏛️" },
+              "sync_opsc": { name: "OPSC", state: "Odisha", key: "OPSC", icon: "🏛️" },
+              "sync_mpsc": { name: "MPSC", state: "Maharashtra", key: "MPSC", icon: "🏛️" },
+              "sync_ahc": { name: "Allahabad High Court", state: "Judiciary", key: "Allahabad", icon: "⚖️" }
             };
 
+            // Option 8: Full Radar Sync
             if (action === "sync_all") {
-              await answerCallbackQuery(cb.id, "⚡ Syncing all 7 portals...");
+              await answerCallbackQuery(cb.id, "⚡ Syncing all 7 commissions...");
 
-              let summaryText = "⚡ *PW EXAM RADAR — FULL COMMISSION RADAR*\n";
-              summaryText += `📊 *Total Verified Circulars Tracked:* ${notices.length}\n`;
-              summaryText += `🕒 *Refreshed:* ${nowStr} IST\n\n`;
+              let summaryText = "⚡ <b>PW EXAM RADAR — ALL 7 COMMISSIONS SUMMARY</b>\n";
+              summaryText += "━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
+              summaryText += `📊 <b>${notices.length} Verified Official Circulars Active</b>\n`;
+              summaryText += `🕒 <b>Refreshed:</b> ${nowStr} IST • 🔄 <i>Cloud Auto-Sync 24/7</i>\n\n`;
 
-              summaryText += "• 🏛️ *BPSC (Bihar):* 8 notices active\n";
-              summaryText += "• 🏛️ *UPPSC (Uttar Pradesh):* 8 notices active\n";
-              summaryText += "• 🏛️ *MPPSC (Madhya Pradesh):* 8 notices active\n";
-              summaryText += "• 🏛️ *RPSC (Rajasthan):* 8 notices active\n";
-              summaryText += "• 🏛️ *OPSC (Odisha):* 8 notices active\n";
-              summaryText += "• 🏛️ *MPSC (Maharashtra):* 8 notices active\n";
-              summaryText += "• ⚖️ *Allahabad High Court:* 8 notices active\n\n";
+              summaryText += `🏛️ <b>Bihar (BPSC):</b> 8 notices\n`;
+              summaryText += `   └ <i>Latest: ${escapeHtml(getLatestHeadline(notices, 'BPSC'))}</i>\n\n`;
 
-              summaryText += `🌐 *Live Executive Dashboard:* [Open Web App](${DASHBOARD_URL})\n`;
-              summaryText += `_Tap any commission button below for individual notices & PDFs:_`;
+              summaryText += `🏛️ <b>Uttar Pradesh (UPPSC):</b> 8 notices\n`;
+              summaryText += `   └ <i>Latest: ${escapeHtml(getLatestHeadline(notices, 'UPPSC'))}</i>\n\n`;
+
+              summaryText += `🏛️ <b>Madhya Pradesh (MPPSC):</b> 8 notices\n`;
+              summaryText += `   └ <i>Latest: ${escapeHtml(getLatestHeadline(notices, 'MPPSC'))}</i>\n\n`;
+
+              summaryText += `🏛️ <b>Rajasthan (RPSC):</b> 8 notices\n`;
+              summaryText += `   └ <i>Latest: ${escapeHtml(getLatestHeadline(notices, 'RPSC'))}</i>\n\n`;
+
+              summaryText += `🏛️ <b>Odisha (OPSC):</b> 8 notices\n`;
+              summaryText += `   └ <i>Latest: ${escapeHtml(getLatestHeadline(notices, 'OPSC'))}</i>\n\n`;
+
+              summaryText += `🏛️ <b>Maharashtra (MPSC):</b> 8 notices\n`;
+              summaryText += `   └ <i>Latest: ${escapeHtml(getLatestHeadline(notices, 'MPSC'))}</i>\n\n`;
+
+              summaryText += `⚖️ <b>Judiciary (Allahabad HC):</b> 8 notices\n`;
+              summaryText += `   └ <i>Latest: ${escapeHtml(getLatestHeadline(notices, 'Allahabad'))}</i>\n\n`;
+
+              summaryText += "━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
+              summaryText += `🌐 <a href="${DASHBOARD_URL}"><b>Open Full Executive Web Dashboard ↗</b></a>\n`;
+              summaryText += `<i>👇 Tap any state button below for individual circulars & PDFs:</i>`;
 
               const res = await editTelegramMessage(chatId, messageId, summaryText, getMenuMarkup());
               if (!res.ok) {
@@ -181,37 +245,48 @@ export default {
               return new Response("OK");
             }
 
+            // Options 1 to 7: Individual Commission Sync
             const target = JURISDICTION_MAP[action];
             if (target) {
-              await answerCallbackQuery(cb.id, `🔄 Synced ${target.name}!`);
+              await answerCallbackQuery(cb.id, `🔄 Synced ${target.name} (${target.state})!`);
 
               const filtered = notices.filter(n =>
                 (n.jurisdiction && n.jurisdiction.toLowerCase().includes(target.key.toLowerCase())) ||
                 (n.state && n.state.toLowerCase().includes(target.key.toLowerCase()))
               );
 
-              let msg = `${target.icon} *${target.name.toUpperCase()} — LIVE UPDATES*\n`;
-              msg += `📊 *Tracked Notices:* ${filtered.length} verified | 🕒 *${nowStr} IST*\n\n`;
+              let msg = `${target.icon} <b>${target.name} (${target.state.toUpperCase()}) — LATEST UPDATES</b>\n`;
+              msg += "━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
+              msg += `📊 <b>${filtered.length} Official Circulars Tracked</b> • 🕒 <i>${nowStr} IST</i>\n\n`;
 
               if (filtered.length === 0) {
-                msg += "ℹ️ _No recent notices recorded for this commission._\n\n";
+                msg += "ℹ️ <i>No recent circulars found for this commission.</i>\n\n";
               } else {
                 filtered.slice(0, 4).forEach((item, idx) => {
-                  const priorityBadge = item.priority === "CRITICAL" ? "🚨 *CRITICAL*" : (item.priority === "HIGH" ? "🔴 *HIGH*" : "🔵 *NORMAL*");
-                  msg += `*${idx + 1}. ${item.title}*\n`;
-                  msg += `🏷️ *Category:* ${item.category || "Notice"} | ${priorityBadge}\n`;
+                  const cleanHead = cleanTitle(item.title);
+                  const priorityTag = item.priority === "CRITICAL" ? "🚨 <b>CRITICAL</b>" : (item.priority === "HIGH" ? "⚠️ <b>HIGH</b>" : "🟢 <b>NORMAL</b>");
+                  const examName = item.exam || target.name;
+                  const category = item.category || "Notice";
+
+                  msg += `<b>${idx + 1}. ${escapeHtml(cleanHead)}</b>\n`;
+                  msg += `${priorityTag} • <b>${escapeHtml(category)}</b> • <i>${escapeHtml(examName)}</i>\n`;
                   if (item.marketingAction) {
-                    msg += `🎯 *Marketing Hook:* ${item.marketingAction}\n`;
+                    msg += `🎯 <b>Campaign Play:</b> <i>"${escapeHtml(item.marketingAction)}"</i>\n`;
                   }
                   if (item.url) {
-                    msg += `📄 [Download Official PDF](${item.url})\n`;
+                    msg += `📄 <a href="${escapeHtml(item.url)}"><b>Download Official Notice (PDF) ↗</b></a>\n`;
                   }
-                  msg += "\n";
+                  if (idx < 3 && idx < filtered.length - 1) {
+                    msg += "──────────────────────────\n";
+                  } else {
+                    msg += "\n";
+                  }
                 });
               }
 
-              msg += `🌐 [View all on Web Dashboard](${DASHBOARD_URL})\n`;
-              msg += `_Tap another button below to inspect any other portal:_`;
+              msg += "━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
+              msg += `🌐 <a href="${DASHBOARD_URL}"><b>View All Notices on Web Dashboard ↗</b></a>\n`;
+              msg += `<i>👇 Tap another commission button below to check other states:</i>`;
 
               const res = await editTelegramMessage(chatId, messageId, msg, getMenuMarkup());
               if (!res.ok) {
@@ -227,8 +302,13 @@ export default {
             const chatId = update.message.chat.id;
 
             if (text.startsWith("/menu") || text.startsWith("/radar") || text.startsWith("/start") || text.startsWith("/sync")) {
-              const menuText = "🎯 *PW Exam Intelligence Radar — Interactive Menu*\n\n" +
-                "Select any option below to check live circulars, download official PDFs, or trigger a full radar scan:";
+              const menuText =
+                "🎯 <b>PW EXAM INTELLIGENCE RADAR — INTERACTIVE MENU</b>\n" +
+                "━━━━━━━━━━━━━━━━━━━━━━━━━━\n" +
+                "👋 <b>Welcome!</b> Tap any button below to sync live official updates, download direct PDFs, or view the full 7-portal executive radar:\n\n" +
+                "• 🏛️ <b>7 State Commissions:</b> BPSC, UPPSC, MPPSC, RPSC, OPSC, MPSC & Allahabad HC\n" +
+                "• ⚡ <b>Sync All:</b> Complete 7-portal radar summary\n\n" +
+                "<i>👇 Tap a button to check updates right now:</i>";
               await sendTelegramMessage(chatId, menuText, getMenuMarkup());
               return new Response("OK");
             }
