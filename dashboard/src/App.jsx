@@ -37,7 +37,8 @@ const JURISDICTION_INFO = {
   'RPSC': { name: 'RPSC', state: 'Rajasthan', icon: '🏛️', cssClass: 'comm-rpsc' },
   'OPSC': { name: 'OPSC', state: 'Odisha', icon: '🏛️', cssClass: 'comm-opsc' },
   'MPSC': { name: 'MPSC', state: 'Maharashtra', icon: '🏛️', cssClass: 'comm-mpsc' },
-  'Allahabad': { name: 'Allahabad HC', state: 'Judiciary', icon: '⚖️', cssClass: 'comm-ahc' }
+  'Judiciary': { name: 'Judiciary', state: 'High Courts & SCI', icon: '⚖️', cssClass: 'comm-judiciary' },
+  'Allahabad': { name: 'Judiciary', state: 'High Courts & SCI', icon: '⚖️', cssClass: 'comm-judiciary' }
 };
 
 function getCommissionMeta(jurisdiction = '') {
@@ -60,7 +61,7 @@ const JURISDICTION_FILTERS = [
   'RPSC',
   'OPSC',
   'MPSC',
-  'Allahabad High Court'
+  'Pan-India Judiciary'
 ];
 
 const CATEGORIES = [
@@ -207,7 +208,7 @@ export default function App() {
               </span>
             </div>
             <div className="brand-subtitle">
-              Physics Wallah Official Circular Monitor • 6 State PSCs + Allahabad HC
+              Physics Wallah Official Circular Monitor • 6 State PSCs + Pan-India Judiciary
             </div>
           </div>
         </div>
@@ -301,7 +302,7 @@ export default function App() {
             </div>
           </div>
           <div className="metric-value">{metrics.commissions} Portals</div>
-          <div className="metric-sub">BPSC, UPPSC, MPPSC, RPSC, OPSC, MPSC, HC</div>
+          <div className="metric-sub">BPSC, UPPSC, MPPSC, RPSC, OPSC, MPSC, Pan-India Judiciary</div>
         </div>
 
         <div className="metric-card">
@@ -435,7 +436,7 @@ export default function App() {
             {filteredNotices.map((item) => {
               const isCopied = copiedHash === item.hash;
               const isPdfCopied = copiedPdfHash === item.hash;
-              const meta = getCommissionMeta(item.jurisdiction);
+              const meta = getCommissionMeta(item.jurisdiction, item.state);
               const isUrgent = item.priority === 'CRITICAL' || item.priority === 'HIGH';
 
               const priorityBorderClass =
@@ -635,7 +636,7 @@ export default function App() {
           Physics Wallah Exam Intelligence Network • Automated 24/7 via GitHub Actions
         </div>
         <div>
-          Official Commissions: BPSC, UPPSC, MPPSC, RPSC, OPSC, MPSC & Allahabad High Court.
+          Official Commissions: BPSC, UPPSC, MPPSC, RPSC, OPSC, MPSC & Pan-India High Courts (DJS, RJS, MP, UP & SCI).
         </div>
       </footer>
     </div>

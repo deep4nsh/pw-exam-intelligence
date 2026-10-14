@@ -61,7 +61,7 @@ function getMenuMarkup() {
         { text: "🏛️ MPSC (Maharashtra)", callback_data: "sync_mpsc" }
       ],
       [
-        { text: "⚖️ Allahabad High Court (Judiciary)", callback_data: "sync_ahc" }
+        { text: "⚖️ Pan-India Judiciary (High Courts)", callback_data: "sync_judiciary" }
       ],
       [
         { text: "⚡ Sync All 7 Portals (Full Radar)", callback_data: "sync_all" }
@@ -201,7 +201,8 @@ export default {
               "sync_rpsc": { name: "RPSC", state: "Rajasthan", key: "RPSC", icon: "🏛️" },
               "sync_opsc": { name: "OPSC", state: "Odisha", key: "OPSC", icon: "🏛️" },
               "sync_mpsc": { name: "MPSC", state: "Maharashtra", key: "MPSC", icon: "🏛️" },
-              "sync_ahc": { name: "Allahabad High Court", state: "Judiciary", key: "Allahabad", icon: "⚖️" }
+              "sync_judiciary": { name: "Pan-India Judiciary", state: "High Courts & SCI", key: "Judiciary", icon: "⚖️" },
+              "sync_ahc": { name: "Pan-India Judiciary", state: "High Courts & SCI", key: "Judiciary", icon: "⚖️" }
             };
 
             // Option 8: Full Radar Sync
@@ -306,7 +307,7 @@ export default {
                 "🎯 <b>PW EXAM INTELLIGENCE RADAR — INTERACTIVE MENU</b>\n" +
                 "━━━━━━━━━━━━━━━━━━━━━━━━━━\n" +
                 "👋 <b>Welcome!</b> Tap any button below to sync live official updates, download direct PDFs, or view the full 7-portal executive radar:\n\n" +
-                "• 🏛️ <b>7 State Commissions:</b> BPSC, UPPSC, MPPSC, RPSC, OPSC, MPSC & Allahabad HC\n" +
+                "• 🏛️ <b>6 State PSCs + ⚖️ Pan-India Judiciary:</b> BPSC, UPPSC, MPPSC, RPSC, OPSC, MPSC & High Courts\n" +
                 "• ⚡ <b>Sync All:</b> Complete 7-portal radar summary\n\n" +
                 "<i>👇 Tap a button to check updates right now:</i>";
               await sendTelegramMessage(chatId, menuText, getMenuMarkup());

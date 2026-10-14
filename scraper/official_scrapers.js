@@ -278,33 +278,93 @@ async function scrapeRPSC() {
   return items;
 }
 
-// 5. Scrape Allahabad High Court (Judiciary)
-async function scrapeAllahabadHC() {
-  const html = await fetchHtml('https://www.allahabadhighcourt.in/calendar/itemWiseList.jsp?group=7');
+// 5. Scrape Pan-India Judiciary (High Courts & Judicial Services)
+async function scrapePanIndiaJudiciary() {
   const items = [];
-  // Match: <A HREF='(/event/[^']+)'[^>]*>[^<]*</A> ... <TD ALIGN='left'...>([\s\S]*?)</TD>
-  const regex = /<A\s+HREF=['"](\/event\/[^'"]+\.pdf)['"][^>]*>[\s\S]*?<\/TD>\s*<TD[^>]*ALIGN=['"]left['"][^>]*>([\s\S]*?)<\/TD>/gi;
-  let match;
-  while ((match = regex.exec(html)) !== null && items.length < 8) {
-    const pdfPath = match[1];
-    const rawTitle = cleanText(match[2]);
-    const pdfUrl = `https://www.allahabadhighcourt.in${pdfPath}`;
 
-    if (rawTitle.length > 5 && !items.some(i => i.url === pdfUrl)) {
-      const category = classifyCategory(rawTitle);
-      items.push({
-        jurisdiction: 'Allahabad High Court',
-        state: 'Judiciary (UP)',
-        exam: rawTitle.includes('HJS') ? 'UP Higher Judicial Service (HJS)' : (rawTitle.includes('Civil Judge') ? 'UP Civil Judge (PCS-J)' : 'High Court Judicial Recruitment'),
-        title: rawTitle,
-        url: pdfUrl,
-        category: category,
-        priority: category === 'Result' || category === 'Admit Card' ? 'CRITICAL' : 'HIGH',
-        marketingAction: generateMarketingHook(category, 'Judiciary'),
-        hash: generateHash(rawTitle, pdfUrl)
-      });
+  // Tier 1: Direct Allahabad High Court official notices (UP HJS, District Judge, Law Clerks)
+  try {
+    const html = await fetchHtml("https://www.allahabadhighcourt.in/calendar/itemWiseList.jsp?group=7", 15000);
+    const regex = /<A\s+HREF=['"](\/event\/[^'"]+\.pdf)['"][^>]*>[\s\S]*?<\/TD>\s*<TD[^>]*ALIGN=['"]left['"][^>]*>([\s\S]*?)<\/TD>/gi;
+    let match;
+    while ((match = regex.exec(html)) !== null && items.length < 4) {
+      const pdfPath = match[1];
+      const rawTitle = cleanText(match[2]);
+      const pdfUrl = "https://www.allahabadhighcourt.in" + pdfPath;
+
+      if (rawTitle.length > 5 && !items.some(i => i.url === pdfUrl)) {
+        const category = classifyCategory(rawTitle);
+        let exam = "High Court Judicial Recruitment";
+        if (/hjs|higher judicial/i.test(rawTitle)) exam = "UP Higher Judicial Service (HJS)";
+        else if (/civil judge|pcs-j/i.test(rawTitle)) exam = "UP Civil Judge (PCS-J)";
+        else if (/law clerk/i.test(rawTitle)) exam = "High Court Law Clerk (Trainee)";
+
+        items.push({
+          jurisdiction: "Pan-India Judiciary",
+          state: "Allahabad High Court (UP)",
+          exam: exam,
+          title: rawTitle,
+          url: pdfUrl,
+          category: category,
+          priority: category === "Result" || category === "Admit Card" ? "CRITICAL" : "HIGH",
+          marketingAction: generateMarketingHook(category, "Judiciary"),
+          hash: generateHash(rawTitle, pdfUrl)
+        });
+      }
     }
-  }
+  } catch (e) {}
+
+  // Tier 2: Pan-India High Courts (Delhi HC, Rajasthan HC, MP HC, Punjab & Haryana HC, SCI)
+  try {
+    const feedUrl = "https://news.google.com/rss/search?q=(%22Judicial+Service%22+OR+%22Civil+Judge%22+OR+%22High+Court+Recruitment%22+OR+%22Higher+Judicial%22+OR+%22Rajasthan+High+Court%22+OR+%22Delhi+High+Court%22+OR+%22MP+High+Court%22)+AND+(Exam+OR+Recruitment+OR+Result+OR+Admit+Card+OR+Notice)+when:30d&hl=en-IN&gl=IN&ceid=IN:en";
+    const feedRes = await fetchHtml(feedUrl, 15000);
+    const itemRegex = /<item>[\s\S]*?<title>([\s\S]*?)<\/title>[\s\S]*?<link>([\s\S]*?)<\/link>[\s\S]*?<pubDate>([\s\S]*?)<\/pubDate>[\s\S]*?<\/item>/gi;
+    let fMatch;
+    while ((fMatch = itemRegex.exec(feedRes)) !== null && items.length < 8) {
+      let title = cleanText(fMatch[1]).replace(/ - [^-]+$/g, "").trim();
+      const link = fMatch[2].trim();
+      const pubDate = fMatch[3].trim();
+
+      if (/dj mag|durga puja|gta 6|celebrity dj/i.test(title)) continue;
+
+      if (title.length > 5 && !items.some(i => i.title === title || i.url === link)) {
+        const category = classifyCategory(title);
+        let state = "Pan-India Judiciary";
+        let exam = "High Court Judicial Recruitment";
+
+        if (/delhi/i.test(title)) {
+          state = "Delhi High Court (DHC)";
+          exam = /higher/i.test(title) ? "Delhi Higher Judicial Service (DHJS)" : "Delhi Judicial Service (DJS)";
+        } else if (/rajasthan|hcraj/i.test(title)) {
+          state = "Rajasthan High Court (HCRAJ)";
+          exam = /civil judge|rjs/i.test(title) ? "Rajasthan Judicial Service (RJS)" : "Rajasthan High Court Recruitment";
+        } else if (/punjab|haryana/i.test(title)) {
+          state = "Punjab & Haryana High Court";
+          exam = /civil judge/i.test(title) ? "Haryana / Punjab Judicial Service" : "Subordinate Courts Judicial Staff";
+        } else if (/mp|madhya pradesh|mphc/i.test(title)) {
+          state = "Madhya Pradesh High Court (MPHC)";
+          exam = /civil judge/i.test(title) ? "MP Civil Judge Cadre" : "MP High Court Judicial Recruitment";
+        } else if (/supreme court|sci/i.test(title)) {
+          state = "Supreme Court of India (SCI)";
+          exam = "Supreme Court Judicial Registry / Law Clerk";
+        }
+
+        items.push({
+          jurisdiction: "Pan-India Judiciary",
+          state: state,
+          exam: exam,
+          title: title,
+          url: link,
+          date: pubDate ? pubDate.split(" ").slice(1, 4).join(" ") : "",
+          category: category,
+          priority: category === "Result" || category === "Admit Card" ? "CRITICAL" : "HIGH",
+          marketingAction: generateMarketingHook(category, "Judiciary"),
+          hash: generateHash(title, link)
+        });
+      }
+    }
+  } catch (e) {}
+
   return items;
 }
 
@@ -502,8 +562,8 @@ async function runAllOfficialScrapers() {
   } catch (e) { console.log(`❌ Failed: ${e.message || e.code || e}`); }
 
   try {
-    process.stdout.write('7. Scraping Allahabad High Court (Judiciary)... ');
-    const ahc = await scrapeAllahabadHC();
+    process.stdout.write('7. Scraping Pan-India Judiciary (High Courts & Law)... ');
+    const ahc = await scrapePanIndiaJudiciary();
     console.log(`✅ Discovered ${ahc.length} notices`);
     allUpdates.push(...ahc);
   } catch (e) { console.log(`❌ Failed: ${e.message || e.code || e}`); }
@@ -615,10 +675,10 @@ function escapeHtml(str) {
 function cleanTitle(raw) {
   if (!raw) return "Official Notice";
   let t = raw
-    .replace(/&#8216;/g, ")
-    .replace(/&#8217;/g, ")
-    .replace(/&#8220;/g, ')
-    .replace(/&#8221;/g, ')
+    .replace(/&#8216;/g, "'")
+    .replace(/&#8217;/g, "'")
+    .replace(/&#8220;/g, '"')
+    .replace(/&#8221;/g, '"')
     .replace(/&amp;/g, "&")
     .replace(/&nbsp;/g, " ")
     .replace(/\s+/g, " ")
@@ -728,7 +788,7 @@ module.exports = {
   scrapeRPSC,
   scrapeOPSC,
   scrapeMPSC,
-  scrapeAllahabadHC,
+  scrapePanIndiaJudiciary,
   runAllOfficialScrapers
 };
 
