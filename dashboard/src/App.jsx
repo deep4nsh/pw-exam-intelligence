@@ -8,13 +8,16 @@ import {
   Check,
   RefreshCw,
   Bell,
-  Table,
   Building2,
-  AlertTriangle,
   Flame,
   Radio,
   FileText,
-  Sparkles
+  Sparkles,
+  X,
+  LayoutGrid,
+  List,
+  Share2,
+  Send
 } from 'lucide-react';
 import './App.css';
 
@@ -27,22 +30,44 @@ function GitHubIcon({ size = 14 }) {
   );
 }
 
-const JURISDICTIONS = [
+const JURISDICTION_INFO = {
+  'BPSC': { name: 'BPSC', state: 'Bihar', icon: '🏛️', cssClass: 'comm-bpsc' },
+  'UPPSC': { name: 'UPPSC', state: 'Uttar Pradesh', icon: '🏛️', cssClass: 'comm-uppsc' },
+  'MPPSC': { name: 'MPPSC', state: 'Madhya Pradesh', icon: '🏛️', cssClass: 'comm-mppsc' },
+  'RPSC': { name: 'RPSC', state: 'Rajasthan', icon: '🏛️', cssClass: 'comm-rpsc' },
+  'OPSC': { name: 'OPSC', state: 'Odisha', icon: '🏛️', cssClass: 'comm-opsc' },
+  'MPSC': { name: 'MPSC', state: 'Maharashtra', icon: '🏛️', cssClass: 'comm-mpsc' },
+  'Allahabad': { name: 'Allahabad HC', state: 'Judiciary', icon: '⚖️', cssClass: 'comm-ahc' }
+};
+
+function getCommissionMeta(jurisdiction = '') {
+  const j = jurisdiction.toUpperCase();
+  if (j.includes('BPSC')) return JURISDICTION_INFO['BPSC'];
+  if (j.includes('UPPSC')) return JURISDICTION_INFO['UPPSC'];
+  if (j.includes('MPPSC')) return JURISDICTION_INFO['MPPSC'];
+  if (j.includes('RPSC')) return JURISDICTION_INFO['RPSC'];
+  if (j.includes('OPSC')) return JURISDICTION_INFO['OPSC'];
+  if (j.includes('MPSC')) return JURISDICTION_INFO['MPSC'];
+  if (j.includes('ALLAHABAD') || j.includes('HIGH COURT')) return JURISDICTION_INFO['Allahabad'];
+  return { name: jurisdiction, state: 'State Commission', icon: '🏛️', cssClass: 'comm-bpsc' };
+}
+
+const JURISDICTION_FILTERS = [
   'All',
   'BPSC',
   'UPPSC',
-  'MPSC',
   'MPPSC',
-  'OPSC',
   'RPSC',
+  'OPSC',
+  'MPSC',
   'Allahabad High Court'
 ];
 
 const CATEGORIES = [
   'All',
-  'Notification / Recruitment',
   'Admit Card',
   'Result',
+  'Notification / Recruitment',
   'Exam Schedule',
   'Corrigendum / Revision',
   'Important Notice'
@@ -56,11 +81,19 @@ export default function App() {
   const [selectedJurisdiction, setSelectedJurisdiction] = useState('All');
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [selectedPriority, setSelectedPriority] = useState('All');
+  const [viewMode, setViewMode] = useState('grid'); // 'grid' | 'table'
   const [copiedHash, setCopiedHash] = useState(null);
+  const [copiedPdfHash, setCopiedPdfHash] = useState(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
-  const [lastSyncedText, setLastSyncedText] = useState('Live');
+  const [toastMessage, setToastMessage] = useState(null);
 
   const allNotices = noticesData?.notices || [];
+
+  // Show floating toast
+  const showToast = (msg) => {
+    setToastMessage(msg);
+    setTimeout(() => setToastMessage(null), 2500);
+  };
 
   // Metrics
   const metrics = useMemo(() => {
@@ -72,13 +105,26 @@ export default function App() {
     return { total, urgent, critical, commissions };
   }, [allNotices]);
 
+  // Counts by Jurisdiction
+  const countsByJurisdiction = useMemo(() => {
+    const counts = { All: allNotices.length };
+    JURISDICTION_FILTERS.forEach((j) => {
+      if (j !== 'All') {
+        counts[j] = allNotices.filter((n) =>
+          n.jurisdiction?.toLowerCase().includes(j.toLowerCase())
+        ).length;
+      }
+    });
+    return counts;
+  }, [allNotices]);
+
   // Filtering
   const filteredNotices = useMemo(() => {
     return allNotices.filter((item) => {
       // Jurisdiction filter
       if (
         selectedJurisdiction !== 'All' &&
-        !item.jurisdiction.toLowerCase().includes(selectedJurisdiction.toLowerCase())
+        !item.jurisdiction?.toLowerCase().includes(selectedJurisdiction.toLowerCase())
       ) {
         return false;
       }
@@ -114,7 +160,18 @@ export default function App() {
     if (navigator.clipboard) {
       navigator.clipboard.writeText(text);
       setCopiedHash(hash);
+      showToast('Marketing play copied to clipboard!');
       setTimeout(() => setCopiedHash(null), 2000);
+    }
+  };
+
+  // Copy PDF Link
+  const handleCopyPdfUrl = (hash, url) => {
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(url);
+      setCopiedPdfHash(hash);
+      showToast('Official PDF link copied to clipboard!');
+      setTimeout(() => setCopiedPdfHash(null), 2000);
     }
   };
 
@@ -126,7 +183,7 @@ export default function App() {
       if (res.ok) {
         const fresh = await res.json();
         setNoticesData(fresh);
-        setLastSyncedText('Just now');
+        showToast('Radar synced with latest cloud circulars!');
       }
     } catch (e) {
       console.log('Refresh failed:', e);
@@ -137,8 +194,8 @@ export default function App() {
 
   return (
     <div className="app-container">
-      {/* Top Executive Header */}
-      <header className="header-glass">
+      {/* Top Clean Executive Header */}
+      <header className="header-white">
         <div className="brand-section">
           <div className="brand-logo-badge">PW</div>
           <div>
@@ -146,11 +203,11 @@ export default function App() {
               Exam Intelligence Radar
               <span className="live-pulse">
                 <span className="pulse-dot"></span>
-                24/7 Live
+                24/7 Live Sync
               </span>
             </div>
             <div className="brand-subtitle">
-              Physics Wallah Real-Time Circular Monitor • 6 State PSCs + Judiciary
+              Physics Wallah Official Circular Monitor • 6 State PSCs + Allahabad HC
             </div>
           </div>
         </div>
@@ -170,17 +227,17 @@ export default function App() {
             href="https://t.me/pw_exam_updates_bot"
             target="_blank"
             rel="noopener noreferrer"
-            className="btn-header"
+            className="btn-header telegram"
           >
-            <Bell size={14} />
-            <span>Telegram Bot</span>
+            <Send size={14} />
+            <span>Telegram Bot & Menu</span>
           </a>
 
           <a
             href="https://github.com/deep4nsh/pw-exam-intelligence"
             target="_blank"
             rel="noopener noreferrer"
-            className="btn-header primary"
+            className="btn-header"
           >
             <GitHubIcon size={14} />
             <span>GitHub Repository</span>
@@ -188,80 +245,135 @@ export default function App() {
         </div>
       </header>
 
-      {/* KPI Cards */}
+      {/* Telegram Interactive Menu Callout */}
+      <div className="telegram-callout">
+        <div className="callout-left">
+          <div className="callout-icon">
+            <Send size={16} />
+          </div>
+          <div>
+            <div className="callout-title">Interactive Telegram Menu Active for All Members</div>
+            <div className="callout-desc">
+              All team members can tap the 8-option inline menu in the Telegram group to trigger on-demand state circular syncs anytime.
+            </div>
+          </div>
+        </div>
+        <a
+          href="https://t.me/pw_exam_updates_bot"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="callout-btn"
+        >
+          <span>Open Bot Menu</span>
+          <ExternalLink size={12} />
+        </a>
+      </div>
+
+      {/* KPI Cards Row (White Theme) */}
       <section className="metrics-grid">
         <div className="metric-card">
           <div className="metric-header">
             <span>Verified Official Notices</span>
-            <div className="metric-icon" style={{ background: 'rgba(99, 102, 241, 0.15)', color: '#818cf8' }}>
+            <div className="metric-icon-box" style={{ background: '#eef2ff', color: '#4f46e5' }}>
               <ShieldCheck size={20} />
             </div>
           </div>
           <div className="metric-value">{metrics.total}</div>
-          <div className="metric-sub">Across active commissions</div>
+          <div className="metric-sub">Across 7 official state commission portals</div>
         </div>
 
         <div className="metric-card">
           <div className="metric-header">
             <span>Urgent Campaign Opportunities</span>
-            <div className="metric-icon" style={{ background: 'rgba(245, 158, 11, 0.15)', color: '#fbbf24' }}>
+            <div className="metric-icon-box" style={{ background: '#fffbeb', color: '#d97706' }}>
               <Flame size={20} />
             </div>
           </div>
-          <div className="metric-value" style={{ color: '#fbbf24' }}>{metrics.urgent}</div>
-          <div className="metric-sub">Admit cards, results & schedules</div>
+          <div className="metric-value" style={{ color: '#d97706' }}>{metrics.urgent}</div>
+          <div className="metric-sub">Admit cards, results & schedule revisions</div>
         </div>
 
         <div className="metric-card">
           <div className="metric-header">
             <span>Commissions Covered</span>
-            <div className="metric-icon" style={{ background: 'rgba(16, 185, 129, 0.15)', color: '#34d399' }}>
+            <div className="metric-icon-box" style={{ background: '#f0fdf4', color: '#16a34a' }}>
               <Building2 size={20} />
             </div>
           </div>
           <div className="metric-value">{metrics.commissions} Portals</div>
-          <div className="metric-sub">BPSC, UPPSC, MPSC, MPPSC, OPSC, RPSC, HC</div>
+          <div className="metric-sub">BPSC, UPPSC, MPPSC, RPSC, OPSC, MPSC, HC</div>
         </div>
 
         <div className="metric-card">
           <div className="metric-header">
-            <span>Scraper Pipeline Status</span>
-            <div className="metric-icon" style={{ background: 'rgba(59, 130, 246, 0.15)', color: '#60a5fa' }}>
+            <span>Cloud Scraper Pipeline</span>
+            <div className="metric-icon-box" style={{ background: '#f0f9ff', color: '#0284c7' }}>
               <Radio size={20} />
             </div>
           </div>
-          <div className="metric-value" style={{ color: '#34d399', fontSize: '20px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <span className="pulse-dot" style={{ display: 'inline-block' }}></span>
+          <div className="metric-value" style={{ color: '#16a34a', fontSize: '20px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <span className="pulse-dot"></span>
             Active 24/7
           </div>
-          <div className="metric-sub">Runs every 20 mins via GitHub Actions</div>
+          <div className="metric-sub">Automated cloud scan every 5 minutes (₹0 cost)</div>
         </div>
       </section>
 
-      {/* Search & Filter Controls */}
-      <section className="controls-section">
-        {/* Search Bar */}
-        <div className="search-bar-wrap">
-          <Search size={18} className="search-icon" />
-          <input
-            type="text"
-            className="search-input"
-            placeholder="Search by exam name, keywords (e.g., OAS, Rajyaseva, 72nd CCE, Admit Card, Cutoff)..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
+      {/* Search & Filter Controls (White Card) */}
+      <section className="controls-card">
+        {/* Search Row & View Toggle */}
+        <div className="search-row">
+          <div className="search-bar-wrap">
+            <Search size={16} className="search-icon" />
+            <input
+              type="text"
+              className="search-input"
+              placeholder="Search circulars, exams (e.g. 72nd CCE, Rajyaseva, OAS, Admit Card, Cutoff)..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+            {search && (
+              <button
+                className="search-clear-btn"
+                onClick={() => setSearch('')}
+                title="Clear search"
+              >
+                <X size={14} />
+              </button>
+            )}
+          </div>
+
+          <div className="view-switcher">
+            <button
+              className={`view-btn ${viewMode === 'grid' ? 'active' : ''}`}
+              onClick={() => setViewMode('grid')}
+              title="Cards Grid View"
+            >
+              <LayoutGrid size={15} />
+              <span>Grid</span>
+            </button>
+            <button
+              className={`view-btn ${viewMode === 'table' ? 'active' : ''}`}
+              onClick={() => setViewMode('table')}
+              title="Compact Table View"
+            >
+              <List size={15} />
+              <span>Table</span>
+            </button>
+          </div>
         </div>
 
-        {/* State / Jurisdiction Pills */}
+        {/* State / Jurisdiction Pills with Live Counts */}
         <div className="filter-group">
-          <span className="filter-label">State / Body:</span>
-          {JURISDICTIONS.map((j) => (
+          <span className="filter-label">State / Portal:</span>
+          {JURISDICTION_FILTERS.map((j) => (
             <button
               key={j}
               className={`filter-pill ${selectedJurisdiction === j ? 'active' : ''}`}
               onClick={() => setSelectedJurisdiction(j)}
             >
-              {j}
+              <span>{j}</span>
+              <span className="filter-pill-count">{countsByJurisdiction[j] || 0}</span>
             </button>
           ))}
         </div>
@@ -289,16 +401,16 @@ export default function App() {
               className={`filter-pill ${selectedPriority === p ? 'active' : ''}`}
               onClick={() => setSelectedPriority(p)}
             >
-              {p}
+              {p === 'CRITICAL' ? '🚨 Critical' : p === 'HIGH' ? '⚠️ High' : p === 'NORMAL' ? '🟢 Normal' : 'All'}
             </button>
           ))}
         </div>
       </section>
 
-      {/* Results Header */}
+      {/* Results Meta Bar */}
       <div className="results-meta">
         <div>
-          Showing <span className="results-count">{filteredNotices.length}</span> of {allNotices.length} verified circulars
+          Showing <span className="results-count">{filteredNotices.length}</span> of {allNotices.length} verified official circulars
         </div>
         {(selectedJurisdiction !== 'All' || selectedCategory !== 'All' || selectedPriority !== 'All' || search) && (
           <button
@@ -308,91 +420,212 @@ export default function App() {
               setSelectedPriority('All');
               setSearch('');
             }}
-            style={{ color: '#818cf8', fontSize: '13px', fontWeight: 600, textDecoration: 'underline' }}
+            className="btn-reset-filters"
           >
-            Reset Filters
+            <X size={12} />
+            <span>Reset All Filters</span>
           </button>
         )}
       </div>
 
-      {/* Notices Grid */}
+      {/* Main Content: Grid vs Table View */}
       {filteredNotices.length > 0 ? (
-        <main className="cards-grid">
-          {filteredNotices.map((item) => {
-            const isCopied = copiedHash === item.hash;
-            const priorityClass =
-              item.priority === 'CRITICAL'
-                ? 'priority-critical'
-                : item.priority === 'HIGH'
-                ? 'priority-high'
-                : 'priority-normal';
+        viewMode === 'grid' ? (
+          <main className="cards-grid">
+            {filteredNotices.map((item) => {
+              const isCopied = copiedHash === item.hash;
+              const isPdfCopied = copiedPdfHash === item.hash;
+              const meta = getCommissionMeta(item.jurisdiction);
+              const isUrgent = item.priority === 'CRITICAL' || item.priority === 'HIGH';
 
-            return (
-              <article key={item.hash} className="notice-card">
-                <div>
-                  <div className="card-top">
-                    <div className="card-tags">
-                      <span className="tag-jurisdiction">{item.jurisdiction}</span>
-                      <span className="tag-category">{item.category}</span>
+              const priorityBorderClass =
+                item.priority === 'CRITICAL'
+                  ? 'priority-critical-border'
+                  : item.priority === 'HIGH'
+                  ? 'priority-high-border'
+                  : 'priority-normal-border';
+
+              const priorityTagClass =
+                item.priority === 'CRITICAL'
+                  ? 'critical'
+                  : item.priority === 'HIGH'
+                  ? 'high'
+                  : 'normal';
+
+              return (
+                <article key={item.hash} className={`notice-card ${priorityBorderClass}`}>
+                  <div>
+                    {/* Card Top: Commission Badge & Priority */}
+                    <div className="card-top">
+                      <div className="card-tags">
+                        <span className={`tag-commission ${meta.cssClass}`}>
+                          {meta.icon} {meta.name} • {meta.state}
+                        </span>
+                        <span className="tag-category">{item.category}</span>
+                      </div>
+                      <span className={`tag-priority ${priorityTagClass}`}>
+                        {item.priority === 'CRITICAL' ? '🚨 Critical' : item.priority === 'HIGH' ? '⚠️ High' : '🟢 Normal'}
+                      </span>
                     </div>
-                    <span className={`tag-priority ${priorityClass}`}>{item.priority}</span>
+
+                    {/* Exam Name Sub-header */}
+                    <div className="exam-subtitle">{item.exam}</div>
+
+                    {/* Notice Headline */}
+                    <h3 className="notice-headline">{item.title}</h3>
+
+                    {/* Marketing Strategy Box */}
+                    <div className={`hook-box-white ${isUrgent ? 'urgent' : ''}`}>
+                      <div className="hook-header">
+                        <span className="hook-title-label">
+                          <Sparkles size={13} />
+                          Marketing & Outreach Play
+                        </span>
+                        <button
+                          className={`btn-copy-hook ${isCopied ? 'copied' : ''}`}
+                          onClick={() => handleCopyHook(item.hash, item.marketingAction)}
+                          title="Copy marketing play to clipboard"
+                        >
+                          {isCopied ? (
+                            <>
+                              <Check size={12} />
+                              <span>Copied!</span>
+                            </>
+                          ) : (
+                            <>
+                              <Copy size={12} />
+                              <span>Copy Play</span>
+                            </>
+                          )}
+                        </button>
+                      </div>
+                      <p className="hook-text">"{item.marketingAction}"</p>
+                    </div>
                   </div>
 
-                  <div className="exam-title">{item.exam}</div>
-                  <h3 className="notice-headline">{item.title}</h3>
-
-                  {/* Marketing Hook Box */}
-                  <div className="hook-box">
-                    <div className="hook-header">
-                      <span className="hook-title-label">
-                        <Sparkles size={13} />
-                        Suggested Marketing Play
-                      </span>
-                      <button
-                        className={`btn-copy-hook ${isCopied ? 'copied' : ''}`}
-                        onClick={() => handleCopyHook(item.hash, item.marketingAction)}
-                        title="Copy marketing play to clipboard"
+                  {/* Card Bottom: PDF Link & Verified Source */}
+                  <div className="card-bottom">
+                    <div className="card-actions-left">
+                      <a
+                        href={item.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="btn-pdf-link primary"
                       >
-                        {isCopied ? (
-                          <>
-                            <Check size={12} />
-                            <span>Copied</span>
-                          </>
-                        ) : (
-                          <>
-                            <Copy size={12} />
-                            <span>Copy Hook</span>
-                          </>
-                        )}
+                        <FileText size={13} />
+                        <span>View Official PDF</span>
+                        <ExternalLink size={12} />
+                      </a>
+
+                      <button
+                        className="btn-copy-url"
+                        onClick={() => handleCopyPdfUrl(item.hash, item.url)}
+                        title="Copy official PDF URL"
+                      >
+                        {isPdfCopied ? <Check size={12} color="#16a34a" /> : <Share2 size={12} />}
+                        <span>{isPdfCopied ? 'Copied URL' : 'Copy Link'}</span>
                       </button>
                     </div>
-                    <p className="hook-text">"{item.marketingAction}"</p>
-                  </div>
-                </div>
 
-                {/* Card Footer */}
-                <div className="card-bottom">
-                  <a
-                    href={item.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="btn-pdf-link"
-                  >
-                    <span>View Official Circular / PDF</span>
-                    <ExternalLink size={13} />
-                  </a>
-                  <span className="card-hash" title="SHA-256 Hash">
-                    #{item.hash?.slice(0, 8)}
-                  </span>
-                </div>
-              </article>
-            );
-          })}
-        </main>
+                    <span className="verified-pill">
+                      <ShieldCheck size={11} />
+                      <span>gov.in Verified</span>
+                    </span>
+                  </div>
+                </article>
+              );
+            })}
+          </main>
+        ) : (
+          /* Modern Compact Table View */
+          <div className="table-container">
+            <table className="notices-table">
+              <thead>
+                <tr>
+                  <th style={{ width: '150px' }}>State / Commission</th>
+                  <th>Notice Headline & Exam</th>
+                  <th style={{ width: '130px' }}>Category</th>
+                  <th style={{ width: '100px' }}>Priority</th>
+                  <th>Marketing Action Play</th>
+                  <th style={{ width: '140px', textAlign: 'right' }}>Official PDF</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredNotices.map((item) => {
+                  const meta = getCommissionMeta(item.jurisdiction);
+                  const isCopied = copiedHash === item.hash;
+
+                  return (
+                    <tr key={item.hash}>
+                      <td>
+                        <span className={`tag-commission ${meta.cssClass}`}>
+                          {meta.icon} {meta.name}
+                        </span>
+                        <div style={{ fontSize: '11px', color: 'var(--text-muted)', marginTop: '3px' }}>
+                          {meta.state}
+                        </div>
+                      </td>
+                      <td>
+                        <div className="table-title">{item.title}</div>
+                        <div className="table-exam">{item.exam}</div>
+                      </td>
+                      <td>
+                        <span className="tag-category">{item.category}</span>
+                      </td>
+                      <td>
+                        <span className={`tag-priority ${item.priority.toLowerCase()}`}>
+                          {item.priority === 'CRITICAL' ? '🚨 Critical' : item.priority === 'HIGH' ? '⚠️ High' : '🟢 Normal'}
+                        </span>
+                      </td>
+                      <td>
+                        <div className="table-play">"{item.marketingAction}"</div>
+                        <button
+                          onClick={() => handleCopyHook(item.hash, item.marketingAction)}
+                          style={{
+                            fontSize: '11px',
+                            color: isCopied ? '#16a34a' : 'var(--pw-brand)',
+                            fontWeight: 700,
+                            marginTop: '4px',
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '3px'
+                          }}
+                        >
+                          {isCopied ? <Check size={11} /> : <Copy size={11} />}
+                          <span>{isCopied ? 'Copied' : 'Copy Play'}</span>
+                        </button>
+                      </td>
+                      <td style={{ textAlign: 'right' }}>
+                        <a
+                          href={item.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="btn-pdf-link"
+                          style={{ padding: '5px 10px', fontSize: '11.5px' }}
+                        >
+                          <span>PDF</span>
+                          <ExternalLink size={11} />
+                        </a>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        )
       ) : (
         <div className="empty-state">
           <h3>No notices match your current filters</h3>
-          <p>Try clearing your search keyword or switching the State / Category pills.</p>
+          <p>Try clearing your search query or switching the State / Category pills above.</p>
+        </div>
+      )}
+
+      {/* Floating Toast Notification */}
+      {toastMessage && (
+        <div className="floating-toast">
+          <Check size={15} color="#34d399" />
+          <span>{toastMessage}</span>
         </div>
       )}
 
@@ -402,7 +635,7 @@ export default function App() {
           Physics Wallah Exam Intelligence Network • Automated 24/7 via GitHub Actions
         </div>
         <div>
-          Real-time alerts connected to Telegram (@pw_exam_updates_bot), Google Sheets & Email Digests.
+          Official Commissions: BPSC, UPPSC, MPPSC, RPSC, OPSC, MPSC & Allahabad High Court.
         </div>
       </footer>
     </div>
