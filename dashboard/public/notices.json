@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-10-15T14:59:41.935Z",
+  "lastUpdated": "2026-10-15T19:02:17.240Z",
   "totalNotices": 64,
   "commissionsCovered": [
     "BPSC (Bihar)",
@@ -100,16 +100,92 @@
       "hash": "a750473ea2c1476b6ef7"
     },
     {
-      "jurisdiction": "MPPSC",
-      "state": "Madhya Pradesh",
-      "exam": "MPPSC State Recruitment",
-      "title": "MPPSC to be held twice in 2027, 12 new medical colleges planned: CM",
-      "url": "https://news.google.com/rss/articles/CBMi1gFBVV95cUxOVVg4X25DREN5TWtSV1dWRTVJU1hvY2Y4S0x4ZldxdVh4ZXhQZ05kaXJiN1c2SDUzWkNXOVFSN2Vrb0E2VGFBSEh2Ql9Held4M0N6YnJ4NmdvZWM0TTdmUzZlU3pFMWdyNUdaUXoxcjZ6WkZuRXgzbFdhcVU2TXhKZDhxamJ0X19lakxIN3lZX3BPRXhPbE9DeXpvY204OHhKbG1Ob2xKR0ZZdzlncm1TYWVaVWplUWRHdnVVSVlzc3dMSVdaZlhoc3dCN1Z3ZGVmakhhZHJR0gHbAUFVX3lxTE5NMThCZEp4cUotQXBwU3gya1JDQWFrY2ptc0N0bUlmbDJlVFdFTTBzT0FUTktWNVRHOEhkdlRFX19yU3V0ZEdEQm9BV1A1YWNnMzhnZHFVRXk3anBsczJIYmhfMlN6TmN6QVZ2djg2akJzRVhhSW1Iemh6bHN6c1R1LUd6VjdFcTFoZEwwZWFxX1N4T25URHhYTGRxVklOYXlOYUFOT3lwanF5NEdfMUVkRE83ZDZ4eUJIRFI4SzJ6M0NnV21BQzhtOHVUbzh5NjY5RFIySmMzZDRLZw?oc=5",
-      "date": "06 Oct 2026",
+      "jurisdiction": "UPPSC",
+      "state": "Uttar Pradesh",
+      "exam": "UPPSC Recruitment",
+      "title": "NOTICE REGARDING DISTRICT SLIP FOR ADVT. NO:- D-6/E-1/2025, HOMEOPATHIC MEDICAL OFFICER (DIRECTORATE OF HOMEOPATHY) (S-11/32)/(LABOUR DEPT.)(S-11/31) (SCREENING) EXAM.-2025",
+      "url": "https://uppsc.up.nic.in/Open_PDF_DB.aspx?I4PnQ0tBagmbO3OUZentgiIJLpDwLkww",
       "category": "Important Notice",
       "priority": "HIGH",
       "marketingAction": "Review circular details and prepare student guidance/community update.",
-      "hash": "7b27710c8759580cf298"
+      "hash": "7cbba3013aa0a753e694"
+    },
+    {
+      "jurisdiction": "UPPSC",
+      "state": "Uttar Pradesh",
+      "exam": "UPPSC Recruitment",
+      "title": "NOTICE REGARDING DOWNLOAD MARKSHEET & CUT OFF FOR ADVT. NO. D-4-E-1-2025, [S-04-01]",
+      "url": "https://uppsc.up.nic.in/Open_PDF_DB.aspx?I4PnQ0tBagmbO3OUZentgsyE//4wbv3j",
+      "category": "Result",
+      "priority": "CRITICAL",
+      "marketingAction": "Broadcast PW student selections; push next-stage Mains/Interview mentorship batch.",
+      "hash": "0d6adfce7ce3f39ddf1d"
+    },
+    {
+      "jurisdiction": "UPPSC",
+      "state": "Uttar Pradesh",
+      "exam": "UPPSC Recruitment",
+      "title": "NOTICE REGARDING ADVT. NO. A-2/E-1/2025, TECHNICAL EDUCATION DEPARTMENT U.P. (PRINCIPAL) EXAM.-2025",
+      "url": "https://uppsc.up.nic.in/Open_PDF_DB.aspx?I4PnQ0tBagmbO3OUZentgjrDEVu75rNs",
+      "category": "Important Notice",
+      "priority": "HIGH",
+      "marketingAction": "Review circular details and prepare student guidance/community update.",
+      "hash": "0ce5f745a979a853e9d9"
+    },
+    {
+      "jurisdiction": "UPPSC",
+      "state": "Uttar Pradesh",
+      "exam": "UPPSC Recruitment",
+      "title": "NOTICE REAGARDING DOCUMENT VERIFICATION FOR ADVT. NO. A-5/E-1/2025, ASSISTANT TEACHER TRAINED GRADUATE (M./F.) EXAM 2025, (SANSKRIT).",
+      "url": "https://uppsc.up.nic.in/Open_PDF_DB.aspx?I4PnQ0tBagmbO3OUZentgoeK8STyHwj7",
+      "category": "Important Notice",
+      "priority": "HIGH",
+      "marketingAction": "Review circular details and prepare student guidance/community update.",
+      "hash": "63ea4b0f01e53f5fbabf"
+    },
+    {
+      "jurisdiction": "UPPSC",
+      "state": "Uttar Pradesh",
+      "exam": "UPPSC Recruitment",
+      "title": "LIST OF PROVISIONALLY SELECTED CANDIDATES IN ADVT. NO. A-5/E-1/2025, ASSISTANT TEACHER TRAINED GRADUATE (M./F.) EXAM 2025, SUBJECT-SANSKRIT",
+      "url": "https://uppsc.up.nic.in/Open_PDF_DB.aspx?I4PnQ0tBagmbO3OUZentgiXC/U69+f+i",
+      "category": "Important Notice",
+      "priority": "HIGH",
+      "marketingAction": "Review circular details and prepare student guidance/community update.",
+      "hash": "d896f9ce67fa1562bbb3"
+    },
+    {
+      "jurisdiction": "UPPSC",
+      "state": "Uttar Pradesh",
+      "exam": "UPPSC Ayush Services",
+      "title": "RESULT OF ADVT. NO. D-4/E-1/2025, UTTAR PRADESH AYUSH (AYURVEDA) DEPARTMENT, PROFESSOR(SPECIALIST) SHALAKYA TANTRA, S-09/04",
+      "url": "https://uppsc.up.nic.in/Open_PDF_DB.aspx?I4PnQ0tBagmbO3OUZentgoSSgw34Mkau",
+      "category": "Result",
+      "priority": "CRITICAL",
+      "marketingAction": "Broadcast PW student selections; push next-stage Mains/Interview mentorship batch.",
+      "hash": "f5bc18f5cb24cdb4e9fc"
+    },
+    {
+      "jurisdiction": "UPPSC",
+      "state": "Uttar Pradesh",
+      "exam": "UPPSC Recruitment",
+      "title": "NOTICE REGARDING ADVT. NO. D-6/E-1/2025, MEDICAL HEALTH AND FAMILY WELFARE DEPARTMENT UTTAR PRADESH, DENTAL SURGEON S-8/02",
+      "url": "https://uppsc.up.nic.in/Open_PDF_DB.aspx?I4PnQ0tBagkIY3nIrO0zxJUy3AgqZ4Ub",
+      "category": "Important Notice",
+      "priority": "HIGH",
+      "marketingAction": "Review circular details and prepare student guidance/community update.",
+      "hash": "0caa1f4a29f2b40ccf36"
+    },
+    {
+      "jurisdiction": "UPPSC",
+      "state": "Uttar Pradesh",
+      "exam": "UPPSC Recruitment",
+      "title": "RESULT OF ADVT. NO. D-1/E-1/2026, MEDICAL EDUCATION DEPARTMENT U.P. (ALLOPATHY)/PROFESSOR ORTHOPAEDICS, S-08/28",
+      "url": "https://uppsc.up.nic.in/Open_PDF_DB.aspx?I4PnQ0tBagkIY3nIrO0zxNf1NcenU8cK",
+      "category": "Result",
+      "priority": "CRITICAL",
+      "marketingAction": "Broadcast PW student selections; push next-stage Mains/Interview mentorship batch.",
+      "hash": "30c4d9adf38ccb48b4fe"
     },
     {
       "jurisdiction": "MPPSC",
@@ -122,6 +198,18 @@
       "priority": "HIGH",
       "marketingAction": "Review circular details and prepare student guidance/community update.",
       "hash": "179007d19649bfa6e357"
+    },
+    {
+      "jurisdiction": "MPPSC",
+      "state": "Madhya Pradesh",
+      "exam": "MPPSC State Recruitment",
+      "title": "MPPSC to be held twice in 2027, 12 new medical colleges planned: CM",
+      "url": "https://news.google.com/rss/articles/CBMi1gFBVV95cUxOVVg4X25DREN5TWtSV1dWRTVJU1hvY2Y4S0x4ZldxdVh4ZXhQZ05kaXJiN1c2SDUzWkNXOVFSN2Vrb0E2VGFBSEh2Ql9Held4M0N6YnJ4NmdvZWM0TTdmUzZlU3pFMWdyNUdaUXoxcjZ6WkZuRXgzbFdhcVU2TXhKZDhxamJ0X19lakxIN3lZX3BPRXhPbE9DeXpvY204OHhKbG1Ob2xKR0ZZdzlncm1TYWVaVWplUWRHdnVVSVlzc3dMSVdaZlhoc3dCN1Z3ZGVmakhhZHJR0gHbAUFVX3lxTE5NMThCZEp4cUotQXBwU3gya1JDQWFrY2ptc0N0bUlmbDJlVFdFTTBzT0FUTktWNVRHOEhkdlRFX19yU3V0ZEdEQm9BV1A1YWNnMzhnZHFVRXk3anBsczJIYmhfMlN6TmN6QVZ2djg2akJzRVhhSW1Iemh6bHN6c1R1LUd6VjdFcTFoZEwwZWFxX1N4T25URHhYTGRxVklOYXlOYUFOT3lwanF5NEdfMUVkRE83ZDZ4eUJIRFI4SzJ6M0NnV21BQzhtOHVUbzh5NjY5RFIySmMzZDRLZw?oc=5",
+      "date": "06 Oct 2026",
+      "category": "Important Notice",
+      "priority": "HIGH",
+      "marketingAction": "Review circular details and prepare student guidance/community update.",
+      "hash": "7b27710c8759580cf298"
     },
     {
       "jurisdiction": "MPPSC",
@@ -566,94 +654,6 @@
       "priority": "CRITICAL",
       "marketingAction": "Blast student app push notification with direct download instructions; launch 7-day revision marathon promo.",
       "hash": "208626dda9df69ea122b"
-    },
-    {
-      "jurisdiction": "UPPSC",
-      "state": "Uttar Pradesh",
-      "exam": "UPPSC Recruitment",
-      "title": "NOTICE REGARDING DOWNLOAD MARKSHEET & CUT OFF FOR ADVT. NO. D-4-E-1-2025, [S-04-01]",
-      "url": "https://uppsc.up.nic.in/Open_PDF_DB.aspx?I4PnQ0tBagmbO3OUZentgsyE//4wbv3j",
-      "category": "Result",
-      "priority": "CRITICAL",
-      "marketingAction": "Broadcast PW student selections; push next-stage Mains/Interview mentorship batch.",
-      "hash": "0d6adfce7ce3f39ddf1d"
-    },
-    {
-      "jurisdiction": "UPPSC",
-      "state": "Uttar Pradesh",
-      "exam": "UPPSC Recruitment",
-      "title": "NOTICE REGARDING ADVT. NO. A-2/E-1/2025, TECHNICAL EDUCATION DEPARTMENT U.P. (PRINCIPAL) EXAM.-2025",
-      "url": "https://uppsc.up.nic.in/Open_PDF_DB.aspx?I4PnQ0tBagmbO3OUZentgjrDEVu75rNs",
-      "category": "Important Notice",
-      "priority": "HIGH",
-      "marketingAction": "Review circular details and prepare student guidance/community update.",
-      "hash": "0ce5f745a979a853e9d9"
-    },
-    {
-      "jurisdiction": "UPPSC",
-      "state": "Uttar Pradesh",
-      "exam": "UPPSC Recruitment",
-      "title": "NOTICE REAGARDING DOCUMENT VERIFICATION FOR ADVT. NO. A-5/E-1/2025, ASSISTANT TEACHER TRAINED GRADUATE (M./F.) EXAM 2025, (SANSKRIT).",
-      "url": "https://uppsc.up.nic.in/Open_PDF_DB.aspx?I4PnQ0tBagmbO3OUZentgoeK8STyHwj7",
-      "category": "Important Notice",
-      "priority": "HIGH",
-      "marketingAction": "Review circular details and prepare student guidance/community update.",
-      "hash": "63ea4b0f01e53f5fbabf"
-    },
-    {
-      "jurisdiction": "UPPSC",
-      "state": "Uttar Pradesh",
-      "exam": "UPPSC Recruitment",
-      "title": "LIST OF PROVISIONALLY SELECTED CANDIDATES IN ADVT. NO. A-5/E-1/2025, ASSISTANT TEACHER TRAINED GRADUATE (M./F.) EXAM 2025, SUBJECT-SANSKRIT",
-      "url": "https://uppsc.up.nic.in/Open_PDF_DB.aspx?I4PnQ0tBagmbO3OUZentgiXC/U69+f+i",
-      "category": "Important Notice",
-      "priority": "HIGH",
-      "marketingAction": "Review circular details and prepare student guidance/community update.",
-      "hash": "d896f9ce67fa1562bbb3"
-    },
-    {
-      "jurisdiction": "UPPSC",
-      "state": "Uttar Pradesh",
-      "exam": "UPPSC Ayush Services",
-      "title": "RESULT OF ADVT. NO. D-4/E-1/2025, UTTAR PRADESH AYUSH (AYURVEDA) DEPARTMENT, PROFESSOR(SPECIALIST) SHALAKYA TANTRA, S-09/04",
-      "url": "https://uppsc.up.nic.in/Open_PDF_DB.aspx?I4PnQ0tBagmbO3OUZentgoSSgw34Mkau",
-      "category": "Result",
-      "priority": "CRITICAL",
-      "marketingAction": "Broadcast PW student selections; push next-stage Mains/Interview mentorship batch.",
-      "hash": "f5bc18f5cb24cdb4e9fc"
-    },
-    {
-      "jurisdiction": "UPPSC",
-      "state": "Uttar Pradesh",
-      "exam": "UPPSC Recruitment",
-      "title": "NOTICE REGARDING ADVT. NO. D-6/E-1/2025, MEDICAL HEALTH AND FAMILY WELFARE DEPARTMENT UTTAR PRADESH, DENTAL SURGEON S-8/02",
-      "url": "https://uppsc.up.nic.in/Open_PDF_DB.aspx?I4PnQ0tBagkIY3nIrO0zxJUy3AgqZ4Ub",
-      "category": "Important Notice",
-      "priority": "HIGH",
-      "marketingAction": "Review circular details and prepare student guidance/community update.",
-      "hash": "0caa1f4a29f2b40ccf36"
-    },
-    {
-      "jurisdiction": "UPPSC",
-      "state": "Uttar Pradesh",
-      "exam": "UPPSC Recruitment",
-      "title": "RESULT OF ADVT. NO. D-1/E-1/2026, MEDICAL EDUCATION DEPARTMENT U.P. (ALLOPATHY)/PROFESSOR ORTHOPAEDICS, S-08/28",
-      "url": "https://uppsc.up.nic.in/Open_PDF_DB.aspx?I4PnQ0tBagkIY3nIrO0zxNf1NcenU8cK",
-      "category": "Result",
-      "priority": "CRITICAL",
-      "marketingAction": "Broadcast PW student selections; push next-stage Mains/Interview mentorship batch.",
-      "hash": "30c4d9adf38ccb48b4fe"
-    },
-    {
-      "jurisdiction": "UPPSC",
-      "state": "Uttar Pradesh",
-      "exam": "UPPSC Recruitment",
-      "title": "NOTICE REGARDING ADVT. NO. A-7/E-1/2021, U.P. TECH. EDU.(TCHG.) SER. EXAM.-2021, TEXTILE CHEM.",
-      "url": "https://uppsc.up.nic.in/Open_PDF_DB.aspx?I4PnQ0tBagnr4uATu7lVS80zm9an0/v9",
-      "category": "Important Notice",
-      "priority": "HIGH",
-      "marketingAction": "Review circular details and prepare student guidance/community update.",
-      "hash": "7ba0197c5cc80a2832ae"
     },
     {
       "jurisdiction": "Allahabad High Court",
