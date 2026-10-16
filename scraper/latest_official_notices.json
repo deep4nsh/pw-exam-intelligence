@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-10-16T14:05:33.828Z",
+  "lastUpdated": "2026-10-16T17:59:57.276Z",
   "totalNotices": 64,
   "commissionsCovered": [
     "BPSC (Bihar)",
@@ -103,6 +103,17 @@
       "jurisdiction": "UPPSC",
       "state": "Uttar Pradesh",
       "exam": "UPPSC Recruitment",
+      "title": "LIST OF PROVISIONALLY SELECTED CANDIDATES IN ADVT. NO. A-2/E-1/2020, REGIONAL INSPECTOR (TECHNICAL), EXAMINATION-2020",
+      "url": "https://uppsc.up.nic.in/Open_PDF_DB.aspx?I4PnQ0tBagmbO3OUZentgvOzjioxzzCo",
+      "category": "Important Notice",
+      "priority": "HIGH",
+      "marketingAction": "Review circular details and prepare student guidance/community update.",
+      "hash": "cde9cb4c4ae492e2cf98"
+    },
+    {
+      "jurisdiction": "UPPSC",
+      "state": "Uttar Pradesh",
+      "exam": "UPPSC Recruitment",
       "title": "NOTICE REGARDING ADVT. NO. A-7/E-1/2021, U.P. TECHNICAL EDUCATION (TEACHING) SERVICE EXAM.-2021, LECT. TEXTILE TECHNOLOGY",
       "url": "https://uppsc.up.nic.in/Open_PDF_DB.aspx?I4PnQ0tBagmbO3OUZentgoWo8RkhUpnV",
       "category": "Important Notice",
@@ -175,17 +186,6 @@
       "priority": "HIGH",
       "marketingAction": "Review circular details and prepare student guidance/community update.",
       "hash": "d896f9ce67fa1562bbb3"
-    },
-    {
-      "jurisdiction": "UPPSC",
-      "state": "Uttar Pradesh",
-      "exam": "UPPSC Ayush Services",
-      "title": "RESULT OF ADVT. NO. D-4/E-1/2025, UTTAR PRADESH AYUSH (AYURVEDA) DEPARTMENT, PROFESSOR(SPECIALIST) SHALAKYA TANTRA, S-09/04",
-      "url": "https://uppsc.up.nic.in/Open_PDF_DB.aspx?I4PnQ0tBagmbO3OUZentgoSSgw34Mkau",
-      "category": "Result",
-      "priority": "CRITICAL",
-      "marketingAction": "Broadcast PW student selections; push next-stage Mains/Interview mentorship batch.",
-      "hash": "f5bc18f5cb24cdb4e9fc"
     },
     {
       "jurisdiction": "MPPSC",
