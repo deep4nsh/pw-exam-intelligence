@@ -140,6 +140,30 @@ const EXAM_SCOPES = [
       'RPSC corrigendum syllabus eligibility age limit',
       'Rajasthan Public Service Commission recruitment notice'
     ]
+  },
+  {
+    name: 'ADA & Prosecution',
+    jurisdiction: 'State Prosecution Departments',
+    aliases: ['ADA', 'Assistant District Attorney', 'APO', 'Assistant Prosecution Officer', 'ADPO', 'APP', 'Public Prosecutor', 'HPSC ADA', 'Punjab ADA'],
+    queries: [
+      'Assistant District Attorney notification recruitment exam',
+      'HPSC ADA exam date admit card result',
+      'Punjab ADA recruitment exam notification',
+      'UP Assistant Prosecution Officer APO exam notification',
+      'MP ADPO exam date admit card result',
+      'Assistant Public Prosecutor recruitment notice'
+    ]
+  },
+  {
+    name: 'Bar Advocacy & AIBE',
+    jurisdiction: 'Bar Council of India',
+    aliases: ['AIBE', 'All India Bar Examination', 'Bar Council of India', 'BCI', 'Advocate-on-Record', 'AOR'],
+    queries: [
+      'All India Bar Examination AIBE registration notification',
+      'AIBE exam date admit card result syllabus',
+      'Bar Council of India BCI exam notification circular',
+      'Supreme Court Advocate on Record examination notification'
+    ]
   }
 ];
 
@@ -153,11 +177,13 @@ const JUDICIARY_QUERIES = [
   'High Court judge recruitment exam schedule',
   'judicial services mains interview result selection list',
   'Supreme Court High Court order judicial recruitment exam',
-  'judicial service exam corrigendum postponement cancellation'
+  'judicial service exam corrigendum postponement cancellation',
+  'Assistant District Attorney ADA exam recruitment notification India',
+  'All India Bar Examination AIBE notification exam date registration'
 ];
 
 const EXAM_TERMS =
-  /\b(exam|examination|recruit|recruitment|vacanc(?:y|ies)|commission|public service|civil judge|judicial service|judiciary|administrative service|selection|candidate|application|competitive|prelims|preliminary|mains|interview|personality test)\b/i;
+  /\b(exam|examination|recruit|recruitment|vacanc(?:y|ies)|commission|public service|civil judge|judicial service|judiciary|administrative service|selection|candidate|application|competitive|prelims|preliminary|mains|interview|personality test|assistant district attorney|ada|prosecution|apo|adpo|app|public prosecutor|aibe|bar council|advocate|law officer)\b/i;
 
 const UPDATE_TERMS =
   /\b(notification|notifies|notified|advertisement|released|release|announces|announced|schedule|calendar|date|dates|postponed|rescheduled|cancelled|canceled|deferred|admit card|hall ticket|answer key|response sheet|result|results|cut.?off|merit list|selection list|final list|provisional list|document verification|application|registration|last date|deadline|extended|extension|corrigendum|correction window|edit window|syllabus|eligibility|age limit|reservation|vacancy|vacancies|interview|court order|judgment|judgement|stay order|revised|objection window|recruitment rules)\b/i;

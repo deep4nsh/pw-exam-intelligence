@@ -26,7 +26,7 @@ jobs:
         with:
           node-version: 20
 
-      - name: "Run Official Commissions & Judiciary Scraper"
+      - name: "Run Official Commissions, Judiciary & ADA Scrapers"
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}

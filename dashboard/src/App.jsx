@@ -37,31 +37,37 @@ const JURISDICTION_INFO = {
   'RPSC': { name: 'RPSC', state: 'Rajasthan', icon: '🏛️', cssClass: 'comm-rpsc' },
   'OPSC': { name: 'OPSC', state: 'Odisha', icon: '🏛️', cssClass: 'comm-opsc' },
   'MPSC': { name: 'MPSC', state: 'Maharashtra', icon: '🏛️', cssClass: 'comm-mpsc' },
-  'Judiciary': { name: 'Judiciary', state: 'High Courts & SCI', icon: '⚖️', cssClass: 'comm-judiciary' },
-  'Allahabad': { name: 'Judiciary', state: 'High Courts & SCI', icon: '⚖️', cssClass: 'comm-judiciary' }
+  'Judiciary': { name: 'Pan-India Judiciary', state: 'High Courts & SCI', icon: '⚖️', cssClass: 'comm-judiciary' },
+  'Allahabad': { name: 'Pan-India Judiciary', state: 'High Courts & SCI', icon: '⚖️', cssClass: 'comm-judiciary' },
+  'ADA': { name: 'ADA & Prosecution', state: 'HPSC / PPSC / APO', icon: '🏛️', cssClass: 'comm-ada' },
+  'Bar': { name: 'Bar Advocacy & Law', state: 'AIBE / BCI', icon: '📜', cssClass: 'comm-advocacy' }
 };
 
 function getCommissionMeta(jurisdiction = '') {
-  const j = jurisdiction.toUpperCase();
+  const j = (jurisdiction || '').toUpperCase();
   if (j.includes('BPSC')) return JURISDICTION_INFO['BPSC'];
   if (j.includes('UPPSC')) return JURISDICTION_INFO['UPPSC'];
   if (j.includes('MPPSC')) return JURISDICTION_INFO['MPPSC'];
   if (j.includes('RPSC')) return JURISDICTION_INFO['RPSC'];
   if (j.includes('OPSC')) return JURISDICTION_INFO['OPSC'];
   if (j.includes('MPSC')) return JURISDICTION_INFO['MPSC'];
-  if (j.includes('ALLAHABAD') || j.includes('HIGH COURT')) return JURISDICTION_INFO['Allahabad'];
-  return { name: jurisdiction, state: 'State Commission', icon: '🏛️', cssClass: 'comm-bpsc' };
+  if (j.includes('ADA') || j.includes('PROSECUTION')) return JURISDICTION_INFO['ADA'];
+  if (j.includes('BAR') || j.includes('ADVOCACY') || j.includes('AIBE')) return JURISDICTION_INFO['Bar'];
+  if (j.includes('JUDICIARY') || j.includes('ALLAHABAD') || j.includes('HIGH COURT') || j.includes('SCI')) return JURISDICTION_INFO['Judiciary'];
+  return { name: jurisdiction, state: 'Official Portal', icon: '🏛️', cssClass: 'comm-bpsc' };
 }
 
 const JURISDICTION_FILTERS = [
   'All',
-  'BPSC',
+  'Pan-India Judiciary',
+  'ADA & Prosecution',
+  'Bar Advocacy & Law',
   'UPPSC',
+  'BPSC',
   'MPPSC',
   'RPSC',
   'OPSC',
-  'MPSC',
-  'Pan-India Judiciary'
+  'MPSC'
 ];
 
 const CATEGORIES = [

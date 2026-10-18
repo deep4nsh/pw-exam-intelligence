@@ -1,6 +1,6 @@
 {
-  "lastUpdated": "2026-10-18T09:51:16.858Z",
-  "totalNotices": 64,
+  "lastUpdated": "2026-10-18T12:53:30.992Z",
+  "totalNotices": 82,
   "commissionsCovered": [
     "BPSC (Bihar)",
     "UPPSC (Uttar Pradesh)",
@@ -8,7 +8,9 @@
     "RPSC (Rajasthan)",
     "OPSC (Odisha)",
     "MPSC (Maharashtra)",
-    "Allahabad High Court (Judiciary)"
+    "Pan-India Judiciary (High Courts & SCI)",
+    "ADA & State Prosecution (HPSC, PPSC, APO)",
+    "Bar Advocacy & Legal Qualification (AIBE / BCI)"
   ],
   "notices": [
     {
@@ -83,9 +85,9 @@
       "exam": "BPSC State Recruitment",
       "title": "Important Notice : Facility to edit GENDER in OTR (One Time Registration)",
       "url": "https://bpsc.bihar.gov.in/wp-content/uploads/BPSC_content/Notices/NB-2025-06-26-02_BPSC-20250626-vmnwcx.pdf",
-      "category": "Important Notice",
-      "priority": "HIGH",
-      "marketingAction": "Review circular details and prepare student guidance/community update.",
+      "category": "Notification / Recruitment",
+      "priority": "CRITICAL",
+      "marketingAction": "Schedule YouTube Live notification breakdown (<45m) and launch Target Batch ad creatives.",
       "hash": "05ac19ae3e93aa370642"
     },
     {
@@ -191,97 +193,89 @@
       "jurisdiction": "MPPSC",
       "state": "Madhya Pradesh",
       "exam": "MPPSC State Recruitment",
-      "title": "MPPSC Assistant Professor exam in Indore: 12,000 candidates to appear at 30 centres; three-layer security i...",
-      "url": "https://news.google.com/rss/articles/CBMiwwFBVV95cUxPMFE4VzhhdHdUeXZDcWROUjhiOVBDblNlOWtjcXVETU13RjdFbERJOXQ1MEpQX2tISHRjaURnX1dSbUlXYmVhbTJiLXhPcnQ5dzNIZkNJcE5yZ0dYeFhDSDNyZ3JkaFltN19IWTJNVk82OXB1TUJqZGlqMi1NUi1WR2FLSDB6TEhWMXlsUzJsSGJhbHJhWlFGczFFdFU0dmFkamlzVUdmZ3llXzU2RG5hdmlVY2tQOWxuN25McGc2aUFidGfSAcgBQVVfeXFMTjBLT0FSZmMyQ2QzdHBoWUJuNVhBSjJ4VFlXa1BXdi16N19xejNzY1lBNU1vNFJYWUFHYUxLN1ZWMmVxemNhdnA4TGJWY082al9vTjVyVUR1Mk5oLW1YalozRkhXb2tSN1pBa3FzTzEtYkxDdW9zYUk1NC1VWm4zcjdjeVpVMXFUaUI1SzVpYkwxTmtScU94Q3JDcFpoNWIyWkJYOVF6dG55VUt3VW15dE9WUVRhVEEzSktfNGt6U1pHejZhenp5M00?oc=5",
-      "date": "04 Oct 2026",
-      "category": "Important Notice",
+      "title": "Final Answer Key - State Forest Service Main Exam 2026, Dated 16/10/2026",
+      "url": "https://mppsc.mp.gov.in/uploads/files/Final_Answer_Key_SFS_Main_Exam_2026_Dated_16_10_2026.pdf",
+      "category": "Answer Key",
       "priority": "HIGH",
-      "marketingAction": "Review circular details and prepare student guidance/community update.",
-      "hash": "179007d19649bfa6e357"
+      "marketingAction": "Host faculty live Answer Key discussion stream; promote student rank predictor tool.",
+      "hash": "b92a51d07ecea298ef5a"
     },
     {
       "jurisdiction": "MPPSC",
       "state": "Madhya Pradesh",
       "exam": "MPPSC State Recruitment",
-      "title": "MPPSC to be held twice in 2027, 12 new medical colleges planned: CM",
-      "url": "https://news.google.com/rss/articles/CBMi1gFBVV95cUxOVVg4X25DREN5TWtSV1dWRTVJU1hvY2Y4S0x4ZldxdVh4ZXhQZ05kaXJiN1c2SDUzWkNXOVFSN2Vrb0E2VGFBSEh2Ql9Held4M0N6YnJ4NmdvZWM0TTdmUzZlU3pFMWdyNUdaUXoxcjZ6WkZuRXgzbFdhcVU2TXhKZDhxamJ0X19lakxIN3lZX3BPRXhPbE9DeXpvY204OHhKbG1Ob2xKR0ZZdzlncm1TYWVaVWplUWRHdnVVSVlzc3dMSVdaZlhoc3dCN1Z3ZGVmakhhZHJR0gHbAUFVX3lxTE5NMThCZEp4cUotQXBwU3gya1JDQWFrY2ptc0N0bUlmbDJlVFdFTTBzT0FUTktWNVRHOEhkdlRFX19yU3V0ZEdEQm9BV1A1YWNnMzhnZHFVRXk3anBsczJIYmhfMlN6TmN6QVZ2djg2akJzRVhhSW1Iemh6bHN6c1R1LUd6VjdFcTFoZEwwZWFxX1N4T25URHhYTGRxVklOYXlOYUFOT3lwanF5NEdfMUVkRE83ZDZ4eUJIRFI4SzJ6M0NnV21BQzhtOHVUbzh5NjY5RFIySmMzZDRLZw?oc=5",
-      "date": "06 Oct 2026",
+      "title": "वैज्ञानिक अधिकारी एवं सहायक संचालक, किसान कल्‍याण तथा कृषि विकास (क्षेत्र एवं विस्‍तार) परीक्षा के आयोजन विषयक सूचना, दिनांक 15/10/2026",
+      "url": "https://mppsc.mp.gov.in/uploads/advertisement/Corrigendum_03_05_06_07_and_35_2025_Dated_15_10_2026.pdf",
       "category": "Important Notice",
       "priority": "HIGH",
       "marketingAction": "Review circular details and prepare student guidance/community update.",
-      "hash": "7b27710c8759580cf298"
+      "hash": "1306b038758b467f94db"
     },
     {
       "jurisdiction": "MPPSC",
       "state": "Madhya Pradesh",
       "exam": "MPPSC State Recruitment",
-      "title": "MPPSC exam to be held twice a year from 2027, govt to set up 12 medical colleges: CM Yadav",
-      "url": "https://news.google.com/rss/articles/CBMi5wFBVV95cUxNX0tTd1ozUll0Zk5ZeU02LVM2V1J5V0ktdXdYbVJ0UjVFb2NEUTBNSFVQUTJKWXg5eHFTUjh5RmFZWUFwTWtCc1dyYTlyN1Ayc3IyRlI3SnhtdlJPcE5mWXYwc0N4WjBtQTdIMGQ1NFAzaXdyTWozSFNjc21QQzJsRFdHT0NrVHpRcnQtN1d4c3Q0Wkt3VzBoYlg4ajRjcWtHendCNkJfaTMxaE9kMUU2cE5oZTNVWHBGQjA3TUQ2QVE5cDBZSHhYWElPYzBaUVRWY1pKZ0hjXzI1aVZKcl9qaDVVaE9YS2PSAewBQVVfeXFMTi1yOGdkZEtuSTUwV1pNUEUyV3AwS01KZndfdUp1dFhkNEVZYWd3U0JDdHVjdkUwMjZqdnFMcVEtWmctMDFaU2c2el9FZUFNa2l2cWtIWFVzdDdxcTl5UW93Snd4Z1lFZ05ROHF6S0FPYkEyUktBMDJwS1ZKd1VFSFBlVnhtYmFOYzR1TzdsTTN4YlM0clNFODR6YWo3V1R3bEpET3hjN0Zxd1QyRS1mczJVa0R6YzdZaXBqZmZ1c2U3S2ZfVzVSMlNYcTVDSmhFTDJCalZzQVRKWXMtd1ZWNTNWa1cydGZzS3pOWGo?oc=5",
-      "date": "06 Oct 2026",
+      "title": "सहायक प्राध्‍यापक (योगिक विज्ञान) परीक्षा - 2025 के पद हेतु उम्‍मीदवारी निरस्‍त किए जाने संबंधी सूचना, दिनांक 15/10/2026",
+      "url": "https://mppsc.mp.gov.in/uploads/advertisement/Vigyapti_Assistant_Professor_Yogik_Vigyan_Exam_2025_Dated_15_10_2026.pdf",
       "category": "Important Notice",
       "priority": "HIGH",
       "marketingAction": "Review circular details and prepare student guidance/community update.",
-      "hash": "ceeb249fa77c16e9243f"
+      "hash": "85e4aefc135b28dc82d8"
     },
     {
       "jurisdiction": "MPPSC",
       "state": "Madhya Pradesh",
       "exam": "MPPSC State Recruitment",
-      "title": "MPPSC Exams to be Held Twice a Year From 2027; 12 New Medical Colleges, Skill Universities Planned",
-      "url": "https://news.google.com/rss/articles/CBMi6AFBVV95cUxPLVdvMEVYc1dIX0RySm0yUjVzcXRuOVkzdHFxcGtjZW5jRmtpOEVKZXhKd0dFQk5abE43U2lnc3JuTWpCXzYyUmt3dXVyZzcxQTZ1em5OeHM3MW0xRDJHN3JPUlZVU3lDcmE5TEdiUW93ZnpVNnU5LWJIZVBjMHE5T2g2eV9xN1NtV1NiMWJsaUtzS3pRdFNUWk1Zd2o2ckxqZXRtLTdyVkl5T25rTUtxakREUG52dGNzaFcxbmpfTmdnTkFRWmstc0tOdzd1TXhSZjBiUEJSMm41bXZCUWRuQlEydXZZZWxD0gHuAUFVX3lxTE11Z2c4ZHZ5MFlpSXRyNHl4OTA4TVc2NUNJc0RXYWUwbkRmd21IUmFaNEhFLXZKbXdkQkswVEhuX1lDUE9DcGd3OVExSWkydXdaeDlJY21SOGNnNWs5Q0xaVC1kcklZejJOZGtXcVRSM1E5UHItY0ZkVVQzcHRFb3NjQWRKUmZMM0ttNms1eXVWMzdUazhZX0M2aU4yY3lVTHhrcTJJMFhHeDl5dUpoV0JvbXIzWGV0dmZlT0ROcTk0VDFDQ0ZDbEYyQU1Gbm95UFRCYTBDUWllWVJtNEV0WjRsUG5felJ1VkRVdVFuSmc?oc=5",
-      "date": "07 Oct 2026",
+      "title": "आंतरिक लेखा परीक्षण अधिकारी के पद हेतु विलम्‍ब शुल्‍क से अभिलेख प्रस्‍तुत किए जाने संबंधी सूचना, दिनांक 15/10/2026",
+      "url": "https://mppsc.mp.gov.in/uploads/advertisement/Vigyapti_Internal_Accounts_Examiner_Officer_2026_Dated_15_10_2026.pdf",
       "category": "Important Notice",
       "priority": "HIGH",
       "marketingAction": "Review circular details and prepare student guidance/community update.",
-      "hash": "8217acf119e6f425d89c"
+      "hash": "19c6e3105e5d4d9f5a42"
     },
     {
       "jurisdiction": "MPPSC",
       "state": "Madhya Pradesh",
       "exam": "MPPSC State Recruitment",
-      "title": "MPPSC exams twice a year from 2027, announces CM Mohan Yadav",
-      "url": "https://news.google.com/rss/articles/CBMisgFBVV95cUxQejdPdHd0ZjZrcjVEZGIzTGZEMTQxWF9mbTQxVUYxa05MbkhuTVBCbU9Tc0NIMlAtZ3VMZFVaWWFZLWVnNTBsellKS0xaaGJGeFZac1JxeXl6cGx2SlFISnZCMEEwa0lvM2tTSEx5dWF2cS1GU21Rc3kycWRVek84ZXQzaDFjdVVOZmZhNkNudjVzbHE0ZkxMeXA5Z1BCY1JFUDYxM1psVnJ3d3hpQ2l1a21R?oc=5",
-      "date": "07 Oct 2026",
+      "title": "सहायक प्राध्‍यापक (उर्दू) परीक्षा - 2024 के पद हेतु साक्षात्‍कार आयोजन संबंधी सूचना, दिनांक 12/10/2026",
+      "url": "https://mppsc.mp.gov.in/uploads/advertisement/Vigyapti_Assistant_Professor_Urdu_Exam_2024_Dated_12_10_2026.pdf",
       "category": "Important Notice",
       "priority": "HIGH",
       "marketingAction": "Review circular details and prepare student guidance/community update.",
-      "hash": "7ae12170c1e10d4c3fb5"
+      "hash": "fa4fbc58804363e44c65"
     },
     {
       "jurisdiction": "MPPSC",
       "state": "Madhya Pradesh",
       "exam": "MPPSC State Recruitment",
-      "title": "Madhya Pradesh Budget 2026-27 &amp; Complete Analysis | MPPSC 2026",
-      "url": "https://news.google.com/rss/articles/CBMiQkFVX3lxTFBzQ3dQdnJKUWs2dWRTNGRPMEVBVFVkWjN0SXlqaWxwT1RrSnJGZFFOWDVtaGFvVzlONXVxZlhuQ2k5dw?oc=5",
-      "date": "21 Sep 2026",
+      "title": "Exam Plan and Syllabus - Law Officer (Jail Department, Govt. of MP) Exam 2026, Dated 08/10/2026",
+      "url": "https://mppsc.mp.gov.in/uploads/files/Exam_Plan_and_Syllabus_Law_Officer_Exam_2026_Dated_08_10_2026.pdf",
       "category": "Important Notice",
       "priority": "HIGH",
       "marketingAction": "Review circular details and prepare student guidance/community update.",
-      "hash": "4809517d380e417e0c57"
+      "hash": "4e17f325ffe3763a1fa7"
     },
     {
       "jurisdiction": "MPPSC",
       "state": "Madhya Pradesh",
       "exam": "MPPSC State Recruitment",
-      "title": "Daily Madhya Pradesh Current Affairs for MPPSC Exam (02-10-2026)",
-      "url": "https://news.google.com/rss/articles/CBMibkFVX3lxTFBlZlFMdjcxeWJEX3VicUNYTzNtd3otajVqSFRud19KdGhTYW16YW1Mc3MtYnBTNHE2VlBxQkkxX1ZTODE4SDBMWHd3ZzZjeHVqUjNFR1RxSExPZ2J5cVJZMklYeGhuUjdiQzR1Umx3?oc=5",
-      "date": "01 Oct 2026",
-      "category": "Important Notice",
-      "priority": "HIGH",
-      "marketingAction": "Review circular details and prepare student guidance/community update.",
-      "hash": "73c33fc43fc09773b779"
+      "title": "Written Exam Result - Specialist Ayurved Exam 2024, Dated 08/10/2026",
+      "url": "https://mppsc.mp.gov.in/uploads/files/Written_Exam_Result_Specialist_Ayurved_Exam_2024_Dated_08_10_2026.pdf",
+      "category": "Result",
+      "priority": "CRITICAL",
+      "marketingAction": "Broadcast PW student selections; push next-stage Mains/Interview mentorship batch.",
+      "hash": "a6eb5f2be8859d911a49"
     },
     {
       "jurisdiction": "MPPSC",
       "state": "Madhya Pradesh",
       "exam": "MPPSC State Recruitment",
-      "title": "Just 48% candidates appear for two MPPSC exams in Indore",
-      "url": "https://news.google.com/rss/articles/CBMiyAFBVV95cUxNdUZSTmV4Z0hzLTNtTmRVNWp6b2lYSFB4WWlfRmkycVFBYWhWdUR0dm9iekI1TWhPZWlkNl9yM0NNaV9yMUJFSWZDM3kyam1BdFdrSHBCYklPTnBkcTloN2QtQzh0OU0xVUFWaVdFMEE4TXk0d1pYZ0dIT2Y3RjQzTVp4QkNMaWRaQ09LTlB0Wl9DdUpDTERtUVgzWE9EQ1o0THpONUhLSWo4T2VCWlJONGJCNlFfYVRHdXBhNF9jd2VpdlZNWVJrSNIBzgFBVV95cUxOY0pOVlRheHhmOUdQQ2s5bFdibnd2TzZlYi04SkYwbkF6VHkzSURSSE1iV2c2dnlIUlV4TFJXNjJJWi04YVdrWEwzdmZzX2FjbnVrbGRhN3hBbTVvQ3FzaGJwZG5kRzRKaXB3aTB2SVlvRGJWOUYzSkZjQWRMVnBfU1ByLVZxQ3NYdElId3hNdmpwVmFNc3F6R2pTN1hVNWpTaXVOcHlBSlhoRVFobWlCaFJUc3RleFJ3bFFqRFYwZXFRYVpGRXZKdGY4Y3VSdw?oc=5",
-      "date": "20 Sep 2026",
-      "category": "Important Notice",
-      "priority": "HIGH",
-      "marketingAction": "Review circular details and prepare student guidance/community update.",
-      "hash": "71f1f3b52938ba97ec4b"
+      "title": "Recruitment Advertisement for Law Officer Exam 2026 (Jail Department - Government of Madhya Pradesh) (Advt. No./13/2026), Dated 08/10/2026",
+      "url": "https://mppsc.mp.gov.in/uploads/advertisement/Advt_Law_Officer_Exam_2026_Dated_08_10_2026.pdf",
+      "category": "Notification / Recruitment",
+      "priority": "CRITICAL",
+      "marketingAction": "Schedule YouTube Live notification breakdown (<45m) and launch Target Batch ad creatives.",
+      "hash": "7346816f1fe48a396d3e"
     },
     {
       "jurisdiction": "RPSC",
@@ -571,7 +565,7 @@
       "url": "https://www.allahabadhighcourt.in/event/event_27298_17-10-2026.pdf",
       "category": "Important Notice",
       "priority": "HIGH",
-      "marketingAction": "Review circular details and prepare student guidance/community update.",
+      "marketingAction": "Host faculty live strategy session; offer mock test series and model answers.",
       "hash": "9eeff8a4a500878745fc"
     },
     {
@@ -582,7 +576,7 @@
       "url": "https://www.allahabadhighcourt.in/event/event_27288_16-10-2026.pdf",
       "category": "Important Notice",
       "priority": "HIGH",
-      "marketingAction": "Review circular details and prepare student guidance/community update.",
+      "marketingAction": "Host faculty live strategy session; offer mock test series and model answers.",
       "hash": "260e2afa204b45bb8b8a"
     },
     {
@@ -593,7 +587,7 @@
       "url": "https://www.allahabadhighcourt.in/event/event_27275_15-10-2026.pdf",
       "category": "Important Notice",
       "priority": "HIGH",
-      "marketingAction": "Review circular details and prepare student guidance/community update.",
+      "marketingAction": "Host faculty live strategy session; offer mock test series and model answers.",
       "hash": "84eb25ed1520d050ef89"
     },
     {
@@ -604,7 +598,7 @@
       "url": "https://www.allahabadhighcourt.in/event/event_27273_15-10-2026.pdf",
       "category": "Important Notice",
       "priority": "HIGH",
-      "marketingAction": "Review circular details and prepare student guidance/community update.",
+      "marketingAction": "Host faculty live strategy session; offer mock test series and model answers.",
       "hash": "c4219c5c85f17f75547b"
     },
     {
@@ -616,7 +610,7 @@
       "date": "09 Oct 2026",
       "category": "Exam Schedule",
       "priority": "HIGH",
-      "marketingAction": "Push 'Countdown Begins' campaign; offer 20% discount on test series and mock exams.",
+      "marketingAction": "Host faculty live strategy session; offer mock test series and model answers.",
       "hash": "c71da8c27b61c04a2e83"
     },
     {
@@ -640,7 +634,7 @@
       "date": "13 Oct 2026",
       "category": "Admit Card",
       "priority": "CRITICAL",
-      "marketingAction": "Blast student app push notification with direct download instructions; launch 7-day revision marathon promo.",
+      "marketingAction": "Blast student app push notification with direct download instructions; launch 7-day revision marathon.",
       "hash": "6634e34f92f5efb8179e"
     },
     {
@@ -652,8 +646,224 @@
       "date": "13 Oct 2026",
       "category": "Admit Card",
       "priority": "CRITICAL",
-      "marketingAction": "Blast student app push notification with direct download instructions; launch 7-day revision marathon promo.",
+      "marketingAction": "Blast student app push notification with direct download instructions; launch 7-day revision marathon.",
       "hash": "584e56435b22712dc4df"
+    },
+    {
+      "jurisdiction": "ADA & Prosecution",
+      "state": "Punjab (PPSC / PSSSB)",
+      "exam": "Punjab Assistant District Attorney (ADA)",
+      "title": "Punjab ADA Cut Off 2026: Expected Category-Wise Cut Off, Previous Trends &amp; Safe Score Analysis",
+      "url": "https://news.google.com/rss/articles/CBMia0FVX3lxTFBqS0FydmVOX05PemE0MmFmcHN6emxOaHpOMTdObGc1V3ZXRHVlZ1pGdlRBLXNWYmdScTRWNGVBdV9oQmswZUsxVHBpOFFZQWZKaHRXZlFTWXd4TE1ocHE0V2V0aHpZZ3poWlU0?oc=5",
+      "date": "03 Aug 2026",
+      "category": "Result",
+      "priority": "CRITICAL",
+      "marketingAction": "Celebrate PW student selections; immediately open ADA Subject Knowledge (Mains) / Interview batch.",
+      "hash": "530bde69ef416d47d773"
+    },
+    {
+      "jurisdiction": "ADA & Prosecution",
+      "state": "Punjab (PPSC / PSSSB)",
+      "exam": "Punjab Assistant District Attorney (ADA)",
+      "title": "PSSSB ADA Exam Date 2026 Out at sssb.punjab.gov.in, Check Exam Schedule Details",
+      "url": "https://news.google.com/rss/articles/CBMie0FVX3lxTFBQTGlPQkxmb0tpTUpvSU1wTjhhdWxMejk2VDlsSzRLQ2J5YUowREc0UW5BRi1fMTU1REItNlRHVUJzREFXTkZrWG5lNHNTNTlOdjNsLVYwNW1nN3NpNG5hclpFZkNrSXRjbm9YZDlkUXpfOHFUdjFSRHBOWQ?oc=5",
+      "date": "29 Jul 2026",
+      "category": "Exam Schedule",
+      "priority": "HIGH",
+      "marketingAction": "Highlight ADA exam pattern changes (50%+ law syllabus weightage) and share free test series.",
+      "hash": "9d13c812ecc37fe21a8b"
+    },
+    {
+      "jurisdiction": "ADA & Prosecution",
+      "state": "Haryana (HPSC)",
+      "exam": "Haryana Assistant District Attorney (ADA)",
+      "title": "HC clears HPSC ADA recruitment, mandates 50 per cent law questions in screening test",
+      "url": "https://news.google.com/rss/articles/CBMixAFBVV95cUxNYlRfaHp5dFhIX2FvYmY3UTRQa2tndWFTdnBleDBZbW9KWWx3XzMyejBSTExIaGpWUENuT3Z0S0JSZDN5TlJTVVlKM25lNmhmVjBuaVc3VkJ5eXhyLTRhX1dfaE9ZUjVJaV9KeEVPanpGRzZfY05iYk9tUWQ4TXNiZXZaY0RSUkdHdkVEV3c3Y1p4SXB2RGJHcGhjSkRBdmZHZEtVMUJnUzdYY0ZvaUdQTTdraDcyV0xRNV96WHpHRGdlU2Y50gHIAUFVX3lxTE9HMjVaMUl6ZTNveVRHRk9FUlM3UzQxVG9hTEc4VjRPak5EQ09JYTNva2tXcDJSQl9STHJIN094VmxpOWlIYWo5MVBKX1RSTkxhdXkyR2xNdUJrRDZMZGUzTkVkV2d5cXV5UlNMdUFtVVY4N3pYanJfcUpWNkVaUEpIRVdpckZpLWpHNmdnZnRCa3lFYjB4bjZkMHZhSjZqZ1dTbWRoSkRDTlZNQVVFU2pXMmxOX09remtUSnhPdjFxNHY2bzg5VlJV?oc=5",
+      "date": "30 Apr 2026",
+      "category": "Notification / Recruitment",
+      "priority": "CRITICAL",
+      "marketingAction": "Urgent: Launch ADA Target Screening Batch, announce bare act marathon & live syllabus breakdown.",
+      "hash": "b73c33e3199fd24590a6"
+    },
+    {
+      "jurisdiction": "ADA & Prosecution",
+      "state": "Punjab (PPSC / PSSSB)",
+      "exam": "Punjab Assistant District Attorney (ADA)",
+      "title": "Punjab ADA Recruitment 2026, Exam Date (Out), Selection Process, Salary",
+      "url": "https://news.google.com/rss/articles/CBMicEFVX3lxTE5xbUMzUTFCUmItcDJIN0FuS0RfcU5VUzVXR2Q4WFczQ2Y0cGQyUTk0Tm1vT3JGaDBKNmhhenBWTWYtckg2a0NJSXliZEg5czQzTXFZV2drckVueE5Da2ZkdTNmR3BJb2c2VEtHdnRTZHI?oc=5",
+      "date": "16 Jun 2026",
+      "category": "Exam Schedule",
+      "priority": "HIGH",
+      "marketingAction": "Highlight ADA exam pattern changes (50%+ law syllabus weightage) and share free test series.",
+      "hash": "b6218984d96d1e1c5941"
+    },
+    {
+      "jurisdiction": "ADA & Prosecution",
+      "state": "Madhya Pradesh (MPPSC)",
+      "exam": "MP Assistant District Public Prosecution Officer (ADPO)",
+      "title": "MP ADPO Recruitment 2026 Notification Out 17 Posts, Apply Online Last Date",
+      "url": "https://news.google.com/rss/articles/CBMiakFVX3lxTE56TC1jMVhuc1RTamwxRXRmS1VuaFBqb3dXYlhObWY4eU1kZE1Gb2NGRnYwVHhHTEg1dkwzeGk0LTFNdVctR2VlcHdlekNpYVJ3SXZFYVJiUmVWOFdfclBQWXFvVFk4UWNfckE?oc=5",
+      "date": "08 May 2026",
+      "category": "Notification / Recruitment",
+      "priority": "CRITICAL",
+      "marketingAction": "Host live Prosecution batch launch; emphasize Criminal Major Acts (CrPC/BNSS, IPC/BNS, BSA).",
+      "hash": "9ad4dc52bceb782cee6a"
+    },
+    {
+      "jurisdiction": "ADA & Prosecution",
+      "state": "Uttar Pradesh (UPPSC)",
+      "exam": "UP Assistant Prosecution Officer (APO)",
+      "title": "UPSC Assistant Public Prosecutor admit card 2025 released at upsc.gov.in: Direct link to download here",
+      "url": "https://news.google.com/rss/articles/CBMiigJBVV95cUxPNUxMRkVqSFU5Q09IZXh5MVJhSElnTTJyS0RXcHVYanVmZmZlUGl3V2dKMndWbWRRaWIzTURIN3ZKMko4Z2JaOWxiLWJ0dG9zMHhNZjJ6em5panRPMkVaUU04SXdrU0J0N0I1Y1RDcGVEWXlaOEJDWEgzSDFLZ0ZLTnVGUURFOTN2RHFuR3VsZlRTSUUwVUFqU2NGM1ExOTdDZnI0bzBsdlJiWXJpNHhLYy1vYnpwV001QTJ3d25nZnN1MUZLVWE5U25keUNDWDlmOTJuamF2Q3k0emU0X3oxVmkxX1pwcGViRGtRMk1fdDBmVUY0d3JRQ20xNlRXV2hENkk0TjRGcnUxUdIBjwJBVV95cUxPUENEYTJfSkZ6aEViVHZXS0lPa2w4akxXXzQzVVdKOTNJQ0VfRnpZRks3X0lNQ2hGa1djM1JrLVFaOTgwMkVPWXNJM01uVXp6RjNXRU1mcy1haDBZMmpuZ1ZBb1BDZmxlQVFuMmRzNXZ3TXFoWktRcVhiZVNBenJuVUhsMlZ1Tzd3WFpaRVpoQmloOWZFMzFiNXliLXBzNGlEcDI1ZjB1ck8zVVJSeFUyVDctLV9LSzJ0WTNsc2RuZmJjbzRXaS0ycFpBYmdESGw3TU05Y2I5S25IRzFIeDZaV3V5ZnlTTF9LalZ4dFJwbFNJM3dDcXA4QmRyQXBkUjQ4dnlROXRxQUxfMTZwQVR3?oc=5",
+      "date": "02 Jan 2026",
+      "category": "Admit Card",
+      "priority": "CRITICAL",
+      "marketingAction": "Share updated prosecution syllabus & previous year paper analysis on PW Judiciary channel.",
+      "hash": "d050cb1785185ec819a4"
+    },
+    {
+      "jurisdiction": "ADA & Prosecution",
+      "state": "Punjab (PPSC / PSSSB)",
+      "exam": "Punjab Assistant District Attorney (ADA)",
+      "title": "Punjab ADA Exam Date 2026 Out, Schedule, Timings, and Exam Day Guidelines",
+      "url": "https://news.google.com/rss/articles/CBMibkFVX3lxTFBaSlZ5QWtmNVVQeTNWN1JBdXkyTGlkcGM2SGFUWThNa1NDTG5jb0lfMm9lTmdpamtNb1hnU3ZTUmRCYUEwa0s5S2NlVE9CR1FGa2dPRGNrZDQyUXNMZUhkYk1mVGpEeEtkMFZHSjJB?oc=5",
+      "date": "16 Jun 2026",
+      "category": "Exam Schedule",
+      "priority": "HIGH",
+      "marketingAction": "Highlight ADA exam pattern changes (50%+ law syllabus weightage) and share free test series.",
+      "hash": "cb2ce596d9c94f56228c"
+    },
+    {
+      "jurisdiction": "ADA & Prosecution",
+      "state": "Haryana (HPSC)",
+      "exam": "Haryana Assistant District Attorney (ADA)",
+      "title": "HPSC ADA Admit Card 2026 Released for August 9 Exam",
+      "url": "https://news.google.com/rss/articles/CBMixAFBVV95cUxQanJRZ3lPdi1UaTN5NTZnY0RDRnAxNWh0LUdSYmZhemFyTEozeTRadklZTkx5dkVWSEZkamxKc3ZMZkpTZ21JU0o1VHNlSGtPRTVfMjdRaWZELXRXbjZhSHp6aG5Ec3JubmduLWg2VVBFbTRmVWFvSmItTEdOMjFwYTY0NU5xbzk2ZlVkS3h3LWFENnhfOFU5c1R0UTlVTVJWbXpuN1dqekQ1aU1pS24wWXMxTmN0RFY0N1Q5blVUd05RV2My?oc=5",
+      "date": "09 Aug 2026",
+      "category": "Admit Card",
+      "priority": "CRITICAL",
+      "marketingAction": "Send student push alert for ADA Hall Ticket; start 5-day rapid MCQ marathon on Law & General Studies.",
+      "hash": "047071e2b1f4c4624607"
+    },
+    {
+      "jurisdiction": "ADA & Prosecution",
+      "state": "Uttar Pradesh (UPPSC)",
+      "exam": "UP Assistant Prosecution Officer (APO)",
+      "title": "UP APO Exam Date 2026 Out @upsssc.up.nic.in, Download UPSSSC Mains Exam Schedule",
+      "url": "https://news.google.com/rss/articles/CBMiZkFVX3lxTE9heVdvR1Q4SEVuVE0tc1RWUjRPSzhiQkxCdzJLb2pnWmR6NGJyMXgwcS1ycGJ2bTRlWW1kUHdIdVViejM2RGw5RkdKUV8xUWZCZXp3UkJPS212SEgwM0pVVDQ0VG1TQQ?oc=5",
+      "date": "11 May 2026",
+      "category": "Exam Schedule",
+      "priority": "HIGH",
+      "marketingAction": "Share updated prosecution syllabus & previous year paper analysis on PW Judiciary channel.",
+      "hash": "4c10a52f493d4402179b"
+    },
+    {
+      "jurisdiction": "ADA & Prosecution",
+      "state": "Uttar Pradesh (UPPSC)",
+      "exam": "UP Assistant Prosecution Officer (APO)",
+      "title": "UP APO Mains Exam Date 2026 Out, Check Complete Schedule &amp; Timings",
+      "url": "https://news.google.com/rss/articles/CBMicEFVX3lxTE8zaGx2NDdJdTJHUUhySl91STVzNWlJcnlRWVVCZ0ZDdVdLZmd6TGQ5X3A1V2R1SnBjczFlNnRoRFFVczdpR2VFLTJTNkRGay1hb1Y0WS0yQzV0ajVSWDcwSEx0aXl6eGNaZWVMbEFwbDk?oc=5",
+      "date": "11 May 2026",
+      "category": "Exam Schedule",
+      "priority": "HIGH",
+      "marketingAction": "Share updated prosecution syllabus & previous year paper analysis on PW Judiciary channel.",
+      "hash": "8d842bec6dd220394fe6"
+    },
+    {
+      "jurisdiction": "Bar Advocacy & Law",
+      "state": "Bar Council of India (BCI)",
+      "exam": "All India Bar Examination (AIBE)",
+      "title": "AIBE 22 Registration 2026 (Direct Link): Last Date to Apply, Fee Payment &amp; Application Correction",
+      "url": "https://news.google.com/rss/articles/CBMiggFBVV95cUxPMUJYYzYyTzVfSElIdkVrSEJwZzNvTGwzUF94OURhYTRpY0RLWldQWnhIanVvZzR1Y3pJaEJXYXpsU3lkMUFFbFZTa0wwN0pZZGk4ZFI5enRxNkh5cVZDT0ZMWnNKUzZDRThUVVpjU0t5QjlRU0lWc184YmxybnVXdk5R?oc=5",
+      "date": "04 Oct 2026",
+      "category": "Notification / Recruitment",
+      "priority": "CRITICAL",
+      "marketingAction": "Broadcast AIBE registration deadline countdown; push AIBE Bare Act Mastery crash course.",
+      "hash": "63fa2469094d175aac85"
+    },
+    {
+      "jurisdiction": "Bar Advocacy & Law",
+      "state": "Bar Council of India (BCI)",
+      "exam": "All India Bar Examination (AIBE)",
+      "title": "AIBE 22 Syllabus 2026: Subject-Wise Topics, Marks Distribution",
+      "url": "https://news.google.com/rss/articles/CBMiaEFVX3lxTE9jN3R3dkJ3N0xNemNGazVyOUdyUS1sRl9NS3NqaEkyaEVob24tZUFyZnhNVlpaSGx0OWNCd0N1elU0NXpXZU5Zdkhlb2o5TERVa2NXQVBsbksyVzg4SnItem1nSzJ0bDYw?oc=5",
+      "date": "14 Oct 2026",
+      "category": "Important Notice",
+      "priority": "HIGH",
+      "marketingAction": "Share AIBE qualifying strategy and bare act carrying rules.",
+      "hash": "8163b273bc4c315f458e"
+    },
+    {
+      "jurisdiction": "Bar Advocacy & Law",
+      "state": "Bar Council of India (BCI)",
+      "exam": "All India Bar Examination (AIBE)",
+      "title": "AIBE 22 Notification 2026 Out, Registration Started, Check Fee and Apply Link",
+      "url": "https://news.google.com/rss/articles/CBMibkFVX3lxTFBBTzhPZmJVRzhSM2F2dmR2ZmU1dkF1aEloV05GRS10bUZZRUFLZHZPZHRmS0JKdE4tZmVpVjdhcWRSVGh3eXVQTU5ObmpWd3JCTUp0a2VDVkhnc083OVRuV0FJMUNpdU9TMWl0eU5B?oc=5",
+      "date": "19 Sep 2026",
+      "category": "Notification / Recruitment",
+      "priority": "CRITICAL",
+      "marketingAction": "Broadcast AIBE registration deadline countdown; push AIBE Bare Act Mastery crash course.",
+      "hash": "a56b86705afb578f433e"
+    },
+    {
+      "jurisdiction": "Bar Advocacy & Law",
+      "state": "Bar Council of India (BCI)",
+      "exam": "All India Bar Examination (AIBE)",
+      "title": "AIBE Exam 2026 Registration Last Date: Apply by Oct 27",
+      "url": "https://news.google.com/rss/articles/CBMiiwFBVV95cUxOanZqT3A1RE81S3lNbFhqbnZLRVZDU0NOTFpVdG4wT1dOTEItYi1iVTZjM05rZ19xaGNDaU9MY3luSGs5NG81WWd0NkpvVXREVHRDb3VFb0lCY01IbjBXMWoyRHoybGwxM2lTMTZfemhiUlU5cUd2Qjk4cURIdHhaVjVYLTE1TjJ3SUxF?oc=5",
+      "date": "18 Sep 2026",
+      "category": "Notification / Recruitment",
+      "priority": "CRITICAL",
+      "marketingAction": "Broadcast AIBE registration deadline countdown; push AIBE Bare Act Mastery crash course.",
+      "hash": "fbdffc761f9f50720c02"
+    },
+    {
+      "jurisdiction": "Bar Advocacy & Law",
+      "state": "Bar Council of India (BCI)",
+      "exam": "All India Bar Examination (AIBE)",
+      "title": "AIBE 2026 Registration Last Date October 27: Apply for AIBE 22 at allindiabarexamination.com",
+      "url": "https://news.google.com/rss/articles/CBMivgFBVV95cUxNRl80QjB4Z181cFBEd3l5RU4yRHhwUjk4Mng4VTItaHpsUlFfN042MVFuOG94WHRsNUZwSG5HMURiSU81T0w2Z2Y3RTBMY09QS09JY1RLc3BFbjJEVXRSN1lVQlRYZWNLUlg0NjM1ajhPTHZwWF9QSFBPTndFUUtLM2hEdEh1anZJcG5QZVhfZGo2TWtkUG1GYXdqNERxTHRObWlMT29YVTUwYnZ3ak1ITTJOa2k1Z1o5ODNHdVRR0gG-AUFVX3lxTE1GXzRCMHhnXzVwUER3eXlFTjJEeHBSOTgyeDhVMi1oemxSUV83TjYxUW44b3hYdGw1RnBIbkcxRGJJTzVPTDZnZjdFMExjT1BLT0ljVEtzcEVuMkRVdFI3WVVCVFhlY0tSWDQ2MzVqOE9MdnBYX1BIUE9Od0VRS0szaER0SHVqdklwblBlWF9kajZNa2RQbUZhd2o0RHFMdE5taUxPb1hVNTBidndqTUhNMk5raTVnWjk4M0d1VFE?oc=5",
+      "date": "13 Oct 2026",
+      "category": "Notification / Recruitment",
+      "priority": "CRITICAL",
+      "marketingAction": "Broadcast AIBE registration deadline countdown; push AIBE Bare Act Mastery crash course.",
+      "hash": "36c3e9de3998996daae4"
+    },
+    {
+      "jurisdiction": "Bar Advocacy & Law",
+      "state": "Bar Council of India (BCI)",
+      "exam": "All India Bar Examination (AIBE)",
+      "title": "AIBE 22 syllabus 2026 released by BCI; check subject-wise question distribution here",
+      "url": "https://news.google.com/rss/articles/CBMi8gFBVV95cUxQc2FzVUpRX295VktDSmREYjFsVGJKeGY2V2U4T3FyMmtVbXpzMVM5SkJubUVzMDRld0NBdmxLLXp3aUZSY0gzWnpQakh6MEFWRVNjUllJYWl2MGZyWTZKX0ZQeVRET1U2M3lIZFNOV19xeUpENGFIc19ldXdOZUpGUWVEYjE0TWxndGtyWVpURDN0NFBRN0FPLVZJb29uMUlMeXRhM1ZiUzVJSHJTcGNOYzlhSWgwUW1FWmYwZHkzU3Q0T0Y5dUo5Qmp0LWc3dHZ5ZGtMSkhxRWhkclhHX1hWNXNQVmNLazBTUm9IenZFZ25zQdIB9wFBVV95cUxPZ0hyS052RkRUamlEZm10clFGMGR2eDZfTzRyQTNmZ2tUVmJYeW02ekVkNk01RVdXdnlZeER2TER4QTNFSGZYTWVBLXF5QWhTb2xNd3B3Tm41VnZwTE1pdGtESzZPbWlSNGMzb3ZKVjUwdjhMR2RSei12NW1DU3JrWE1mQlRmVllsbHI0ZTN6eTBjUDBkaWk5Rmd0UXhpWnRWVnI2bUYtSHNzQ1hOeldCZkVjOXhGUDl3Qm1YbEZhQlgxajBYZi1VRG11aEx3TXhnY2hFTUF2SGxpWlJleTJjX1hlMV9Lb0lnd2FxSTEwLWMwQzRQdjln?oc=5",
+      "date": "15 Oct 2026",
+      "category": "Important Notice",
+      "priority": "HIGH",
+      "marketingAction": "Share AIBE qualifying strategy and bare act carrying rules.",
+      "hash": "a4d402b528de0f71d13f"
+    },
+    {
+      "jurisdiction": "Bar Advocacy & Law",
+      "state": "Bar Council of India (BCI)",
+      "exam": "All India Bar Examination (AIBE)",
+      "title": "All India Bar Examination 2026: Check Last Date To Apply, Eligibility, Documents Required",
+      "url": "https://news.google.com/rss/articles/CBMixAFBVV95cUxQS0xqbXNRSTdOalh0UHpiLTNmRi1sWENhZDRfci1YdjBOaXJpZUN6ZnpSQTdrVHJRYzdHMG1TdGF3RUg2Z2t3b1p0R05wVUxua0FmeTdOUlpKTDNTZ0c1OVZSSnVaY1l5V2F2a0c4bXBRZC1XbWNfRUlSOVF6R19fQ3k1a0xtMlB4WDRscXh4TllvSC1SMjR0Sm4xOTRYeFdRdDhOaHNoaS0xQncycTVPM3J5RDk1Q3NiTVUtMGlfMGRvNUY10gHMAUFVX3lxTE1qd2d6SE80TEZBb2dMUS1tN0JVeWJ2a2d2MHB2OUxTU3VWUFFKLWdlMTlJamxIZGp2M2k2MktsNHJxZnZQRGJsZ2NPV3dyUWdRSFktSUZQX255ajRyb3dubkV1TUtucDExNHpnOThSaEFLU3RodTY0Rk4wZm5uSDd1YWI5Q28zb01BQjRLNGlNdWU3MzRTaVFfSF9YN1NKTFBDcUEzWEdWTGJFYkw5WEloeFlFQkYteElvMk9YajNEUlc0UmpjQjBwLS0yaw?oc=5",
+      "date": "04 Oct 2026",
+      "category": "Important Notice",
+      "priority": "HIGH",
+      "marketingAction": "Share AIBE qualifying strategy and bare act carrying rules.",
+      "hash": "224566ec7af5cd7c73e6"
+    },
+    {
+      "jurisdiction": "Bar Advocacy & Law",
+      "state": "Bar Council of India (BCI)",
+      "exam": "All India Bar Examination (AIBE)",
+      "title": "AIBE 22 Syllabus 2026 Released; Check Subject-Wise Question Distribution, Exam Date",
+      "url": "https://news.google.com/rss/articles/CBMi8AFBVV95cUxPUWhDUFY4eldOTmdDZHFEM2lhbXF2eDFyWUxNeXQ5WjdET0pucnpQSnBZRnRJVDFKck5sdms3aFM3NE1OYUNuRGZpLUdhZUctdVVDbFlwLVdYcE5HbEdDS1V5RUl4aUIxQloyRm1LMldlc3htLVhCN3FDeVFrVXVJckdHWHZnSHNfbVVjYTlvdVN4MjFvXzZhVXFvU2tqb2FBbjFjaGhtSWFDN1psMzN1M1JxTk5HTENrRThOLUVLM1dseEVkWDJpM0pmdi1LNGNCVE1TeGplci1IN0xQczVuMlRkX2tJOFAxSGlDcms3REXSAfYBQVVfeXFMTWRvSHk1aG9VT2F1RHVubEZpRjdkOG5wVHFsNHpKNUR6aFR4Z1ZPSmxyUnlTNDdZbDlQREVVV3ZqRG1HWXJlQXhmcldWR3lxUWx6ckpwSkt0VzVsNVFWNk9xQkU5d3NyOHJoNjVFRGk0M1l5VHFRLWhTdEdQWU05b01qTlNDZzV2RHB3dUpLMXI5NlhuVjRIUjdLTGtucFRuTFZjM05jTTJxaTc3WEFoNW1mbTFpbE04c2hLS19WR292anRmLUp0OVRqdTZVUlZDNmtLbmVjWVQwYTRocmFaNDloUzVKRUtsTk01Z29QZ0ItY01aMGFB?oc=5",
+      "date": "15 Oct 2026",
+      "category": "Exam Schedule",
+      "priority": "HIGH",
+      "marketingAction": "Share AIBE qualifying strategy and bare act carrying rules.",
+      "hash": "99350eec48534a247586"
     },
     {
       "jurisdiction": "Allahabad High Court",

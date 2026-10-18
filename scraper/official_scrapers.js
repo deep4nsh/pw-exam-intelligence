@@ -19,9 +19,17 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 const https = require('https');
 const crypto = require('crypto');
 
+const FALLBACK_TOKEN = '8962093670:AAEFDh6xdxBqVNUBIf3IybLRufbJYbjvNxI';
+const REVOKED_TOKEN = '8962093670:AAGoDyQX553VbSAOh_35ntPQN96QtflWhOg';
+
+let envToken = (process.env.TELEGRAM_BOT_TOKEN || '').trim();
+if (!envToken || envToken === REVOKED_TOKEN || envToken.includes('WhOg')) {
+  envToken = FALLBACK_TOKEN;
+}
+
 const TELEGRAM_CONFIG = {
-  token: process.env.TELEGRAM_BOT_TOKEN || '8962093670:AAEFDh6xdxBqVNUBIf3IybLRufbJYbjvNxI',
-  chatId: process.env.TELEGRAM_CHAT_ID || '-5324420343' // Deepansh & Aditya Sir, Akshay Pw
+  token: envToken,
+  chatId: (process.env.TELEGRAM_CHAT_ID || '-5324420343').trim()
 };
 
 const GOOGLE_WEBAPP_CONFIG = {
@@ -58,11 +66,44 @@ function classifyCategory(title) {
   if (/answer key|objection/i.test(lower)) return 'Answer Key';
   if (/exam date|schedule|calendar|postpone|reschedule/i.test(lower)) return 'Exam Schedule';
   if (/corrigendum|amendment|शुद्धिपत्र/i.test(lower)) return 'Corrigendum / Revision';
-  if (/recruitment|advertisement|notification|vigyapti|विज्ञप्ति/i.test(lower)) return 'Notification / Recruitment';
+  if (/recruitment|advertisement|notification|vigyapti|विज्ञप्ति|registration|apply online/i.test(lower)) return 'Notification / Recruitment';
   return 'Important Notice';
 }
 
-function generateMarketingHook(category, exam) {
+function generateMarketingHook(category, exam = '') {
+  const ex = (exam || '').toLowerCase();
+
+  // 1. ADA (Assistant District Attorney)
+  if (/ada|assistant district attorney/i.test(ex)) {
+    if (category === 'Notification / Recruitment') return 'Urgent: Launch ADA Target Screening Batch, announce bare act marathon & live syllabus breakdown.';
+    if (category === 'Admit Card') return 'Send student push alert for ADA Hall Ticket; start 5-day rapid MCQ marathon on Law & General Studies.';
+    if (category === 'Result') return 'Celebrate PW student selections; immediately open ADA Subject Knowledge (Mains) / Interview batch.';
+    return 'Highlight ADA exam pattern changes (50%+ law syllabus weightage) and share free test series.';
+  }
+
+  // 2. Prosecution & Public Prosecutors (APO, ADPO, APP, JLO)
+  if (/apo|adpo|prosecution|app|jlo|public prosecutor/i.test(ex)) {
+    if (category === 'Notification / Recruitment') return 'Host live Prosecution batch launch; emphasize Criminal Major Acts (CrPC/BNSS, IPC/BNS, BSA).';
+    if (category === 'Result') return 'Broadcast APO qualifiers; launch interview mentorship program with former prosecutors.';
+    return 'Share updated prosecution syllabus & previous year paper analysis on PW Judiciary channel.';
+  }
+
+  // 3. Bar Advocacy & Legal Qualification (AIBE, Bar Council)
+  if (/aibe|bar council|advoca/i.test(ex)) {
+    if (category === 'Notification / Recruitment') return 'Broadcast AIBE registration deadline countdown; push AIBE Bare Act Mastery crash course.';
+    if (category === 'Admit Card') return 'Release AIBE Exam Day Do\'s and Don\'ts video; share PDF of index bare acts list.';
+    if (category === 'Result') return 'Congratulate cleared advocates on obtaining Certificate of Practice (COP); guide them toward Judiciary Foundation.';
+    return 'Share AIBE qualifying strategy and bare act carrying rules.';
+  }
+
+  // 4. Judiciary (Civil Judge, PCS-J, HJS)
+  if (/judiciary|civil judge|pcs-j|hjs|judicial/i.test(ex)) {
+    if (category === 'Notification / Recruitment') return 'Schedule YouTube Live notification breakdown (<45m) and launch Target Batch ad creatives.';
+    if (category === 'Admit Card') return 'Blast student app push notification with direct download instructions; launch 7-day revision marathon.';
+    if (category === 'Result') return 'Broadcast PW student selections; push next-stage Mains/Interview mentorship batch.';
+    return 'Host faculty live strategy session; offer mock test series and model answers.';
+  }
+
   switch (category) {
     case 'Notification / Recruitment':
       return `Schedule YouTube Live notification breakdown (<45m) and launch Target Batch ad creatives.`;
@@ -368,7 +409,129 @@ async function scrapePanIndiaJudiciary() {
   return items;
 }
 
-// 6. Scrape OPSC (Odisha)
+// 6. Scrape ADA & State Prosecution Services (Assistant District Attorney / APO / ADPO / APP)
+async function scrapeADAAndProsecution() {
+  const items = [];
+  try {
+    const feedUrl = "https://news.google.com/rss/search?q=(%22Assistant+District+Attorney%22+OR+%22HPSC+ADA%22+OR+%22Punjab+ADA%22+OR+%22Assistant+Prosecution+Officer%22+OR+%22UP+APO%22+OR+%22MP+ADPO%22+OR+%22Public+Prosecutor%22+OR+%22Junior+Legal+Officer%22)+AND+(Recruitment+OR+Exam+OR+Result+OR+Admit+Card+OR+Notice+OR+Notification)+when:45d&hl=en-IN&gl=IN&ceid=IN:en";
+    const feedRes = await fetchHtml(feedUrl, 15000);
+    const itemRegex = /<item>[\s\S]*?<title>([\s\S]*?)<\/title>[\s\S]*?<link>([\s\S]*?)<\/link>[\s\S]*?<pubDate>([\s\S]*?)<\/pubDate>[\s\S]*?<\/item>/gi;
+    let match;
+    while ((match = itemRegex.exec(feedRes)) !== null && items.length < 10) {
+      let title = cleanText(match[1]).replace(/ - [^-]+$/g, "").trim();
+      const link = match[2].trim();
+      const pubDate = match[3].trim();
+
+      if (/celebrity|gta|party|dj mag|trailer/i.test(title)) continue;
+
+      if (title.length > 5 && !items.some(i => i.title === title || i.url === link)) {
+        const category = classifyCategory(title);
+        let state = "State Prosecution Department";
+        let exam = "Assistant District Attorney (ADA)";
+
+        if (/hpsc|haryana/i.test(title)) {
+          state = "Haryana (HPSC)";
+          exam = "Haryana Assistant District Attorney (ADA)";
+        } else if (/punjab|psssb|ppsc/i.test(title)) {
+          state = "Punjab (PPSC / PSSSB)";
+          exam = "Punjab Assistant District Attorney (ADA)";
+        } else if (/up|uttar pradesh|uppsc|apo/i.test(title)) {
+          state = "Uttar Pradesh (UPPSC)";
+          exam = "UP Assistant Prosecution Officer (APO)";
+        } else if (/mp|madhya pradesh|mppsc|adpo/i.test(title)) {
+          state = "Madhya Pradesh (MPPSC)";
+          exam = "MP Assistant District Public Prosecution Officer (ADPO)";
+        } else if (/odisha|opsc|app/i.test(title)) {
+          state = "Odisha (OPSC)";
+          exam = "Assistant Public Prosecutor (APP)";
+        } else if (/jlo|junior legal/i.test(title)) {
+          state = "Rajasthan (RPSC)";
+          exam = "Junior Legal Officer (JLO)";
+        } else if (/bihar|bpsc/i.test(title)) {
+          state = "Bihar (BPSC)";
+          exam = "Bihar Assistant Prosecution Officer (APO)";
+        } else if (/public prosecutor|cbi|nia/i.test(title)) {
+          state = "Central / State Prosecution";
+          exam = "Public Prosecutor Recruitment";
+        }
+
+        items.push({
+          jurisdiction: "ADA & Prosecution",
+          state: state,
+          exam: exam,
+          title: title,
+          url: link,
+          date: pubDate ? pubDate.split(" ").slice(1, 4).join(" ") : "",
+          category: category,
+          priority: category === "Result" || category === "Admit Card" || category === "Notification / Recruitment" ? "CRITICAL" : "HIGH",
+          marketingAction: generateMarketingHook(category, exam),
+          hash: generateHash(title, link)
+        });
+      }
+    }
+  } catch (e) {
+    console.error("Error scraping ADA & Prosecution:", e.message);
+  }
+
+  return items;
+}
+
+// 7. Scrape Bar Advocacy & Legal Qualification (AIBE, Bar Council of India, Law Officers)
+async function scrapeBarAdvocacyAndAIBE() {
+  const items = [];
+  try {
+    const feedUrl = "https://news.google.com/rss/search?q=(%22All+India+Bar+Examination%22+OR+%22AIBE%22+OR+%22Bar+Council+of+India%22+OR+%22Advocate+on+Record%22+OR+%22Law+Officer+Recruitment%22)+AND+(Exam+OR+Admit+Card+OR+Result+OR+Registration+OR+Notification)+when:45d&hl=en-IN&gl=IN&ceid=IN:en";
+    const feedRes = await fetchHtml(feedUrl, 15000);
+    const itemRegex = /<item>[\s\S]*?<title>([\s\S]*?)<\/title>[\s\S]*?<link>([\s\S]*?)<\/link>[\s\S]*?<pubDate>([\s\S]*?)<\/pubDate>[\s\S]*?<\/item>/gi;
+    let match;
+    while ((match = itemRegex.exec(feedRes)) !== null && items.length < 8) {
+      let title = cleanText(match[1]).replace(/ - [^-]+$/g, "").trim();
+      const link = match[2].trim();
+      const pubDate = match[3].trim();
+
+      if (/celebrity|gta|trailer|party/i.test(title)) continue;
+
+      if (title.length > 5 && !items.some(i => i.title === title || i.url === link)) {
+        const category = classifyCategory(title);
+        let state = "Bar Council / Regulatory";
+        let exam = "Legal Advocacy & Bar Qualification";
+
+        if (/aibe|all india bar/i.test(title)) {
+          state = "Bar Council of India (BCI)";
+          exam = "All India Bar Examination (AIBE)";
+        } else if (/bar council/i.test(title)) {
+          state = "Bar Council of India (BCI)";
+          exam = "Bar Council Regulatory / Enrolment";
+        } else if (/advocate on record|aor/i.test(title)) {
+          state = "Supreme Court of India (SCI)";
+          exam = "Supreme Court Advocate-on-Record (AOR)";
+        } else if (/law officer|sebi|ibps|rbi/i.test(title)) {
+          state = "Regulatory / PSU Legal";
+          exam = "Law Officer Recruitment";
+        }
+
+        items.push({
+          jurisdiction: "Bar Advocacy & Law",
+          state: state,
+          exam: exam,
+          title: title,
+          url: link,
+          date: pubDate ? pubDate.split(" ").slice(1, 4).join(" ") : "",
+          category: category,
+          priority: category === "Result" || category === "Admit Card" || category === "Notification / Recruitment" ? "CRITICAL" : "HIGH",
+          marketingAction: generateMarketingHook(category, exam),
+          hash: generateHash(title, link)
+        });
+      }
+    }
+  } catch (e) {
+    console.error("Error scraping Bar Advocacy & AIBE:", e.message);
+  }
+
+  return items;
+}
+
+// 8. Scrape OPSC (Odisha)
 async function scrapeOPSC() {
   const html = await fetchHtml('https://opsc.gov.in/Public/OPSC/Default.aspx');
   const items = [];
@@ -562,10 +725,24 @@ async function runAllOfficialScrapers() {
   } catch (e) { console.log(`❌ Failed: ${e.message || e.code || e}`); }
 
   try {
-    process.stdout.write('7. Scraping Pan-India Judiciary (High Courts & Law)... ');
+    process.stdout.write('7. Scraping Pan-India Judiciary (High Courts & SCI)... ');
     const ahc = await scrapePanIndiaJudiciary();
     console.log(`✅ Discovered ${ahc.length} notices`);
     allUpdates.push(...ahc);
+  } catch (e) { console.log(`❌ Failed: ${e.message || e.code || e}`); }
+
+  try {
+    process.stdout.write('8. Scraping ADA & State Prosecution (HPSC, PPSC, APO, ADPO)... ');
+    const ada = await scrapeADAAndProsecution();
+    console.log(`✅ Discovered ${ada.length} notices`);
+    allUpdates.push(...ada);
+  } catch (e) { console.log(`❌ Failed: ${e.message || e.code || e}`); }
+
+  try {
+    process.stdout.write('9. Scraping Bar Advocacy & Legal Qualification (AIBE / BCI)... ');
+    const bar = await scrapeBarAdvocacyAndAIBE();
+    console.log(`✅ Discovered ${bar.length} notices`);
+    allUpdates.push(...bar);
   } catch (e) { console.log(`❌ Failed: ${e.message || e.code || e}`); }
 
   console.log('\n===============================================================');
@@ -590,37 +767,31 @@ async function runAllOfficialScrapers() {
 
   for (const item of allUpdates) {
     if (!seen.has(item.hash)) {
-      seen.add(item.hash);
       if (!isFirstRun) {
         brandNewItems.push(item);
+      } else {
+        seen.add(item.hash);
       }
     }
   }
-
-  // Save updated cache
-  try {
-    fs.writeFileSync(cacheFile, JSON.stringify(Array.from(seen), null, 2));
-  } catch (e) {}
 
   // Save complete structured notices database with Smart Cache Merging
   try {
     let finalNotices = [...allUpdates];
 
-    // If any portal temporarily failed or timed out, retain its notices from the previous cache
+    // If any portal temporarily failed or timed out, retain its notices from previous cache
     if (fs.existsSync(fullNoticesFile)) {
       try {
         const previousData = JSON.parse(fs.readFileSync(fullNoticesFile, "utf8"));
         const previousNotices = previousData.notices || [];
-        const currentJurisdictions = new Set(allUpdates.map(n => n.jurisdiction.toLowerCase()));
+        const currentJurisdictions = new Set(allUpdates.map(n => (n.jurisdiction || '').toLowerCase()));
 
         for (const prev of previousNotices) {
-          if (!currentJurisdictions.has(prev.jurisdiction.toLowerCase())) {
+          if (!currentJurisdictions.has((prev.jurisdiction || '').toLowerCase())) {
             finalNotices.push(prev);
           }
         }
-      } catch (err) {
-        // Fallback to allUpdates if reading previous cache fails
-      }
+      } catch (err) {}
     }
 
     const formattedData = {
@@ -633,23 +804,41 @@ async function runAllOfficialScrapers() {
         "RPSC (Rajasthan)",
         "OPSC (Odisha)",
         "MPSC (Maharashtra)",
-        "Allahabad High Court (Judiciary)"
+        "Pan-India Judiciary (High Courts & SCI)",
+        "ADA & State Prosecution (HPSC, PPSC, APO)",
+        "Bar Advocacy & Legal Qualification (AIBE / BCI)"
       ],
       notices: finalNotices
     };
     fs.writeFileSync(fullNoticesFile, JSON.stringify(formattedData, null, 2));
-    console.log(`📁 Complete notices database (${finalNotices.length} notices across all 7 portals) written to: ${fullNoticesFile}`);
+    console.log(`📁 Complete notices database (${finalNotices.length} notices across all 9 portals & legal tracks) written to: ${fullNoticesFile}`);
   } catch (e) {}
 
   if (isFirstRun) {
     console.log(`\n🛡️ Initial cache initialized with ${allUpdates.length} existing notices. Future runs will alert on NEW items.`);
+    try {
+      fs.writeFileSync(cacheFile, JSON.stringify(Array.from(seen), null, 2));
+    } catch (e) {}
   } else if (brandNewItems.length > 0) {
     console.log(`\n🚨 FOUND ${brandNewItems.length} BRAND-NEW OFFICIAL NOTICES! Dispatching to Telegram...`);
+    let dispatchedCount = 0;
     for (const item of brandNewItems) {
-      console.log(`  -> Sending: [${item.jurisdiction}] ${item.title.slice(0, 50)}...`);
-      await sendTelegramNotice(item);
-      await new Promise(r => setTimeout(r, 1200)); // Respect Telegram rate limits
+      console.log(`  -> Dispatching: [${item.jurisdiction}] ${item.title.slice(0, 50)}...`);
+      const sent = await sendTelegramNotice(item);
+      if (sent) {
+        seen.add(item.hash);
+        dispatchedCount++;
+      } else {
+        console.warn(`  ⚠️ Could not confirm Telegram delivery for ${item.hash}. Will retry next cycle.`);
+      }
+      await new Promise(r => setTimeout(r, 3000)); // Respect Telegram rate limits (max 20 msgs/min)
     }
+
+    // Persist cache with only verified dispatched notices
+    try {
+      fs.writeFileSync(cacheFile, JSON.stringify(Array.from(seen), null, 2));
+      console.log(`💾 Successfully updated seen_hashes.json with ${dispatchedCount} verified notices.`);
+    } catch (e) {}
 
     if (process.env.GOOGLE_WEBAPP_URL) {
       console.log(`\n📊 Syncing ${brandNewItems.length} notices directly to Google Sheet Tracker & Email...`);
@@ -696,8 +885,9 @@ function cleanTitle(raw) {
   return t;
 }
 
-function sendTelegramNotice(item) {
+function sendTelegramNotice(item, tokenOverride = null) {
   return new Promise((resolve) => {
+    const tokenToUse = tokenOverride || TELEGRAM_CONFIG.token;
     const cleanHead = cleanTitle(item.title);
     const priorityBadge = item.priority === "CRITICAL" ? "🚨 <b>CRITICAL NEW EXAM NOTICE</b>" : (item.priority === "HIGH" ? "⚠️ <b>HIGH PRIORITY CIRCULAR</b>" : "📢 <b>NEW OFFICIAL CIRCULAR</b>");
     const stateName = item.state || item.jurisdiction;
@@ -705,14 +895,14 @@ function sendTelegramNotice(item) {
     const text =
       `${priorityBadge}\n` +
       `━━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
-      `🏛️ <b>Commission:</b> ${escapeHtml(item.jurisdiction)} (${escapeHtml(stateName)})\n` +
-      `📌 <b>Exam:</b> ${escapeHtml(item.exam)}\n` +
+      `🏛️ <b>Commission / Body:</b> ${escapeHtml(item.jurisdiction)} (${escapeHtml(stateName)})\n` +
+      `📌 <b>Exam / Role:</b> ${escapeHtml(item.exam)}\n` +
       `🏷️ <b>Category:</b> <b>${escapeHtml(item.category)}</b>\n\n` +
       `📋 <b>Notice Headline:</b>\n<b>${escapeHtml(cleanHead)}</b>\n\n` +
       `🎯 <b>RECOMMENDED MARKETING PLAY:</b>\n` +
       `<i>"${escapeHtml(item.marketingAction)}"</i>\n\n` +
       `━━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
-      `📄 <a href="${escapeHtml(item.url)}"><b>📥 Download Official Notice (PDF) ↗</b></a>\n` +
+      `📄 <a href="${escapeHtml(item.url)}"><b>📥 Download Official Notice (PDF / Link) ↗</b></a>\n` +
       `🌐 <a href="https://pw-exam-intelligence.deepansh-gup124.workers.dev"><b>Open Live Web Dashboard ↗</b></a>`;
 
     const data = JSON.stringify({
@@ -725,19 +915,51 @@ function sendTelegramNotice(item) {
     const req = https.request({
       hostname: 'api.telegram.org',
       port: 443,
-      path: `/bot${TELEGRAM_CONFIG.token}/sendMessage`,
+      path: `/bot${tokenToUse}/sendMessage`,
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Content-Length': Buffer.byteLength(data)
       },
-      timeout: 10000
+      timeout: 12000
     }, (res) => {
-      res.resume();
-      res.on('end', () => resolve(res.statusCode === 200));
+      let body = '';
+      res.on('data', chunk => body += chunk);
+      res.on('end', () => {
+        if (res.statusCode === 200) {
+          resolve(true);
+        } else if (res.statusCode === 401 && tokenToUse !== FALLBACK_TOKEN) {
+          console.warn(`⚠️ Token unauthorized (401). Retrying with active fallback token...`);
+          TELEGRAM_CONFIG.token = FALLBACK_TOKEN;
+          sendTelegramNotice(item, FALLBACK_TOKEN).then(resolve);
+        } else if (res.statusCode === 429) {
+          try {
+            const errObj = JSON.parse(body);
+            const retrySec = (errObj.parameters && errObj.parameters.retry_after) || 5;
+            console.warn(`⏳ Rate limited by Telegram (429). Backing off for ${retrySec + 1}s...`);
+            setTimeout(() => {
+              sendTelegramNotice(item, tokenToUse).then(resolve);
+            }, (retrySec + 1) * 1000);
+          } catch (e) {
+            resolve(false);
+          }
+        } else {
+          console.error(`❌ Telegram dispatch error [HTTP ${res.statusCode}]: ${body}`);
+          resolve(false);
+        }
+      });
     });
-    req.on('timeout', () => { req.destroy(); resolve(false); });
-    req.on('error', () => resolve(false));
+
+    req.on('timeout', () => {
+      console.error('❌ Telegram request timed out.');
+      req.destroy();
+      resolve(false);
+    });
+    req.on('error', (err) => {
+      console.error('❌ Telegram network error:', err.message);
+      resolve(false);
+    });
+
     req.write(data);
     req.end();
   });
@@ -763,7 +985,6 @@ function sendGoogleWebAppSync(items) {
         timeout: 15000
       }, (res) => {
         res.resume();
-        // Google Apps Script Web Apps return 302 Found redirect on successful POST execution
         const isSuccess = (res.statusCode >= 200 && res.statusCode < 400);
         res.on('end', () => resolve(isSuccess));
       });
@@ -789,6 +1010,9 @@ module.exports = {
   scrapeOPSC,
   scrapeMPSC,
   scrapePanIndiaJudiciary,
+  scrapeADAAndProsecution,
+  scrapeBarAdvocacyAndAIBE,
+  sendTelegramNotice,
   runAllOfficialScrapers
 };
 

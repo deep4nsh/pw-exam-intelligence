@@ -61,10 +61,12 @@ function getMenuMarkup() {
         { text: "🏛️ MPSC (Maharashtra)", callback_data: "sync_mpsc" }
       ],
       [
-        { text: "⚖️ Pan-India Judiciary (High Courts)", callback_data: "sync_judiciary" }
+        { text: "⚖️ Pan-India Judiciary", callback_data: "sync_judiciary" },
+        { text: "🏛️ ADA & Prosecution", callback_data: "sync_ada" }
       ],
       [
-        { text: "⚡ Sync All 7 Portals (Full Radar)", callback_data: "sync_all" }
+        { text: "📜 Bar Advocacy & AIBE", callback_data: "sync_bar" },
+        { text: "⚡ Sync All (Full Radar)", callback_data: "sync_all" }
       ]
     ]
   };
@@ -202,42 +204,50 @@ export default {
               "sync_opsc": { name: "OPSC", state: "Odisha", key: "OPSC", icon: "🏛️" },
               "sync_mpsc": { name: "MPSC", state: "Maharashtra", key: "MPSC", icon: "🏛️" },
               "sync_judiciary": { name: "Pan-India Judiciary", state: "High Courts & SCI", key: "Judiciary", icon: "⚖️" },
-              "sync_ahc": { name: "Pan-India Judiciary", state: "High Courts & SCI", key: "Judiciary", icon: "⚖️" }
+              "sync_ahc": { name: "Pan-India Judiciary", state: "High Courts & SCI", key: "Judiciary", icon: "⚖️" },
+              "sync_ada": { name: "ADA & Prosecution", state: "HPSC, PPSC, APO & ADPO", key: "ADA", icon: "🏛️" },
+              "sync_bar": { name: "Bar Advocacy & Law", state: "AIBE / Bar Council of India", key: "Bar", icon: "📜" }
             };
 
-            // Option 8: Full Radar Sync
+            // Option: Full Radar Sync
             if (action === "sync_all") {
-              await answerCallbackQuery(cb.id, "⚡ Syncing all 7 commissions...");
+              await answerCallbackQuery(cb.id, "⚡ Syncing all 9 radar streams...");
 
-              let summaryText = "⚡ <b>PW EXAM RADAR — ALL 7 COMMISSIONS SUMMARY</b>\n";
+              let summaryText = "⚡ <b>PW EXAM RADAR — ALL COMMISSIONS & LEGAL TRACKS SUMMARY</b>\n";
               summaryText += "━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
               summaryText += `📊 <b>${notices.length} Verified Official Circulars Active</b>\n`;
               summaryText += `🕒 <b>Refreshed:</b> ${nowStr} IST • 🔄 <i>Cloud Auto-Sync 24/7</i>\n\n`;
 
-              summaryText += `🏛️ <b>Bihar (BPSC):</b> 8 notices\n`;
+              summaryText += `🏛️ <b>Bihar (BPSC):</b>\n`;
               summaryText += `   └ <i>Latest: ${escapeHtml(getLatestHeadline(notices, 'BPSC'))}</i>\n\n`;
 
-              summaryText += `🏛️ <b>Uttar Pradesh (UPPSC):</b> 8 notices\n`;
+              summaryText += `🏛️ <b>Uttar Pradesh (UPPSC):</b>\n`;
               summaryText += `   └ <i>Latest: ${escapeHtml(getLatestHeadline(notices, 'UPPSC'))}</i>\n\n`;
 
-              summaryText += `🏛️ <b>Madhya Pradesh (MPPSC):</b> 8 notices\n`;
+              summaryText += `🏛️ <b>Madhya Pradesh (MPPSC):</b>\n`;
               summaryText += `   └ <i>Latest: ${escapeHtml(getLatestHeadline(notices, 'MPPSC'))}</i>\n\n`;
 
-              summaryText += `🏛️ <b>Rajasthan (RPSC):</b> 8 notices\n`;
+              summaryText += `🏛️ <b>Rajasthan (RPSC):</b>\n`;
               summaryText += `   └ <i>Latest: ${escapeHtml(getLatestHeadline(notices, 'RPSC'))}</i>\n\n`;
 
-              summaryText += `🏛️ <b>Odisha (OPSC):</b> 8 notices\n`;
+              summaryText += `🏛️ <b>Odisha (OPSC):</b>\n`;
               summaryText += `   └ <i>Latest: ${escapeHtml(getLatestHeadline(notices, 'OPSC'))}</i>\n\n`;
 
-              summaryText += `🏛️ <b>Maharashtra (MPSC):</b> 8 notices\n`;
+              summaryText += `🏛️ <b>Maharashtra (MPSC):</b>\n`;
               summaryText += `   └ <i>Latest: ${escapeHtml(getLatestHeadline(notices, 'MPSC'))}</i>\n\n`;
 
-              summaryText += `⚖️ <b>Judiciary (Allahabad HC):</b> 8 notices\n`;
-              summaryText += `   └ <i>Latest: ${escapeHtml(getLatestHeadline(notices, 'Allahabad'))}</i>\n\n`;
+              summaryText += `⚖️ <b>Pan-India Judiciary (High Courts & SCI):</b>\n`;
+              summaryText += `   └ <i>Latest: ${escapeHtml(getLatestHeadline(notices, 'Judiciary'))}</i>\n\n`;
+
+              summaryText += `🏛️ <b>ADA & Prosecution (HPSC / PPSC / APO):</b>\n`;
+              summaryText += `   └ <i>Latest: ${escapeHtml(getLatestHeadline(notices, 'ADA'))}</i>\n\n`;
+
+              summaryText += `📜 <b>Bar Advocacy (AIBE / BCI):</b>\n`;
+              summaryText += `   └ <i>Latest: ${escapeHtml(getLatestHeadline(notices, 'Bar'))}</i>\n\n`;
 
               summaryText += "━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
               summaryText += `🌐 <a href="${DASHBOARD_URL}"><b>Open Full Executive Web Dashboard ↗</b></a>\n`;
-              summaryText += `<i>👇 Tap any state button below for individual circulars & PDFs:</i>`;
+              summaryText += `<i>👇 Tap any category below for individual circulars & direct PDFs:</i>`;
 
               const res = await editTelegramMessage(chatId, messageId, summaryText, getMenuMarkup());
               if (!res.ok) {
