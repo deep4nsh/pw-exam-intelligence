@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-10-18T16:56:01.149Z",
+  "lastUpdated": "2026-10-18T19:14:48.368Z",
   "totalNotices": 84,
   "commissionsCovered": [
     "BPSC (Bihar)",
@@ -267,7 +267,7 @@
       "exam": "MPPSC State Recruitment",
       "title": "Daily Madhya Pradesh Current Affairs for MPPSC Exam (02-10-2026)",
       "url": "https://news.google.com/rss/articles/CBMibkFVX3lxTFBlZlFMdjcxeWJEX3VicUNYTzNtd3otajVqSFRud19KdGhTYW16YW1Mc3MtYnBTNHE2VlBxQkkxX1ZTODE4SDBMWHd3ZzZjeHVqUjNFR1RxSExPZ2J5cVJZMklYeGhuUjdiQzR1Umx3?oc=5",
-      "date": "01 Oct 2026",
+      "date": "02 Oct 2026",
       "category": "Important Notice",
       "priority": "HIGH",
       "marketingAction": "Review circular details and prepare student guidance/community update.",
@@ -695,15 +695,15 @@
     },
     {
       "jurisdiction": "ADA & Prosecution",
-      "state": "Punjab (PPSC / PSSSB)",
-      "exam": "Punjab Assistant District Attorney (ADA)",
-      "title": "Punjab ADA Recruitment 2026, Exam Date (Out), Selection Process, Salary",
-      "url": "https://news.google.com/rss/articles/CBMicEFVX3lxTE5xbUMzUTFCUmItcDJIN0FuS0RfcU5VUzVXR2Q4WFczQ2Y0cGQyUTk0Tm1vT3JGaDBKNmhhenBWTWYtckg2a0NJSXliZEg5czQzTXFZV2drckVueE5Da2ZkdTNmR3BJb2c2VEtHdnRTZHI?oc=5",
-      "date": "16 Jun 2026",
+      "state": "Uttar Pradesh (UPPSC)",
+      "exam": "UP Assistant Prosecution Officer (APO)",
+      "title": "UP APO Mains Exam Date 2026 Out, Check Complete Schedule &amp; Timings",
+      "url": "https://news.google.com/rss/articles/CBMicEFVX3lxTE8zaGx2NDdJdTJHUUhySl91STVzNWlJcnlRWVVCZ0ZDdVdLZmd6TGQ5X3A1V2R1SnBjczFlNnRoRFFVczdpR2VFLTJTNkRGay1hb1Y0WS0yQzV0ajVSWDcwSEx0aXl6eGNaZWVMbEFwbDk?oc=5",
+      "date": "11 May 2026",
       "category": "Exam Schedule",
       "priority": "HIGH",
-      "marketingAction": "Highlight ADA exam pattern changes (50%+ law syllabus weightage) and share free test series.",
-      "hash": "b6218984d96d1e1c5941"
+      "marketingAction": "Share updated prosecution syllabus & previous year paper analysis on PW Judiciary channel.",
+      "hash": "8d842bec6dd220394fe6"
     },
     {
       "jurisdiction": "ADA & Prosecution",
@@ -731,18 +731,6 @@
     },
     {
       "jurisdiction": "ADA & Prosecution",
-      "state": "Uttar Pradesh (UPPSC)",
-      "exam": "UP Assistant Prosecution Officer (APO)",
-      "title": "UP APO Mains Exam Date 2026 Out, Check Complete Schedule &amp; Timings",
-      "url": "https://news.google.com/rss/articles/CBMicEFVX3lxTE8zaGx2NDdJdTJHUUhySl91STVzNWlJcnlRWVVCZ0ZDdVdLZmd6TGQ5X3A1V2R1SnBjczFlNnRoRFFVczdpR2VFLTJTNkRGay1hb1Y0WS0yQzV0ajVSWDcwSEx0aXl6eGNaZWVMbEFwbDk?oc=5",
-      "date": "11 May 2026",
-      "category": "Exam Schedule",
-      "priority": "HIGH",
-      "marketingAction": "Share updated prosecution syllabus & previous year paper analysis on PW Judiciary channel.",
-      "hash": "8d842bec6dd220394fe6"
-    },
-    {
-      "jurisdiction": "ADA & Prosecution",
       "state": "Haryana (HPSC)",
       "exam": "Haryana Assistant District Attorney (ADA)",
       "title": "HPSC ADA Admit Card 2026 Released for August 9 Exam",
@@ -755,18 +743,6 @@
     },
     {
       "jurisdiction": "ADA & Prosecution",
-      "state": "Madhya Pradesh (MPPSC)",
-      "exam": "MP Assistant District Public Prosecution Officer (ADPO)",
-      "title": "MP ADPO Recruitment 2026 Notification Out 17 Posts, Apply Online Last Date",
-      "url": "https://news.google.com/rss/articles/CBMiakFVX3lxTE56TC1jMVhuc1RTamwxRXRmS1VuaFBqb3dXYlhObWY4eU1kZE1Gb2NGRnYwVHhHTEg1dkwzeGk0LTFNdVctR2VlcHdlekNpYVJ3SXZFYVJiUmVWOFdfclBQWXFvVFk4UWNfckE?oc=5",
-      "date": "08 May 2026",
-      "category": "Notification / Recruitment",
-      "priority": "CRITICAL",
-      "marketingAction": "Host live Prosecution batch launch; emphasize Criminal Major Acts (CrPC/BNSS, IPC/BNS, BSA).",
-      "hash": "9ad4dc52bceb782cee6a"
-    },
-    {
-      "jurisdiction": "ADA & Prosecution",
       "state": "Punjab (PPSC / PSSSB)",
       "exam": "Punjab Assistant District Attorney (ADA)",
       "title": "Punjab ADA Exam Date 2026 Out, Schedule, Timings, and Exam Day Guidelines",
@@ -776,6 +752,18 @@
       "priority": "HIGH",
       "marketingAction": "Highlight ADA exam pattern changes (50%+ law syllabus weightage) and share free test series.",
       "hash": "cb2ce596d9c94f56228c"
+    },
+    {
+      "jurisdiction": "ADA & Prosecution",
+      "state": "Madhya Pradesh (MPPSC)",
+      "exam": "MP Assistant District Public Prosecution Officer (ADPO)",
+      "title": "MP ADPO Recruitment 2026 Notification Out 17 Posts, Apply Online Last Date",
+      "url": "https://news.google.com/rss/articles/CBMiakFVX3lxTE56TC1jMVhuc1RTamwxRXRmS1VuaFBqb3dXYlhObWY4eU1kZE1Gb2NGRnYwVHhHTEg1dkwzeGk0LTFNdVctR2VlcHdlekNpYVJ3SXZFYVJiUmVWOFdfclBQWXFvVFk4UWNfckE?oc=5",
+      "date": "08 May 2026",
+      "category": "Notification / Recruitment",
+      "priority": "CRITICAL",
+      "marketingAction": "Host live Prosecution batch launch; emphasize Criminal Major Acts (CrPC/BNSS, IPC/BNS, BSA).",
+      "hash": "9ad4dc52bceb782cee6a"
     },
     {
       "jurisdiction": "ADA & Prosecution",
@@ -800,6 +788,18 @@
       "priority": "HIGH",
       "marketingAction": "Share updated prosecution syllabus & previous year paper analysis on PW Judiciary channel.",
       "hash": "fb2c51b8649fde62152f"
+    },
+    {
+      "jurisdiction": "ADA & Prosecution",
+      "state": "Punjab (PPSC / PSSSB)",
+      "exam": "Punjab Assistant District Attorney (ADA)",
+      "title": "UP APO Admit Card 2026 Expected Soon: Check Mains Exam Dates &amp; Download Steps @uppsc.up.nic.in",
+      "url": "https://news.google.com/rss/articles/CBMikAFBVV95cUxNVURZaUZRVVdmekhfUldwX083ZmZ0Tnh4aTV0YUI5NXJmVUpmbUZ2RHVTTkdGbGlGYnRKanduV21xbU5vVEJsMVlkOVRpaU00VnVMb2Y4QklkbFR0Y09OemFPUkhyRGZ4QVBvdkh3cUF4bERTOEFyNUxHV0hqZllBbmVRWS1YZTJDT1d2QndxR0Q?oc=5",
+      "date": "11 May 2026",
+      "category": "Admit Card",
+      "priority": "CRITICAL",
+      "marketingAction": "Send student push alert for ADA Hall Ticket; start 5-day rapid MCQ marathon on Law & General Studies.",
+      "hash": "b0651303d6cb97b8b566"
     },
     {
       "jurisdiction": "Bar Advocacy & Law",
