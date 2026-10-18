@@ -412,12 +412,56 @@ async function scrapePanIndiaJudiciary() {
 // 6. Scrape ADA & State Prosecution Services (Assistant District Attorney / APO / ADPO / APP)
 async function scrapeADAAndProsecution() {
   const items = [];
+
+  // Tier 1: Direct Official HPSC Portal Ingestion (Haryana ADA Official Circulars & Score Lists)
   try {
-    const feedUrl = "https://news.google.com/rss/search?q=(%22Assistant+District+Attorney%22+OR+%22HPSC+ADA%22+OR+%22Punjab+ADA%22+OR+%22Assistant+Prosecution+Officer%22+OR+%22UP+APO%22+OR+%22MP+ADPO%22+OR+%22Public+Prosecutor%22+OR+%22Junior+Legal+Officer%22)+AND+(Recruitment+OR+Exam+OR+Result+OR+Admit+Card+OR+Notice+OR+Notification)+when:45d&hl=en-IN&gl=IN&ceid=IN:en";
+    const hpscUrls = [
+      "https://hpsc.gov.in/en-us/Announcements",
+      "https://hpsc.gov.in/en-us/Results"
+    ];
+
+    for (const pageUrl of hpscUrls) {
+      try {
+        const html = await fetchHtml(pageUrl, 15000);
+        const linkRegex = /<a[^>]+href=["\x27]([^"\x27]+\.pdf)["\x27][^>]*>([\s\S]*?)<\/a>/gi;
+        let match;
+        while ((match = linkRegex.exec(html)) !== null && items.length < 6) {
+          const rawPdf = match[1].trim();
+          const pdfUrl = rawPdf.startsWith("http") ? rawPdf : `https://hpsc.gov.in${rawPdf}`;
+          const rawTitle = cleanText(match[2]).replace(/&#39;/g, "'").replace(/&quot;/g, '"');
+
+          if (/ADA|Assistant District Attorney|Prosecution Department/i.test(rawTitle) || /_ADA_/i.test(rawPdf)) {
+            if (!items.some(i => i.url === pdfUrl || i.title === rawTitle)) {
+              let category = classifyCategory(rawTitle);
+              if (/marks|score/i.test(rawTitle)) category = "Result";
+              const exam = "Haryana Assistant District Attorney (ADA)";
+
+              items.push({
+                jurisdiction: "ADA & Prosecution",
+                state: "Haryana (HPSC)",
+                exam: exam,
+                title: rawTitle,
+                url: pdfUrl,
+                date: "18 Oct 2026",
+                category: category,
+                priority: category === "Result" || category === "Admit Card" || category === "Notification / Recruitment" ? "CRITICAL" : "HIGH",
+                marketingAction: generateMarketingHook(category, exam),
+                hash: generateHash(rawTitle, pdfUrl)
+              });
+            }
+          }
+        }
+      } catch (err) {}
+    }
+  } catch (e) {}
+
+  // Tier 2: Pan-India ADA, Prosecution & State Legal Feeds (Punjab ADA, UP APO, MP ADPO, Bihar APO)
+  try {
+    const feedUrl = "https://news.google.com/rss/search?q=(%22Assistant+District+Attorney%22+OR+%22HPSC+ADA%22+OR+%22Punjab+ADA%22+OR+%22Assistant+Prosecution+Officer%22+OR+%22UP+APO%22+OR+%22MP+ADPO%22+OR+%22Public+Prosecutor%22+OR+%22Junior+Legal+Officer%22)+AND+(Recruitment+OR+Exam+OR+Result+OR+Admit+Card+OR+Notice+OR+Notification+OR+Marks+OR+Score)+when:45d&hl=en-IN&gl=IN&ceid=IN:en";
     const feedRes = await fetchHtml(feedUrl, 15000);
     const itemRegex = /<item>[\s\S]*?<title>([\s\S]*?)<\/title>[\s\S]*?<link>([\s\S]*?)<\/link>[\s\S]*?<pubDate>([\s\S]*?)<\/pubDate>[\s\S]*?<\/item>/gi;
     let match;
-    while ((match = itemRegex.exec(feedRes)) !== null && items.length < 10) {
+    while ((match = itemRegex.exec(feedRes)) !== null && items.length < 12) {
       let title = cleanText(match[1]).replace(/ - [^-]+$/g, "").trim();
       const link = match[2].trim();
       const pubDate = match[3].trim();
@@ -425,7 +469,8 @@ async function scrapeADAAndProsecution() {
       if (/celebrity|gta|party|dj mag|trailer/i.test(title)) continue;
 
       if (title.length > 5 && !items.some(i => i.title === title || i.url === link)) {
-        const category = classifyCategory(title);
+        let category = classifyCategory(title);
+        if (/marks|score/i.test(title)) category = "Result";
         let state = "State Prosecution Department";
         let exam = "Assistant District Attorney (ADA)";
 
