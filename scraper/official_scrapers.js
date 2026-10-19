@@ -40,15 +40,24 @@ const GOOGLE_WEBAPP_CONFIG = {
 
 
 async function fetchHtml(url, timeoutMs = 25000) {
-  const res = await fetch(url, {
-    headers: {
-      "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36",
-      "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
-      "Accept-Language": "en-US,en;q=0.9,hi;q=0.8"
-    },
-    signal: AbortSignal.timeout(timeoutMs)
-  });
-  return await res.text();
+  try {
+    const res = await fetch(url, {
+      headers: {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36",
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
+        "Accept-Language": "en-US,en;q=0.9,hi;q=0.8"
+      },
+      signal: AbortSignal.timeout(timeoutMs)
+    });
+    return await res.text();
+  } catch (err) {
+    try {
+      const { execSync } = require('child_process');
+      const stdout = execSync(`curl -s -k -L --max-time ${Math.round(timeoutMs / 1000)} "${url}" -H "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64)"`, { encoding: 'utf8', maxBuffer: 10 * 1024 * 1024 });
+      if (stdout && stdout.length > 0) return stdout;
+    } catch (e2) {}
+    throw err;
+  }
 }
 
 function generateHash(title, url) {
@@ -102,6 +111,14 @@ function generateMarketingHook(category, exam = '') {
     if (category === 'Admit Card') return 'Blast student app push notification with direct download instructions; launch 7-day revision marathon.';
     if (category === 'Result') return 'Broadcast PW student selections; push next-stage Mains/Interview mentorship batch.';
     return 'Host faculty live strategy session; offer mock test series and model answers.';
+  }
+
+  // 5. Regulatory & Banking Law (SEBI Legal, IBPS SO Law Officer)
+  if (/sebi|ibps|law officer|regulatory/i.test(ex)) {
+    if (category === 'Notification / Recruitment') return 'Host SEBI/IBPS Law Officer batch launch; cover Securities Laws, Company Law & Banking Regulations.';
+    if (category === 'Admit Card') return 'Release last-minute commercial bare acts revision notes; promote mock test series.';
+    if (category === 'Result') return 'Broadcast PW Law selections; open Mains/Interview mentorship with former banking legal managers.';
+    return 'Share legal officer exam pattern breakdown & previous year cutoff analysis on PW Law Wallah.';
   }
 
   switch (category) {
@@ -430,11 +447,16 @@ async function scrapeADAAndProsecution() {
           const pdfUrl = rawPdf.startsWith("http") ? rawPdf : `https://hpsc.gov.in${rawPdf}`;
           const rawTitle = cleanText(match[2]).replace(/&#39;/g, "'").replace(/&quot;/g, '"');
 
-          if (/ADA|Assistant District Attorney|Prosecution Department/i.test(rawTitle) || /_ADA_/i.test(rawPdf)) {
+          if (/ADA|Assistant District Attorney|Prosecution Department|Civil Judge|Judicial|HCS\s*\(JB\)|Superintendent\s*\(Legal\)/i.test(rawTitle) || /_ADA_|_JUD_/i.test(rawPdf)) {
             if (!items.some(i => i.url === pdfUrl || i.title === rawTitle)) {
               let category = classifyCategory(rawTitle);
               if (/marks|score/i.test(rawTitle)) category = "Result";
-              const exam = "Haryana Assistant District Attorney (ADA)";
+              let exam = "Haryana Assistant District Attorney (ADA)";
+              if (/civil judge|judicial|hcs\s*\(jb\)/i.test(rawTitle)) {
+                exam = "Haryana Civil Judge (Junior Division)";
+              } else if (/superintendent/i.test(rawTitle)) {
+                exam = "HPSC Superintendent (Legal)";
+              }
 
               items.push({
                 jurisdiction: "ADA & Prosecution",
@@ -442,11 +464,13 @@ async function scrapeADAAndProsecution() {
                 exam: exam,
                 title: rawTitle,
                 url: pdfUrl,
-                date: "18 Oct 2026",
+                date: "19 Oct 2026",
                 category: category,
                 priority: category === "Result" || category === "Admit Card" || category === "Notification / Recruitment" ? "CRITICAL" : "HIGH",
                 marketingAction: generateMarketingHook(category, exam),
-                hash: generateHash(rawTitle, pdfUrl)
+                hash: generateHash(rawTitle, pdfUrl),
+                isLegalTrack: true,
+                routedTo: "PW Judiciary Wallah"
               });
             }
           }
@@ -521,15 +545,130 @@ async function scrapeADAAndProsecution() {
   return items;
 }
 
-// 7. Scrape Bar Advocacy & Legal Qualification (AIBE, Bar Council of India, Law Officers)
+// 7. Scrape Bar Advocacy, AIBE & Regulatory Law (All India Bar Examination, SEBI Legal & IBPS SO Law)
 async function scrapeBarAdvocacyAndAIBE() {
   const items = [];
+
+  // Tier 1: Direct Official AIBE Portal Scraping (allindiabarexamination.com)
   try {
-    const feedUrl = "https://news.google.com/rss/search?q=(%22All+India+Bar+Examination%22+OR+%22AIBE%22+OR+%22Bar+Council+of+India%22+OR+%22Advocate+on+Record%22+OR+%22Law+Officer+Recruitment%22)+AND+(Exam+OR+Admit+Card+OR+Result+OR+Registration+OR+Notification)+when:45d&hl=en-IN&gl=IN&ceid=IN:en";
-    const feedRes = await fetchHtml(feedUrl, 15000);
+    const aibeHtml = await fetchHtml("https://www.allindiabarexamination.com/", 15000);
+    const pRegex = /<a[^>]+href=["\x27]([^"\x27]+\.pdf)["\x27][^>]*>([\s\S]*?)<\/a>/gi;
+    let match;
+    while ((match = pRegex.exec(aibeHtml)) !== null && items.length < 5) {
+      const pdfPath = match[1].trim();
+      const pdfUrl = pdfPath.startsWith("http") ? pdfPath : `https://www.allindiabarexamination.com/${pdfPath}`;
+      let rawTitle = cleanText(match[2]).replace(/&#39;/g, "'").replace(/&quot;/g, '"');
+      if (!rawTitle || rawTitle.length < 4) {
+        rawTitle = pdfPath.split("/").pop().replace(/\.pdf$/i, "").replace(/[_-]/g, " ");
+      }
+
+      if (/AIBE|Syllabus|Answer|Schedule|COP|Result|Notification|Objection/i.test(rawTitle) || /AIBE/i.test(pdfPath)) {
+        if (!items.some(i => i.url === pdfUrl)) {
+          let category = classifyCategory(rawTitle);
+          if (/syllabus/i.test(rawTitle)) category = "Important Notice";
+          if (/answer key/i.test(rawTitle)) category = "Answer Key";
+          if (/schedule/i.test(rawTitle)) category = "Exam Schedule";
+
+          const cleanName = `AIBE Official Circular: ${rawTitle}`;
+          const exam = /XXII/i.test(rawTitle) ? "All India Bar Examination (AIBE XXII)" : "All India Bar Examination (AIBE)";
+
+          items.push({
+            jurisdiction: "Bar Advocacy & Law",
+            state: "Bar Council of India (BCI)",
+            exam: exam,
+            title: cleanName,
+            url: pdfUrl,
+            date: "19 Oct 2026",
+            category: category,
+            priority: category === "Result" || category === "Admit Card" || category === "Notification / Recruitment" ? "CRITICAL" : "HIGH",
+            marketingAction: generateMarketingHook(category, exam),
+            hash: generateHash(cleanName, pdfUrl),
+            isLegalTrack: true,
+            routedTo: "PW Judiciary Wallah"
+          });
+        }
+      }
+    }
+  } catch (e) {
+    console.error("Error scraping AIBE official portal:", e.message);
+  }
+
+  // Tier 2A: Direct Official IBPS CRP Specialist Officers (Law Officer Scale I)
+  try {
+    const ibpsHtml = await fetchHtml("https://www.ibps.in/index.php/specialist-officers-xvi/", 15000);
+    const linkMatches = ibpsHtml.match(/<a[^>]+href=[\'\"][^\'\"]*[\'\"][^>]*>[\s\S]*?<\/a>/gi) || [];
+    for (const raw of linkMatches) {
+      if (items.filter(i => i.exam && i.exam.includes("IBPS")).length >= 3) break;
+      const title = cleanText(raw);
+      const href = (raw.match(/href=[\'\"]([^\'\"]*)[\'\"]/) || [])[1];
+      if (!title || !href || title.length < 10) continue;
+      if (/crp\s*[-–]?\s*spl|specialist\s+officer|law\s+officer|preliminary|corrigendum/i.test(title) && !/elementor|guidelines|faq/i.test(title)) {
+        if (!items.some(i => i.title === title || i.url === href)) {
+          const category = classifyCategory(title);
+          const exam = "IBPS SO (Law Officer)";
+          items.push({
+            jurisdiction: "Bar Advocacy & Law",
+            state: "Institute of Banking Personnel Selection (IBPS)",
+            exam: exam,
+            title: title,
+            url: href,
+            date: "19 Oct 2026",
+            category: category,
+            priority: category === "Result" || category === "Admit Card" || category === "Notification / Recruitment" ? "CRITICAL" : "HIGH",
+            marketingAction: generateMarketingHook(category, exam),
+            hash: generateHash(title, href),
+            isLegalTrack: true,
+            routedTo: "PW Judiciary Wallah"
+          });
+        }
+      }
+    }
+  } catch (e) {
+    console.error("Error scraping direct IBPS portal:", e.message);
+  }
+
+  // Tier 2B: Direct Official SEBI Careers (Officer Grade A Legal Stream)
+  try {
+    const sebiHtml = await fetchHtml("https://www.sebi.gov.in/sebiweb/about/AboutAction.do?doVacancies=yes", 15000);
+    const linkMatches = sebiHtml.match(/<a[^>]+href=[\'\"][^\'\"]*[\'\"][^>]*>[\s\S]*?<\/a>/gi) || [];
+    for (const raw of linkMatches) {
+      if (items.filter(i => i.exam && i.exam.includes("SEBI")).length >= 3) break;
+      const title = cleanText(raw);
+      let href = (raw.match(/href=[\'\"]([^\'\"]*)[\'\"]/) || [])[1];
+      if (!title || !href || title.length < 15) continue;
+      if (/grade\s*[\'\"’]?a[\'\"’]?|legal\s+stream|officer\s+grade\s*a/i.test(title) && !/functions|departments|recreational/i.test(title)) {
+        if (href.startsWith("/")) href = "https://www.sebi.gov.in" + href;
+        if (!items.some(i => i.title === title || i.url === href)) {
+          const category = classifyCategory(title);
+          const exam = "SEBI Grade A (Legal)";
+          items.push({
+            jurisdiction: "Bar Advocacy & Law",
+            state: "Securities and Exchange Board of India (SEBI)",
+            exam: exam,
+            title: title,
+            url: href,
+            date: "19 Oct 2026",
+            category: category,
+            priority: category === "Result" || category === "Admit Card" || category === "Notification / Recruitment" ? "CRITICAL" : "HIGH",
+            marketingAction: generateMarketingHook(category, exam),
+            hash: generateHash(title, href),
+            isLegalTrack: true,
+            routedTo: "PW Judiciary Wallah"
+          });
+        }
+      }
+    }
+  } catch (e) {
+    console.error("Error scraping direct SEBI portal:", e.message);
+  }
+
+  // Tier 2C: Direct Banking & Regulatory Legal Streams (Real-Time Fallback & Breaking News)
+  try {
+    const regQuery = "https://news.google.com/rss/search?q=(%22IBPS+SO%22+OR+%22SEBI+Grade+A%22)+AND+(Law+OR+Legal)+when:30d&hl=en-IN&gl=IN&ceid=IN:en";
+    const regRes = await fetchHtml(regQuery, 15000);
     const itemRegex = /<item>[\s\S]*?<title>([\s\S]*?)<\/title>[\s\S]*?<link>([\s\S]*?)<\/link>[\s\S]*?<pubDate>([\s\S]*?)<\/pubDate>[\s\S]*?<\/item>/gi;
     let match;
-    while ((match = itemRegex.exec(feedRes)) !== null && items.length < 8) {
+    while ((match = itemRegex.exec(regRes)) !== null && items.length < 15) {
       let title = cleanText(match[1]).replace(/ - [^-]+$/g, "").trim();
       const link = match[2].trim();
       const pubDate = match[3].trim();
@@ -538,21 +677,12 @@ async function scrapeBarAdvocacyAndAIBE() {
 
       if (title.length > 5 && !items.some(i => i.title === title || i.url === link)) {
         const category = classifyCategory(title);
-        let state = "Bar Council / Regulatory";
-        let exam = "Legal Advocacy & Bar Qualification";
+        let exam = "SEBI Grade A (Legal)";
+        let state = "Securities and Exchange Board of India (SEBI)";
 
-        if (/aibe|all india bar/i.test(title)) {
-          state = "Bar Council of India (BCI)";
-          exam = "All India Bar Examination (AIBE)";
-        } else if (/bar council/i.test(title)) {
-          state = "Bar Council of India (BCI)";
-          exam = "Bar Council Regulatory / Enrolment";
-        } else if (/advocate on record|aor/i.test(title)) {
-          state = "Supreme Court of India (SCI)";
-          exam = "Supreme Court Advocate-on-Record (AOR)";
-        } else if (/law officer|sebi|ibps|rbi/i.test(title)) {
-          state = "Regulatory / PSU Legal";
-          exam = "Law Officer Recruitment";
+        if (/ibps/i.test(title)) {
+          exam = "IBPS SO (Law Officer)";
+          state = "Institute of Banking Personnel Selection (IBPS)";
         }
 
         items.push({
@@ -565,12 +695,57 @@ async function scrapeBarAdvocacyAndAIBE() {
           category: category,
           priority: category === "Result" || category === "Admit Card" || category === "Notification / Recruitment" ? "CRITICAL" : "HIGH",
           marketingAction: generateMarketingHook(category, exam),
-          hash: generateHash(title, link)
+          hash: generateHash(title, link),
+          isLegalTrack: true,
+          routedTo: "PW Judiciary Wallah"
         });
       }
     }
   } catch (e) {
-    console.error("Error scraping Bar Advocacy & AIBE:", e.message);
+    console.error("Error scraping Regulatory Law news feed:", e.message);
+  }
+
+  // Tier 3: Bar Council of India, Supreme Court AOR & General Bar Admissions
+  try {
+    const barQuery = "https://news.google.com/rss/search?q=(%22All+India+Bar+Examination%22+OR+%22AIBE%22+OR+%22Bar+Council+of+India%22+OR+%22Advocate+on+Record%22)+AND+(Exam+OR+Admit+Card+OR+Result+OR+Registration+OR+Notification)+when:30d&hl=en-IN&gl=IN&ceid=IN:en";
+    const barRes = await fetchHtml(barQuery, 15000);
+    const itemRegex = /<item>[\s\S]*?<title>([\s\S]*?)<\/title>[\s\S]*?<link>([\s\S]*?)<\/link>[\s\S]*?<pubDate>([\s\S]*?)<\/pubDate>[\s\S]*?<\/item>/gi;
+    let match;
+    while ((match = itemRegex.exec(barRes)) !== null && items.length < 18) {
+      let title = cleanText(match[1]).replace(/ - [^-]+$/g, "").trim();
+      const link = match[2].trim();
+      const pubDate = match[3].trim();
+
+      if (/celebrity|gta|trailer|party/i.test(title)) continue;
+
+      if (title.length > 5 && !items.some(i => i.title === title || i.url === link)) {
+        const category = classifyCategory(title);
+        let state = "Bar Council of India (BCI)";
+        let exam = "All India Bar Examination (AIBE)";
+
+        if (/advocate on record|aor/i.test(title)) {
+          state = "Supreme Court of India (SCI)";
+          exam = "Supreme Court Advocate-on-Record (AOR)";
+        }
+
+        items.push({
+          jurisdiction: "Bar Advocacy & Law",
+          state: state,
+          exam: exam,
+          title: title,
+          url: link,
+          date: pubDate ? pubDate.split(" ").slice(1, 4).join(" ") : "",
+          category: category,
+          priority: category === "Result" || category === "Admit Card" || category === "Notification / Recruitment" ? "CRITICAL" : "HIGH",
+          marketingAction: generateMarketingHook(category, exam),
+          hash: generateHash(title, link),
+          isLegalTrack: true,
+          routedTo: "PW Judiciary Wallah"
+        });
+      }
+    }
+  } catch (e) {
+    console.error("Error scraping BCI/AOR news feed:", e.message);
   }
 
   return items;
@@ -719,6 +894,77 @@ async function scrapeMPSC() {
   return items;
 }
 
+// Smart Cross-Commission Legal Router
+// If any commission (BPSC, UPPSC, HPSC, OPSC, MPPSC, RPSC, MPSC, etc.) issues a notice containing
+// Judicial Service, Civil Judge, APO, ADPO, ADA, APP, JLO, or Regulatory Law,
+// automatically tag and route it to PW Judiciary Wallah with law-specific campaign playbooks.
+function applySmartLegalRouting(item) {
+  if (!item) return item;
+  const title = (item.title || '').trim();
+  const rawExam = (item.exam || '').trim();
+  const jur = (item.jurisdiction || '').toUpperCase();
+  const fullText = `${jur} ${rawExam} ${title}`;
+
+  // Broad legal keywords detection
+  const isJudicial = /judicial service|civil judge|\bpcs-j\b|\bpcs\s*\(j\)\b|\bmjs\b|\bbjs\b|\bojs\b|\bupjs\b|hcs\s*\(jb\)|hcs\s*judicial|district judge|higher judicial|\bhjs\b|\bcjjd\b|\bjmfc\b/i.test(fullText);
+  const isAda = /\bada\b|assistant district attorney|superintendent\s*\(legal\)/i.test(fullText);
+  const isApo = /\bapo\b|assistant prosecution officer/i.test(fullText);
+  const isAdpo = /\badpo\b|assistant district public prosecution/i.test(fullText);
+  const isApp = /\bapp\b|assistant public prosecutor|public prosecutor/i.test(fullText);
+  const isJlo = /\bjlo\b|junior legal officer/i.test(fullText);
+  const isAibe = /\baibe\b|all india bar examination|bar council|bci\b|advocate-on-record|advocate on record/i.test(fullText);
+  const isRegulatoryLaw = /(sebi.*legal|ibps.*law|law officer|scale.*law|specialist.*law)/i.test(fullText);
+  const isGeneralLaw = (/\blegal\b|\blaw\b/i.test(fullText)) && !/law and order/i.test(fullText);
+
+  const isLegalTrack = isJudicial || isAda || isApo || isAdpo || isApp || isJlo || isAibe || isRegulatoryLaw || isGeneralLaw;
+
+  if (isLegalTrack) {
+    item.isLegalTrack = true;
+    item.routedTo = 'PW Judiciary Wallah';
+
+    // Cross-Commission Exam Refinement
+    if (jur.includes('BPSC') || /bihar/i.test(fullText)) {
+      if (isApo || isApp) item.exam = 'Bihar Assistant Prosecution Officer (APO)';
+      else if (isJudicial) item.exam = 'Bihar Judicial Service (PCS-J)';
+    } else if (jur.includes('UPPSC') || /uttar pradesh|up\b/i.test(fullText)) {
+      if (isApo) item.exam = 'UP Assistant Prosecution Officer (APO)';
+      else if (isJudicial) item.exam = 'UP Civil Judge (PCS-J)';
+    } else if (jur.includes('HPSC') || /haryana/i.test(fullText)) {
+      if (isAda) item.exam = 'Haryana Assistant District Attorney (ADA)';
+      else if (isJudicial) item.exam = 'Haryana Civil Judge (Junior Division)';
+    } else if (jur.includes('OPSC') || /odisha/i.test(fullText)) {
+      if (isApp || isApo) item.exam = 'Odisha Assistant Public Prosecutor (APP)';
+      else if (isJudicial) item.exam = 'Odisha Judicial Service (OJS)';
+    } else if (jur.includes('MPPSC') || /madhya pradesh|\bmp\b/i.test(fullText)) {
+      if (isAdpo || isApo) item.exam = 'MP Assistant District Public Prosecution Officer (ADPO)';
+      else if (isJudicial) item.exam = 'MP Civil Judge';
+    } else if (jur.includes('RPSC') || /rajasthan/i.test(fullText)) {
+      if (isJlo) item.exam = 'Rajasthan Junior Legal Officer (JLO)';
+      else if (isApp) item.exam = 'Rajasthan Assistant Public Prosecutor (APP)';
+      else if (isJudicial) item.exam = 'Rajasthan Judicial Service (RJS)';
+    } else if (jur.includes('MPSC') || /maharashtra/i.test(fullText)) {
+      if (isJudicial) item.exam = 'Maharashtra Judicial Service (CJJD / JMFC)';
+    } else if (isAibe) {
+      if (!item.exam || item.exam.includes('Recruitment')) item.exam = 'All India Bar Examination (AIBE)';
+    } else if (isRegulatoryLaw) {
+      if (/ibps/i.test(fullText)) item.exam = 'IBPS SO (Law Officer)';
+      else item.exam = 'SEBI Grade A (Legal)';
+    }
+
+    // Generate Law-Specific Campaign Playbook
+    item.marketingAction = generateMarketingHook(item.category, item.exam);
+
+    // Escalate priority for all legal notices so Judiciary Wallah never misses one
+    if (item.priority !== 'CRITICAL') {
+      item.priority = (item.category === 'Result' || item.category === 'Admit Card' || item.category === 'Notification / Recruitment') 
+        ? 'CRITICAL' 
+        : 'HIGH';
+    }
+  }
+
+  return item;
+}
+
 // Master Runner
 async function runAllOfficialScrapers() {
   console.log('===============================================================');
@@ -794,6 +1040,13 @@ async function runAllOfficialScrapers() {
   console.log(`🎯 TOTAL OFFICIAL NOTICES EXTRACTED: ${allUpdates.length}`);
   console.log('===============================================================');
 
+  // Smart Cross-Commission Legal Router: Route all legal updates to PW Judiciary Wallah
+  for (let i = 0; i < allUpdates.length; i++) {
+    allUpdates[i] = applySmartLegalRouting(allUpdates[i]);
+  }
+  const legalNoticesCount = allUpdates.filter(n => n.routedTo === 'PW Judiciary Wallah').length;
+  console.log(`⚖️ Smart Legal Router Active: ${legalNoticesCount} notices tagged & routed to PW Judiciary Wallah with law campaign playbooks.\n`);
+
   const fs = require('fs');
   const path = require('path');
   const cacheFile = path.join(__dirname, 'seen_hashes.json');
@@ -850,8 +1103,8 @@ async function runAllOfficialScrapers() {
         "OPSC (Odisha)",
         "MPSC (Maharashtra)",
         "Pan-India Judiciary (High Courts & SCI)",
-        "ADA & State Prosecution (HPSC, PPSC, APO)",
-        "Bar Advocacy & Legal Qualification (AIBE / BCI)"
+        "ADA & State Prosecution (HPSC, PPSC, APO, ADPO)",
+        "Bar Advocacy & Regulatory Law (AIBE, SEBI Legal, IBPS SO Law)"
       ],
       notices: finalNotices
     };
@@ -937,10 +1190,13 @@ function sendTelegramNotice(item, tokenOverride = null) {
     const priorityBadge = item.priority === "CRITICAL" ? "🚨 <b>CRITICAL NEW EXAM NOTICE</b>" : (item.priority === "HIGH" ? "⚠️ <b>HIGH PRIORITY CIRCULAR</b>" : "📢 <b>NEW OFFICIAL CIRCULAR</b>");
     const stateName = item.state || item.jurisdiction;
 
+    const verticalLine = item.routedTo ? `⚖️ <b>Routed Vertical:</b> <b>${escapeHtml(item.routedTo)}</b>\n` : '';
+
     const text =
       `${priorityBadge}\n` +
       `━━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
       `🏛️ <b>Commission / Body:</b> ${escapeHtml(item.jurisdiction)} (${escapeHtml(stateName)})\n` +
+      verticalLine +
       `📌 <b>Exam / Role:</b> ${escapeHtml(item.exam)}\n` +
       `🏷️ <b>Category:</b> <b>${escapeHtml(item.category)}</b>\n\n` +
       `📋 <b>Notice Headline:</b>\n<b>${escapeHtml(cleanHead)}</b>\n\n` +
@@ -1057,6 +1313,7 @@ module.exports = {
   scrapePanIndiaJudiciary,
   scrapeADAAndProsecution,
   scrapeBarAdvocacyAndAIBE,
+  applySmartLegalRouting,
   sendTelegramNotice,
   runAllOfficialScrapers
 };

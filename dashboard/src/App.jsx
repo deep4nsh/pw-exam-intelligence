@@ -59,6 +59,7 @@ function getCommissionMeta(jurisdiction = '') {
 
 const JURISDICTION_FILTERS = [
   'All',
+  'PW Judiciary Wallah',
   'Pan-India Judiciary',
   'ADA & Prosecution',
   'Bar Advocacy & Law',
@@ -116,7 +117,9 @@ export default function App() {
   const countsByJurisdiction = useMemo(() => {
     const counts = { All: allNotices.length };
     JURISDICTION_FILTERS.forEach((j) => {
-      if (j !== 'All') {
+      if (j === 'PW Judiciary Wallah') {
+        counts[j] = allNotices.filter((n) => n.routedTo === 'PW Judiciary Wallah' || n.isLegalTrack).length;
+      } else if (j !== 'All') {
         counts[j] = allNotices.filter((n) =>
           n.jurisdiction?.toLowerCase().includes(j.toLowerCase())
         ).length;
@@ -128,8 +131,12 @@ export default function App() {
   // Filtering
   const filteredNotices = useMemo(() => {
     return allNotices.filter((item) => {
-      // Jurisdiction filter
-      if (
+      // Jurisdiction / Vertical filter
+      if (selectedJurisdiction === 'PW Judiciary Wallah') {
+        if (item.routedTo !== 'PW Judiciary Wallah' && !item.isLegalTrack) {
+          return false;
+        }
+      } else if (
         selectedJurisdiction !== 'All' &&
         !item.jurisdiction?.toLowerCase().includes(selectedJurisdiction.toLowerCase())
       ) {
@@ -468,6 +475,25 @@ export default function App() {
                         <span className={`tag-commission ${meta.cssClass}`}>
                           {meta.icon} {meta.name} • {meta.state}
                         </span>
+                        {item.routedTo && (
+                          <span
+                            className="tag-routed"
+                            style={{
+                              background: '#fdf2f8',
+                              color: '#be185d',
+                              border: '1px solid #fbcfe8',
+                              padding: '2px 8px',
+                              borderRadius: '4px',
+                              fontSize: '11px',
+                              fontWeight: 600,
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              gap: '4px'
+                            }}
+                          >
+                            ⚖️ {item.routedTo}
+                          </span>
+                        )}
                         <span className="tag-category">{item.category}</span>
                       </div>
                       <span className={`tag-priority ${priorityTagClass}`}>
@@ -574,7 +600,14 @@ export default function App() {
                       </td>
                       <td>
                         <div className="table-title">{item.title}</div>
-                        <div className="table-exam">{item.exam}</div>
+                        <div className="table-exam">
+                          {item.exam}
+                          {item.routedTo && (
+                            <span style={{ marginLeft: '8px', fontSize: '11px', color: '#be185d', fontWeight: 600 }}>
+                              ⚖️ {item.routedTo}
+                            </span>
+                          )}
+                        </div>
                       </td>
                       <td>
                         <span className="tag-category">{item.category}</span>
