@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-10-23T15:08:27.779Z",
+  "lastUpdated": "2026-10-23T19:11:31.528Z",
   "totalNotices": 94,
   "commissionsCovered": [
     "BPSC (Bihar)",
@@ -669,6 +669,20 @@
     },
     {
       "jurisdiction": "ADA & Prosecution",
+      "state": "Haryana (HPSC)",
+      "exam": "Haryana Assistant District Attorney (ADA)",
+      "title": "Punjab and Haryana High Court stays Assistant District Attorney recruitment",
+      "url": "https://news.google.com/rss/articles/CBMivgFBVV95cUxNN0VmVVBBRWtSV2ZvUURabXh2U2ZrLWVHekYzUUVtUWRIRDRBODl3STZyRXk3S3ExeV9MZFVKdVowSDBOcXowNFJEd2swZnZTX3h0UVgzRG1TUk9jR1RwQlhzTHlhZmhPNlkxUjdCOG9TWkJmM19pUklrSDMzOVdjLVJjVXMwZGlIejBHcXBFYXM0V0J3ZlU0aVlhMjBBMlFwUUVqNnl0VHRGR04wQTBDeC1WVFBtVUR6b3BzOGVn0gHCAUFVX3lxTE0yVVF0TVhXUmlTeGVCcThOT0Z5dERUeFFucTlwb21DRGNSUE1fY2JoeXJaQmJadjB1RWZERzRoNU1iMng2eEk5Yk00SDNucVJ1NnVYQ01nUm9fT2pNbFNncXB1RmUzczVXaE9lUlNHTmZGN2ZRZE9fcjNEeVdhQjVJVzR1eFRBZVNpYjBSNXk0TjVUcmRXU0lLTGk4bDBHNEJUZ3A1UUtQaGp5WFlrWFoyTm1MQTZUbGgyd3F4UWJoYUJB?oc=5",
+      "date": "16 Sep 2026",
+      "category": "Notification / Recruitment",
+      "priority": "CRITICAL",
+      "marketingAction": "Urgent: Launch ADA Target Screening Batch, announce bare act marathon & live syllabus breakdown.",
+      "hash": "e6f0d366c5944658a064",
+      "isLegalTrack": true,
+      "routedTo": "PW Judiciary Wallah"
+    },
+    {
+      "jurisdiction": "ADA & Prosecution",
       "state": "Punjab (PPSC / PSSSB)",
       "exam": "Punjab Assistant District Attorney (ADA)",
       "title": "PSSSB ADA Exam Date 2026 Out at sssb.punjab.gov.in, Check Exam Schedule Details",
@@ -711,20 +725,6 @@
     },
     {
       "jurisdiction": "ADA & Prosecution",
-      "state": "Haryana (HPSC)",
-      "exam": "Haryana Assistant District Attorney (ADA)",
-      "title": "HC clears HPSC ADA recruitment, mandates 50 per cent law questions in screening test",
-      "url": "https://news.google.com/rss/articles/CBMixAFBVV95cUxNYlRfaHp5dFhIX2FvYmY3UTRQa2tndWFTdnBleDBZbW9KWWx3XzMyejBSTExIaGpWUENuT3Z0S0JSZDN5TlJTVVlKM25lNmhmVjBuaVc3VkJ5eXhyLTRhX1dfaE9ZUjVJaV9KeEVPanpGRzZfY05iYk9tUWQ4TXNiZXZaY0RSUkdHdkVEV3c3Y1p4SXB2RGJHcGhjSkRBdmZHZEtVMUJnUzdYY0ZvaUdQTTdraDcyV0xRNV96WHpHRGdlU2Y50gHIAUFVX3lxTE9HMjVaMUl6ZTNveVRHRk9FUlM3UzQxVG9hTEc4VjRPak5EQ09JYTNva2tXcDJSQl9STHJIN094VmxpOWlIYWo5MVBKX1RSTkxhdXkyR2xNdUJrRDZMZGUzTkVkV2d5cXV5UlNMdUFtVVY4N3pYanJfcUpWNkVaUEpIRVdpckZpLWpHNmdnZnRCa3lFYjB4bjZkMHZhSjZqZ1dTbWRoSkRDTlZNQVVFU2pXMmxOX09remtUSnhPdjFxNHY2bzg5VlJV?oc=5",
-      "date": "30 Apr 2026",
-      "category": "Notification / Recruitment",
-      "priority": "CRITICAL",
-      "marketingAction": "Urgent: Launch ADA Target Screening Batch, announce bare act marathon & live syllabus breakdown.",
-      "hash": "b73c33e3199fd24590a6",
-      "isLegalTrack": true,
-      "routedTo": "PW Judiciary Wallah"
-    },
-    {
-      "jurisdiction": "ADA & Prosecution",
       "state": "Punjab (PPSC / PSSSB)",
       "exam": "Punjab Assistant District Attorney (ADA)",
       "title": "Punjab ADA Recruitment 2026, Exam Date (Out), Selection Process, Salary",
@@ -748,6 +748,20 @@
       "priority": "CRITICAL",
       "marketingAction": "Share updated prosecution syllabus & previous year paper analysis on PW Judiciary channel.",
       "hash": "d5423382144db4757556",
+      "isLegalTrack": true,
+      "routedTo": "PW Judiciary Wallah"
+    },
+    {
+      "jurisdiction": "ADA & Prosecution",
+      "state": "Haryana (HPSC)",
+      "exam": "Haryana Assistant District Attorney (ADA)",
+      "title": "HC clears HPSC ADA recruitment, mandates 50 per cent law questions in screening test",
+      "url": "https://news.google.com/rss/articles/CBMixAFBVV95cUxNYlRfaHp5dFhIX2FvYmY3UTRQa2tndWFTdnBleDBZbW9KWWx3XzMyejBSTExIaGpWUENuT3Z0S0JSZDN5TlJTVVlKM25lNmhmVjBuaVc3VkJ5eXhyLTRhX1dfaE9ZUjVJaV9KeEVPanpGRzZfY05iYk9tUWQ4TXNiZXZaY0RSUkdHdkVEV3c3Y1p4SXB2RGJHcGhjSkRBdmZHZEtVMUJnUzdYY0ZvaUdQTTdraDcyV0xRNV96WHpHRGdlU2Y50gHIAUFVX3lxTE9HMjVaMUl6ZTNveVRHRk9FUlM3UzQxVG9hTEc4VjRPak5EQ09JYTNva2tXcDJSQl9STHJIN094VmxpOWlIYWo5MVBKX1RSTkxhdXkyR2xNdUJrRDZMZGUzTkVkV2d5cXV5UlNMdUFtVVY4N3pYanJfcUpWNkVaUEpIRVdpckZpLWpHNmdnZnRCa3lFYjB4bjZkMHZhSjZqZ1dTbWRoSkRDTlZNQVVFU2pXMmxOX09remtUSnhPdjFxNHY2bzg5VlJV?oc=5",
+      "date": "30 Apr 2026",
+      "category": "Notification / Recruitment",
+      "priority": "CRITICAL",
+      "marketingAction": "Urgent: Launch ADA Target Screening Batch, announce bare act marathon & live syllabus breakdown.",
+      "hash": "b73c33e3199fd24590a6",
       "isLegalTrack": true,
       "routedTo": "PW Judiciary Wallah"
     },
@@ -818,20 +832,6 @@
       "priority": "HIGH",
       "marketingAction": "Highlight ADA exam pattern changes (50%+ law syllabus weightage) and share free test series.",
       "hash": "acc3bba34331e2adaa0d",
-      "isLegalTrack": true,
-      "routedTo": "PW Judiciary Wallah"
-    },
-    {
-      "jurisdiction": "ADA & Prosecution",
-      "state": "Madhya Pradesh (MPPSC)",
-      "exam": "MP Assistant District Public Prosecution Officer (ADPO)",
-      "title": "CBI APP Recruitment 2026 Notification (Out), Vacancies &amp; Apply Online, Selection Process",
-      "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTE5PQ05hTWhLNk5hVUlvNHdJeXc4VHZpUFpRbHlfajd4OThXNlVPTkc4UkF1LW5GdjlKZThjU05xT3FiRjljazNaUTM1dXJocTlJMkt1Wk1aVnBfZUFkUU9uaGtxY2pVeHVHYXpSbw?oc=5",
-      "date": "18 Jun 2026",
-      "category": "Notification / Recruitment",
-      "priority": "CRITICAL",
-      "marketingAction": "Host live Prosecution batch launch; emphasize Criminal Major Acts (CrPC/BNSS, IPC/BNS, BSA).",
-      "hash": "1495db23afefafbe4f49",
       "isLegalTrack": true,
       "routedTo": "PW Judiciary Wallah"
     },
