@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-10-27T23:11:28.075Z",
+  "lastUpdated": "2026-10-28T02:16:48.987Z",
   "totalNotices": 87,
   "commissionsCovered": [
     "BPSC (Bihar)",
@@ -573,6 +573,18 @@
     },
     {
       "jurisdiction": "Pan-India Judiciary",
+      "state": "Rajasthan High Court (HCRAJ)",
+      "exam": "Rajasthan High Court Recruitment",
+      "title": "Rajasthan High Court Stenographer Admit Card 2026 released at hcraj.nic.in for 163 posts; download here",
+      "url": "https://news.google.com/rss/articles/CBMiiwJBVV95cUxOcVNTVUh2ZzlQOUpnQllrSzBJbzRYNEFPdFFocVNQajVXZDdzQmE3aVhJMHRQcWE4SmZGTWRZZGFORGc1Yk5oNnU3UGhIYThjSDNPYUxOSDBzUmEzY01sZW9LYmp5a3VYLUZ4X2ZPOG1wN0xkSVZuZzZMQTNhRGI1MURRRFRJU0Ntd3p6NkR6TDlVNHJXeUxrZGppVkFVVnhQOVlPUzRydnFRS3RWZDY2SUoxdTJ0LVBiZWRiM3d3UDZWZmRjdUhDTmo2a1dNLUhoeklvUkJXWFJrTHNnVWY3bG1ORVpfMmZrbzZEbVR4Y05HV3NHNE03V0o4dTVqUjZfNVhqX04xb2xZWU3SAZACQVVfeXFMTTBnSXBpQjljb29kV1ZDeWlWMC1zZUEyTEliOVE4SVFyLUF3SHhaR0JCSm51bnBwOEZWTXhZOGhYMXd4ZXdyQzVlNU1jXzg4RUxTbEgxeHJIMzBMQzc1RUZlNFJ4emM4cWg0eFp3aUxfT21URTNrRWhOTTFqdnZEVzRfT3UwV1pEYzZzVENLUkxpd19FSnI2N1FtNGE1NFdSX0djN2RCRTZEbGY3SnhVRzliTE5RbFg3eG42eWF3ZlRQczVYX1pVWmx3TjNEcHBUeHdNcUZ0WWhFX1lZSmQtZkRyR3IxQlFRTUItTlR4ckE3dnRfckN3bnlGRmlWWU50SWJQNnJ4TUJSUFEyTGlWSno?oc=5",
+      "date": "13 Oct 2026",
+      "category": "Admit Card",
+      "priority": "CRITICAL",
+      "marketingAction": "Blast student app push notification with direct download instructions; launch 7-day revision marathon.",
+      "hash": "6634e34f92f5efb8179e"
+    },
+    {
+      "jurisdiction": "Pan-India Judiciary",
       "state": "Delhi High Court (DHC)",
       "exam": "Delhi Judicial Service (DJS)",
       "title": "Age Relaxation Notification Cannot Override Separate MCD Recruitment Rules: Delhi High Court",
@@ -584,18 +596,6 @@
       "hash": "dc17c64273392f9d24bf",
       "isLegalTrack": true,
       "routedTo": "PW Judiciary Wallah"
-    },
-    {
-      "jurisdiction": "Pan-India Judiciary",
-      "state": "Rajasthan High Court (HCRAJ)",
-      "exam": "Rajasthan High Court Recruitment",
-      "title": "Rajasthan High Court Stenographer Admit Card 2026 released at hcraj.nic.in for 163 posts; download here",
-      "url": "https://news.google.com/rss/articles/CBMiiwJBVV95cUxOcVNTVUh2ZzlQOUpnQllrSzBJbzRYNEFPdFFocVNQajVXZDdzQmE3aVhJMHRQcWE4SmZGTWRZZGFORGc1Yk5oNnU3UGhIYThjSDNPYUxOSDBzUmEzY01sZW9LYmp5a3VYLUZ4X2ZPOG1wN0xkSVZuZzZMQTNhRGI1MURRRFRJU0Ntd3p6NkR6TDlVNHJXeUxrZGppVkFVVnhQOVlPUzRydnFRS3RWZDY2SUoxdTJ0LVBiZWRiM3d3UDZWZmRjdUhDTmo2a1dNLUhoeklvUkJXWFJrTHNnVWY3bG1ORVpfMmZrbzZEbVR4Y05HV3NHNE03V0o4dTVqUjZfNVhqX04xb2xZWU3SAZACQVVfeXFMTTBnSXBpQjljb29kV1ZDeWlWMC1zZUEyTEliOVE4SVFyLUF3SHhaR0JCSm51bnBwOEZWTXhZOGhYMXd4ZXdyQzVlNU1jXzg4RUxTbEgxeHJIMzBMQzc1RUZlNFJ4emM4cWg0eFp3aUxfT21URTNrRWhOTTFqdnZEVzRfT3UwV1pEYzZzVENLUkxpd19FSnI2N1FtNGE1NFdSX0djN2RCRTZEbGY3SnhVRzliTE5RbFg3eG42eWF3ZlRQczVYX1pVWmx3TjNEcHBUeHdNcUZ0WWhFX1lZSmQtZkRyR3IxQlFRTUItTlR4ckE3dnRfckN3bnlGRmlWWU50SWJQNnJ4TUJSUFEyTGlWSno?oc=5",
-      "date": "13 Oct 2026",
-      "category": "Admit Card",
-      "priority": "CRITICAL",
-      "marketingAction": "Blast student app push notification with direct download instructions; launch 7-day revision marathon.",
-      "hash": "6634e34f92f5efb8179e"
     },
     {
       "jurisdiction": "ADA & Prosecution",
@@ -650,20 +650,6 @@
       "priority": "HIGH",
       "marketingAction": "Share updated prosecution syllabus & previous year paper analysis on PW Judiciary channel.",
       "hash": "4c10a52f493d4402179b",
-      "isLegalTrack": true,
-      "routedTo": "PW Judiciary Wallah"
-    },
-    {
-      "jurisdiction": "ADA & Prosecution",
-      "state": "Uttar Pradesh (UPPSC)",
-      "exam": "UP Assistant Prosecution Officer (APO)",
-      "title": "UPSC Assistant Public Prosecutor admit card 2025 released at upsc.gov.in: Direct link to download here",
-      "url": "https://news.google.com/rss/articles/CBMiigJBVV95cUxPNUxMRkVqSFU5Q09IZXh5MVJhSElnTTJyS0RXcHVYanVmZmZlUGl3V2dKMndWbWRRaWIzTURIN3ZKMko4Z2JaOWxiLWJ0dG9zMHhNZjJ6em5panRPMkVaUU04SXdrU0J0N0I1Y1RDcGVEWXlaOEJDWEgzSDFLZ0ZLTnVGUURFOTN2RHFuR3VsZlRTSUUwVUFqU2NGM1ExOTdDZnI0bzBsdlJiWXJpNHhLYy1vYnpwV001QTJ3d25nZnN1MUZLVWE5U25keUNDWDlmOTJuamF2Q3k0emU0X3oxVmkxX1pwcGViRGtRMk1fdDBmVUY0d3JRQ20xNlRXV2hENkk0TjRGcnUxUdIBjwJBVV95cUxPUENEYTJfSkZ6aEViVHZXS0lPa2w4akxXXzQzVVdKOTNJQ0VfRnpZRks3X0lNQ2hGa1djM1JrLVFaOTgwMkVPWXNJM01uVXp6RjNXRU1mcy1haDBZMmpuZ1ZBb1BDZmxlQVFuMmRzNXZ3TXFoWktRcVhiZVNBenJuVUhsMlZ1Tzd3WFpaRVpoQmloOWZFMzFiNXliLXBzNGlEcDI1ZjB1ck8zVVJSeFUyVDctLV9LSzJ0WTNsc2RuZmJjbzRXaS0ycFpBYmdESGw3TU05Y2I5S25IRzFIeDZaV3V5ZnlTTF9LalZ4dFJwbFNJM3dDcXA4QmRyQXBkUjQ4dnlROXRxQUxfMTZwQVR3?oc=5",
-      "date": "02 Jan 2026",
-      "category": "Admit Card",
-      "priority": "CRITICAL",
-      "marketingAction": "Share updated prosecution syllabus & previous year paper analysis on PW Judiciary channel.",
-      "hash": "d050cb1785185ec819a4",
       "isLegalTrack": true,
       "routedTo": "PW Judiciary Wallah"
     },
@@ -753,15 +739,29 @@
     },
     {
       "jurisdiction": "ADA & Prosecution",
-      "state": "Odisha (OPSC)",
-      "exam": "Assistant Public Prosecutor (APP)",
-      "title": "OPSC APP Recruitment 2026 Notification Out For 172 Posts, Apply Online",
-      "url": "https://news.google.com/rss/articles/CBMicEFVX3lxTE5yVzl5d0MwV1RRcF9wMG1YOEViTTZoS1BnT3Vuek9Jei03d1ZpeC1XTHBwMjg5b3dSR2E0QU04VlpEVVFCdnhfb1ZoNURfNm1XUUNUeW1vRk9Vb2c0bVpjUUVaSGYwVEZmQ01VbllRQUs?oc=5",
-      "date": "20 Aug 2026",
-      "category": "Notification / Recruitment",
-      "priority": "CRITICAL",
-      "marketingAction": "Host live Prosecution batch launch; emphasize Criminal Major Acts (CrPC/BNSS, IPC/BNS, BSA).",
-      "hash": "dd384cfd696a08bf0257",
+      "state": "Madhya Pradesh (MPPSC)",
+      "exam": "MP Assistant District Public Prosecution Officer (ADPO)",
+      "title": "MP ADPO Syllabus 2026, Check Grade II Exam Pattern",
+      "url": "https://news.google.com/rss/articles/CBMiX0FVX3lxTE9lVEU5bnJvb2dWdXBKbU5xVnJBQkFtQUc4bEJITGZkTm54SGlOSldROHRCR1prVnY3OVRMZERUUXpyaXdIcmx5Z0JvWFFxYkJBUmJuRHNJTHZnemg5czJz?oc=5",
+      "date": "13 Mar 2026",
+      "category": "Important Notice",
+      "priority": "HIGH",
+      "marketingAction": "Share updated prosecution syllabus & previous year paper analysis on PW Judiciary channel.",
+      "hash": "74c61c2298ed0cb6e65a",
+      "isLegalTrack": true,
+      "routedTo": "PW Judiciary Wallah"
+    },
+    {
+      "jurisdiction": "ADA & Prosecution",
+      "state": "Punjab (PPSC / PSSSB)",
+      "exam": "Punjab Assistant District Attorney (ADA)",
+      "title": "Punjab ADA Exam Date 2026 Out, Schedule, Timings, and Exam Day Guidelines",
+      "url": "https://news.google.com/rss/articles/CBMibkFVX3lxTFBaSlZ5QWtmNVVQeTNWN1JBdXkyTGlkcGM2SGFUWThNa1NDTG5jb0lfMm9lTmdpamtNb1hnU3ZTUmRCYUEwa0s5S2NlVE9CR1FGa2dPRGNrZDQyUXNMZUhkYk1mVGpEeEtkMFZHSjJB?oc=5",
+      "date": "16 Jun 2026",
+      "category": "Exam Schedule",
+      "priority": "HIGH",
+      "marketingAction": "Highlight ADA exam pattern changes (50%+ law syllabus weightage) and share free test series.",
+      "hash": "cb2ce596d9c94f56228c",
       "isLegalTrack": true,
       "routedTo": "PW Judiciary Wallah"
     },
