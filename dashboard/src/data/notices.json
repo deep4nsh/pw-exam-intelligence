@@ -1,6 +1,6 @@
 {
-  "lastUpdated": "2026-10-31T02:46:47.222Z",
-  "totalNotices": 91,
+  "lastUpdated": "2026-10-31T08:58:41.243Z",
+  "totalNotices": 93,
   "commissionsCovered": [
     "BPSC (Bihar)",
     "UPPSC (Uttar Pradesh)",
@@ -217,18 +217,6 @@
       "jurisdiction": "MPPSC",
       "state": "Madhya Pradesh",
       "exam": "MPPSC State Recruitment",
-      "title": "MPPSC exam to be held twice a year from 2027, govt to set up 12 medical colleges: CM Yadav",
-      "url": "https://news.google.com/rss/articles/CBMi5wFBVV95cUxNX0tTd1ozUll0Zk5ZeU02LVM2V1J5V0ktdXdYbVJ0UjVFb2NEUTBNSFVQUTJKWXg5eHFTUjh5RmFZWUFwTWtCc1dyYTlyN1Ayc3IyRlI3SnhtdlJPcE5mWXYwc0N4WjBtQTdIMGQ1NFAzaXdyTWozSFNjc21QQzJsRFdHT0NrVHpRcnQtN1d4c3Q0Wkt3VzBoYlg4ajRjcWtHendCNkJfaTMxaE9kMUU2cE5oZTNVWHBGQjA3TUQ2QVE5cDBZSHhYWElPYzBaUVRWY1pKZ0hjXzI1aVZKcl9qaDVVaE9YS2PSAewBQVVfeXFMTi1yOGdkZEtuSTUwV1pNUEUyV3AwS01KZndfdUp1dFhkNEVZYWd3U0JDdHVjdkUwMjZqdnFMcVEtWmctMDFaU2c2el9FZUFNa2l2cWtIWFVzdDdxcTl5UW93Snd4Z1lFZ05ROHF6S0FPYkEyUktBMDJwS1ZKd1VFSFBlVnhtYmFOYzR1TzdsTTN4YlM0clNFODR6YWo3V1R3bEpET3hjN0Zxd1QyRS1mczJVa0R6YzdZaXBqZmZ1c2U3S2ZfVzVSMlNYcTVDSmhFTDJCalZzQVRKWXMtd1ZWNTNWa1cydGZzS3pOWGo?oc=5",
-      "date": "06 Oct 2026",
-      "category": "Important Notice",
-      "priority": "HIGH",
-      "marketingAction": "Review circular details and prepare student guidance/community update.",
-      "hash": "ceeb249fa77c16e9243f"
-    },
-    {
-      "jurisdiction": "MPPSC",
-      "state": "Madhya Pradesh",
-      "exam": "MPPSC State Recruitment",
       "title": "MPPSC exams twice a year from 2027, announces CM Mohan Yadav",
       "url": "https://news.google.com/rss/articles/CBMisgFBVV95cUxQejdPdHd0ZjZrcjVEZGIzTGZEMTQxWF9mbTQxVUYxa05MbkhuTVBCbU9Tc0NIMlAtZ3VMZFVaWWFZLWVnNTBsellKS0xaaGJGeFZac1JxeXl6cGx2SlFISnZCMEEwa0lvM2tTSEx5dWF2cS1GU21Rc3kycWRVek84ZXQzaDFjdVVOZmZhNkNudjVzbHE0ZkxMeXA5Z1BCY1JFUDYxM1psVnJ3d3hpQ2l1a21R?oc=5",
       "date": "07 Oct 2026",
@@ -236,6 +224,18 @@
       "priority": "HIGH",
       "marketingAction": "Review circular details and prepare student guidance/community update.",
       "hash": "7ae12170c1e10d4c3fb5"
+    },
+    {
+      "jurisdiction": "MPPSC",
+      "state": "Madhya Pradesh",
+      "exam": "MPPSC State Recruitment",
+      "title": "MPPSC exam to be held twice a year from 2027, govt to set up 12 medical colleges: CM Yadav",
+      "url": "https://news.google.com/rss/articles/CBMi5wFBVV95cUxNX0tTd1ozUll0Zk5ZeU02LVM2V1J5V0ktdXdYbVJ0UjVFb2NEUTBNSFVQUTJKWXg5eHFTUjh5RmFZWUFwTWtCc1dyYTlyN1Ayc3IyRlI3SnhtdlJPcE5mWXYwc0N4WjBtQTdIMGQ1NFAzaXdyTWozSFNjc21QQzJsRFdHT0NrVHpRcnQtN1d4c3Q0Wkt3VzBoYlg4ajRjcWtHendCNkJfaTMxaE9kMUU2cE5oZTNVWHBGQjA3TUQ2QVE5cDBZSHhYWElPYzBaUVRWY1pKZ0hjXzI1aVZKcl9qaDVVaE9YS2PSAewBQVVfeXFMTi1yOGdkZEtuSTUwV1pNUEUyV3AwS01KZndfdUp1dFhkNEVZYWd3U0JDdHVjdkUwMjZqdnFMcVEtWmctMDFaU2c2el9FZUFNa2l2cWtIWFVzdDdxcTl5UW93Snd4Z1lFZ05ROHF6S0FPYkEyUktBMDJwS1ZKd1VFSFBlVnhtYmFOYzR1TzdsTTN4YlM0clNFODR6YWo3V1R3bEpET3hjN0Zxd1QyRS1mczJVa0R6YzdZaXBqZmZ1c2U3S2ZfVzVSMlNYcTVDSmhFTDJCalZzQVRKWXMtd1ZWNTNWa1cydGZzS3pOWGo?oc=5",
+      "date": "06 Oct 2026",
+      "category": "Important Notice",
+      "priority": "HIGH",
+      "marketingAction": "Review circular details and prepare student guidance/community update.",
+      "hash": "ceeb249fa77c16e9243f"
     },
     {
       "jurisdiction": "MPPSC",
@@ -320,6 +320,30 @@
       "priority": "HIGH",
       "marketingAction": "Review circular details and prepare student guidance/community update.",
       "hash": "cb6da097083db8b8dcf3"
+    },
+    {
+      "jurisdiction": "RPSC",
+      "state": "Rajasthan",
+      "exam": "RPSC State Recruitment",
+      "title": "Press Note(s) section",
+      "url": "https://news.google.com/rss/articles/CBMiZ0FVX3lxTFBUSDZobDAycU5ra1JnRnF6Vk1feXN5UldpNGdBWDRNVjZRLWN0UHE2N2pCN0dyS2JFdldGd1ZrNDQ4RWxoZ2lXWjBFMFJOXzhkd0tzcGNBR1J2TEFJbF95c09wSGxST3M?oc=5",
+      "date": "26 Oct 2026",
+      "category": "Important Notice",
+      "priority": "HIGH",
+      "marketingAction": "Review circular details and prepare student guidance/community update.",
+      "hash": "1971720d39ae2c8dd2e6"
+    },
+    {
+      "jurisdiction": "RPSC",
+      "state": "Rajasthan",
+      "exam": "RPSC State Recruitment",
+      "title": "Exam Dashboard",
+      "url": "https://news.google.com/rss/articles/CBMiXEFVX3lxTFBSRXFLMjRrR2QwcHNmRVpJWUt0Q2laaV8xU1ZvVWkwYUN2SFRzSENiRFdSX19BVFNiLTlWMjJETzRmZkxjZVQyLVZNZFlIZVU1cl80UTIzMHdOMmdU?oc=5",
+      "date": "09 Jul 2016",
+      "category": "Important Notice",
+      "priority": "HIGH",
+      "marketingAction": "Review circular details and prepare student guidance/community update.",
+      "hash": "7f71fc59703b5e6eacf8"
     },
     {
       "jurisdiction": "RPSC",
@@ -991,13 +1015,13 @@
       "jurisdiction": "Bar Advocacy & Law",
       "state": "Securities and Exchange Board of India (SEBI)",
       "exam": "SEBI Grade A (Legal)",
-      "title": "SEBI Grade A recruitment 2026: Eligibility rules changed, check who can apply",
-      "url": "https://news.google.com/rss/articles/CBMi0wFBVV95cUxNNHk2OGdHbEcwZVdIZnF5b2pudWZHcXRoVU9GS0loLVpsamJyMTRZWlhteG5ySnd1bE11dTFOMmh0N1FURnNwbjZfYTJnVVNHZDI1Ty1lZXZ6eUJ3anZ4d3o2a1d6RVJYTnpBU1ZxcDZmV0ZSOHhIQ3hlQXFoYU5LWl91T2p4MWNBVFh5YUp2cF9rUFNvUmVsVmtOZndKZ3FKTFBZMzI2UVRJbFVpMW54MVBQWi1jSW5iWDR2MkhiSlNsY0lfVXdrNlpjbmhmNUJOd3hJ?oc=5",
+      "title": "SEBI Grade A Recruitment 2026: Eligibility Criteria Revised, Check Key Changes",
+      "url": "https://news.google.com/rss/articles/CBMizgFBVV95cUxQcDQzUWhsVUU5cldDQTZ1Z3ZIbGE4YmhGcWNfblYtcVVzLTZWV1ZyX1BqWXRWaFpiNk84UFVXWkF2MzNHdXZkWkFOb09PNGprSUw3a2Y5LXVFR1N2UzFsWWFlejhJV05DSXI0aHlkV2hhSVlmQWt0TWRTNnl4M1FWX1NLZi03RlZTem1SX3VRRUpCTzdza0J0NExKOFZBUU9Zdzk3Wm5LOGl2UDdLVFRwcHBwYlY1ZlhGazRwOEp0NXNyNWRRbm9KalMyeEpWQdIB0wFBVV95cUxQOTVOM2pDYUdyQm1wWGdQZV8tTzBqdmNLR2ZvNHhtbkxjTFEteVcyM3dtdDUyMkNPX0dlajZmSmtXcFZmRGVaZGl1QUtVeUNhY0hibW10a1FYRjBSVVJzUEJNTmg0a1JmX3RQeXFPcXpfV25JZEZuWnNlcTltX1Q3MnhBS1p0MzdZUEZ3Wnd5dElSazV1NHlUVHI2WXhkTHFwMVdPVXVMMXlzWVJJLTF6SVZ6WGxtZFhvLVJFRTBrX1ljMGxPOF9fTEZnYWMwdk9NQUI0?oc=5",
       "date": "15 Oct 2026",
       "category": "Notification / Recruitment",
       "priority": "CRITICAL",
       "marketingAction": "Host SEBI/IBPS Law Officer batch launch; cover Securities Laws, Company Law & Banking Regulations.",
-      "hash": "32703239d706a19b9913",
+      "hash": "967823e88d4a0fa90c19",
       "isLegalTrack": true,
       "routedTo": "PW Judiciary Wallah"
     },
