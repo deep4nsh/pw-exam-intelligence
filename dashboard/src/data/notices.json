@@ -1,6 +1,6 @@
 {
-  "lastUpdated": "2026-11-03T08:42:10.607Z",
-  "totalNotices": 91,
+  "lastUpdated": "2026-11-03T16:38:21.735Z",
+  "totalNotices": 89,
   "commissionsCovered": [
     "BPSC (Bihar)",
     "UPPSC (Uttar Pradesh)",
@@ -104,6 +104,50 @@
     {
       "jurisdiction": "UPPSC",
       "state": "Uttar Pradesh",
+      "exam": "UPPSC Combined State / PCS",
+      "title": "NOTICE REGARDING ADVT. NO. A-1/E-1/2025, COMBINED STATE/UPPER SUBORDINATE SERVICES EXAM.-2025",
+      "url": "https://uppsc.up.nic.in/Open_PDF_DB.aspx?I4PnQ0tBagk3H4ltFfLCjsv7tAk2LK46",
+      "category": "Important Notice",
+      "priority": "HIGH",
+      "marketingAction": "Review circular details and prepare student guidance/community update.",
+      "hash": "54e451a9c8a40cbac514"
+    },
+    {
+      "jurisdiction": "UPPSC",
+      "state": "Uttar Pradesh",
+      "exam": "UPPSC Recruitment",
+      "title": "NOTICE REGARDING ADVT. NO. A-10/E-1/2023 U.P. KHADI AND VILLAGE INDUSTRIES BOARD, PRASHIKSHAK (NON EDIBLE OIL AND SOAP)",
+      "url": "https://uppsc.up.nic.in/Open_PDF_DB.aspx?I4PnQ0tBagk3H4ltFfLCjq0Sebp9/0+P",
+      "category": "Important Notice",
+      "priority": "HIGH",
+      "marketingAction": "Review circular details and prepare student guidance/community update.",
+      "hash": "faf5eff13d29c58c63d7"
+    },
+    {
+      "jurisdiction": "UPPSC",
+      "state": "Uttar Pradesh",
+      "exam": "UPPSC Recruitment",
+      "title": "NOTICE REGARDING ADVT. NO. A-10/E-1/2023 U.P. KHADI AND VILLAGE INDUSTRIES BOARD, PRASHIKSHAK (BEE KEEPING)",
+      "url": "https://uppsc.up.nic.in/Open_PDF_DB.aspx?I4PnQ0tBagk3H4ltFfLCjlvqxDfiA2PU",
+      "category": "Important Notice",
+      "priority": "HIGH",
+      "marketingAction": "Review circular details and prepare student guidance/community update.",
+      "hash": "6541b4af0a42da7508a8"
+    },
+    {
+      "jurisdiction": "UPPSC",
+      "state": "Uttar Pradesh",
+      "exam": "UPPSC Recruitment",
+      "title": "NOTICE REGARDING ADVT. NO. A-10/E-1/2023 U.P. KHADI AND VILLAGE INDUSTRIES BOARD, PRASHIKSHAK (KHADI)",
+      "url": "https://uppsc.up.nic.in/Open_PDF_DB.aspx?I4PnQ0tBagk3H4ltFfLCjv6j/SJ9EU3h",
+      "category": "Important Notice",
+      "priority": "HIGH",
+      "marketingAction": "Review circular details and prepare student guidance/community update.",
+      "hash": "6a84173dada334f9d487"
+    },
+    {
+      "jurisdiction": "UPPSC",
+      "state": "Uttar Pradesh",
       "exam": "UPPSC Recruitment",
       "title": "NOTICE REAGARDING DOCUMENT VERIFICATION FOR ADVT. NO. A-5/E-1/2025, ASSISTANT TEACHER TRAINED GRADUATE (M./F.) EXAM 2025, (MATHS)",
       "url": "https://uppsc.up.nic.in/Open_PDF_DB.aspx?I4PnQ0tBagnfpuRH59X6Aa5hvlYnkkej",
@@ -144,50 +188,6 @@
       "priority": "HIGH",
       "marketingAction": "Review circular details and prepare student guidance/community update.",
       "hash": "8ea36c6dc18585751acd"
-    },
-    {
-      "jurisdiction": "UPPSC",
-      "state": "Uttar Pradesh",
-      "exam": "UPPSC Recruitment",
-      "title": "NOTICE REGARDING DISTRICT INFORMATION SLIP / ADMIT CARD FOR ADVT. NO:- D-3/E-1/2023, LECTURER GOVT. AYURVEDA DEGREE COLLEGE AND HOSPITAL (SCREENING) EXAM.-2023",
-      "url": "https://uppsc.up.nic.in/Open_PDF_DB.aspx?I4PnQ0tBagmzNJIRVKnDR0yp8H0q1cBz",
-      "category": "Admit Card",
-      "priority": "CRITICAL",
-      "marketingAction": "Blast student app push notification with direct download instructions; launch 7-day revision marathon promo.",
-      "hash": "2199ee031503a667f504"
-    },
-    {
-      "jurisdiction": "UPPSC",
-      "state": "Uttar Pradesh",
-      "exam": "UPPSC Recruitment",
-      "title": "LIST OF PROVISIONALLY SELECTED CANDIDATES IN ADVT. NO. A-5/E-1/2025, ASST. TEACHER TRAINED GRADUATE (M./F.) EXAM 2025, HOME SCIENCE",
-      "url": "https://uppsc.up.nic.in/Open_PDF_DB.aspx?I4PnQ0tBagmzNJIRVKnDRwIQMjGyuh7N",
-      "category": "Important Notice",
-      "priority": "HIGH",
-      "marketingAction": "Review circular details and prepare student guidance/community update.",
-      "hash": "006d0bfa7d4e84788477"
-    },
-    {
-      "jurisdiction": "UPPSC",
-      "state": "Uttar Pradesh",
-      "exam": "UPPSC Recruitment",
-      "title": "LIST OF PROVISIONALLY SELECTED CANDIDATES IN ADVT. NO. A-2/E-1/2020, REGIONAL INSPECTOR (TECHNICAL), EXAMINATION-2020",
-      "url": "https://uppsc.up.nic.in/Open_PDF_DB.aspx?I4PnQ0tBagmbO3OUZentgvOzjioxzzCo",
-      "category": "Important Notice",
-      "priority": "HIGH",
-      "marketingAction": "Review circular details and prepare student guidance/community update.",
-      "hash": "cde9cb4c4ae492e2cf98"
-    },
-    {
-      "jurisdiction": "UPPSC",
-      "state": "Uttar Pradesh",
-      "exam": "UPPSC Recruitment",
-      "title": "NOTICE REGARDING ADVT. NO. A-7/E-1/2021, U.P. TECHNICAL EDUCATION (TEACHING) SERVICE EXAM.-2021, LECT. TEXTILE TECHNOLOGY",
-      "url": "https://uppsc.up.nic.in/Open_PDF_DB.aspx?I4PnQ0tBagmbO3OUZentgoWo8RkhUpnV",
-      "category": "Important Notice",
-      "priority": "HIGH",
-      "marketingAction": "Review circular details and prepare student guidance/community update.",
-      "hash": "acc7872e4d84fe021bef"
     },
     {
       "jurisdiction": "MPPSC",
@@ -290,12 +290,12 @@
       "state": "Rajasthan",
       "exam": "RPSC State Recruitment",
       "title": "RPSC | Home",
-      "url": "https://news.google.com/rss/articles/CBMiQ0FVX3lxTE96R3JadUt4N0lkV2lSYTdoY01Ed28xb1liOTluWGJiYzdHczNra2R3STA3YmZ6ZlhaMGc1RDlZdVpkWVk?oc=5",
-      "date": "08 Feb 2012",
+      "url": "https://news.google.com/rss/articles/CBMiREFVX3lxTE5NcU9RNTUxeHpCV2FxUTJSZjlJeWhnelRoaGdhbkVGUS1WbTJlaW9kM3cwVWVwTFFpckJDZHhDRnN1Ml95?oc=5",
+      "date": "31 Mar 2016",
       "category": "Important Notice",
       "priority": "HIGH",
       "marketingAction": "Review circular details and prepare student guidance/community update.",
-      "hash": "3e610a47159ed25186a4"
+      "hash": "fb81f4ffab27c810ff0b"
     },
     {
       "jurisdiction": "RPSC",
@@ -313,30 +313,6 @@
       "jurisdiction": "RPSC",
       "state": "Rajasthan",
       "exam": "RPSC State Recruitment",
-      "title": "Exam Dashboard",
-      "url": "https://news.google.com/rss/articles/CBMiVkFVX3lxTE15cXpPbUxtX1lLX3VsS3l1WDlIYlJOU0o5QkdWQ3k2UVNFTERwZEdYX0dXbXpvU29uOXA5OVNyemVzdGlCQmp3bFVTbWVDQ2xXRGw2Z0R3?oc=5",
-      "date": "21 Sep 2016",
-      "category": "Important Notice",
-      "priority": "HIGH",
-      "marketingAction": "Review circular details and prepare student guidance/community update.",
-      "hash": "793c46a4cb486c8eef41"
-    },
-    {
-      "jurisdiction": "RPSC",
-      "state": "Rajasthan",
-      "exam": "RPSC State Recruitment",
-      "title": "Information for Officials",
-      "url": "https://news.google.com/rss/articles/CBMiWkFVX3lxTFBRdlEzRWFVeXlBaTRoQ3ZmTW5wUWtzZlo1cDdxYzhVeHlqaUZBRjFYTHFFcmdhSVJldjhaYlAwU1ZfYmFFY3lKR0VKZTJEYko0clJfYlZFbi10Zw?oc=5",
-      "date": "18 Aug 2017",
-      "category": "Important Notice",
-      "priority": "HIGH",
-      "marketingAction": "Review circular details and prepare student guidance/community update.",
-      "hash": "cb6da097083db8b8dcf3"
-    },
-    {
-      "jurisdiction": "RPSC",
-      "state": "Rajasthan",
-      "exam": "RPSC State Recruitment",
       "title": "Important Downloads For Candidates",
       "url": "https://news.google.com/rss/articles/CBMiUEFVX3lxTE5yRmEyTC1rSUxaNUFvWW9jTWYwNUwyc2ZXbnB0TUxBeEVCSnZ4dnljZ2RoN0hpM0RRTVAxcENfSXJHNDlhaFFma2tRTUM1SzJO?oc=5",
       "date": "26 Oct 2026",
@@ -344,6 +320,18 @@
       "priority": "HIGH",
       "marketingAction": "Review circular details and prepare student guidance/community update.",
       "hash": "80b9b790f41f904381a2"
+    },
+    {
+      "jurisdiction": "OPSC (Odisha)",
+      "state": "Odisha",
+      "exam": "OPSC Agriculture Services",
+      "title": "Assistant Agriculture Engineer (Advt. No. 08 of 2026-27) - Programme of Written Examination Notice",
+      "url": "https://www.opsc.gov.in/Public/OPSC/Default.aspx",
+      "date": "",
+      "category": "Important Notice",
+      "priority": "HIGH",
+      "marketingAction": "Review circular details and prepare student guidance/community update.",
+      "hash": "1bd40dcccb5e414baa6a"
     },
     {
       "jurisdiction": "OPSC (Odisha)",
@@ -428,20 +416,6 @@
       "priority": "HIGH",
       "marketingAction": "Review circular details and prepare student guidance/community update.",
       "hash": "80fa97cfdaae13d796f7"
-    },
-    {
-      "jurisdiction": "OPSC (Odisha)",
-      "state": "Odisha",
-      "exam": "Odisha Assistant Public Prosecutor (APP)",
-      "title": "Assistant Public Prosecutor (Advt. No. 09 of 2026-27) - Notice relating to candidature under Ex-servicemen and Sports person",
-      "url": "https://www.opsc.gov.in/Public/OPSC/Default.aspx",
-      "date": "",
-      "category": "Important Notice",
-      "priority": "HIGH",
-      "marketingAction": "Share updated prosecution syllabus & previous year paper analysis on PW Judiciary channel.",
-      "hash": "4891e88f3e1640b11ac9",
-      "isLegalTrack": true,
-      "routedTo": "PW Judiciary Wallah"
     },
     {
       "jurisdiction": "MPSC (Maharashtra)",
@@ -589,17 +563,15 @@
     },
     {
       "jurisdiction": "Pan-India Judiciary",
-      "state": "Delhi High Court (DHC)",
-      "exam": "Delhi Judicial Service (DJS)",
-      "title": "Delhi High Court PA Typing Test Date 2026 Out, Download Notice PDF",
-      "url": "https://news.google.com/rss/articles/CBMif0FVX3lxTE51dDlBWXVtM19HZlhlVU9IRmNhVm8ybm5icnRwRzBPT3BONmlUYzNVV0FpRXphMXM5OUV3d2hEbEY3c0dvVDZJdENhVmVnUDdVOFZSSDJxcG95RkNhdzFad0tkRHRaV3pISXhDLWdFWE9LeFZqRDZERFhNLXhudHM?oc=5",
-      "date": "30 Oct 2026",
+      "state": "Rajasthan High Court (HCRAJ)",
+      "exam": "Rajasthan High Court Recruitment",
+      "title": "Can Service Tribunal Hear Challenges To Promotion Exam Marks? Rajasthan High Court Seeks Bar's Assistance",
+      "url": "https://news.google.com/rss/articles/CBMi_gFBVV95cUxOdTVZendQY1l3czBwMFZlaFFUZjVxdElXRlJSMy1HUXp4TXk1dndWUlE4eElBY3ZCdEdsQWk5TzM5bl81Z1YyM2FxN2pfRVJaOHpiX0JxOXVwSTV3TENUUnlYeUxtQndXTlVncnA2MVhhQ21lVHUzRHozOUtBUGc4YUJaU093TVFTUG9MOG9BUFZxZS1LaHNrR1RsN1dyczd6Nkc5YlhGR3RLdnl1SHpMczRGMGpYVi1GdVNaNnh2ekY2N0lvbmFPQ3cxZ2VkQXIxdmYwc2U3T2xMOUpRLVpQZ3lpUm5BdGlmTW5qT0RJSGFUNU04QnN3N3kwT0pRZ9IB_gFBVV95cUxOdTVZendQY1l3czBwMFZlaFFUZjVxdElXRlJSMy1HUXp4TXk1dndWUlE4eElBY3ZCdEdsQWk5TzM5bl81Z1YyM2FxN2pfRVJaOHpiX0JxOXVwSTV3TENUUnlYeUxtQndXTlVncnA2MVhhQ21lVHUzRHozOUtBUGc4YUJaU093TVFTUG9MOG9BUFZxZS1LaHNrR1RsN1dyczd6Nkc5YlhGR3RLdnl1SHpMczRGMGpYVi1GdVNaNnh2ekY2N0lvbmFPQ3cxZ2VkQXIxdmYwc2U3T2xMOUpRLVpQZ3lpUm5BdGlmTW5qT0RJSGFUNU04QnN3N3kwT0pRZw?oc=5",
+      "date": "03 Nov 2026",
       "category": "Important Notice",
       "priority": "HIGH",
       "marketingAction": "Host faculty live strategy session; offer mock test series and model answers.",
-      "hash": "8977069fe21a65707d99",
-      "isLegalTrack": true,
-      "routedTo": "PW Judiciary Wallah"
+      "hash": "d2b34df5167130a00f65"
     },
     {
       "jurisdiction": "Pan-India Judiciary",
@@ -627,15 +599,15 @@
     },
     {
       "jurisdiction": "Pan-India Judiciary",
-      "state": "Delhi High Court (DHC)",
-      "exam": "Delhi Judicial Service (DJS)",
-      "title": "After 71-year-old woman makes 3 futile trips, Delhi High Court allows virtual cross-exam",
-      "url": "https://news.google.com/rss/articles/CBMitwFBVV95cUxQdVNzdWN2S2MzN2NyNW1OSTZ1TWdkOUJDZGFxYmpBM1d1aUpvQXRlSGJaOWxnQ3liUWt3S25GT1FTT3hUTFFxMm1UUm92NUNFRWRMRG1YbkRFdGdrZWFobWNvdzZjLXBVNnYzbzJiRE9qODRRbW9mcHRodGxRWm1obHVlZ19NMDlvWUFBcUFIZkNKbkRuWGtWLWdpZW1QYVNvbjhZeGduR2hLUkFNa1hHNXZMSU1FNzjSAb4BQVVfeXFMTTZoNnFtMUlyTy0tTmk1SHNXTG1XZTFvWmotNGVyOGUzd09WWW41bUtlMGU4NW54djBYQ1RaOTV6eEFqVlZNQWFvV1VScDBaQldWNlQ1dTBIeFFPa1VocHQ3dWxFSndidXNHM2tyM2V3ck5DT25veWNwMERpVFZQMGNzUk0yUDlReks0ZEw3ZklPSGlVNlZ4NXhYa05kYU1tX2xzM1ZpZGgwaWJIUG9PSThSQW00OEprQkw4UF9IUQ?oc=5",
-      "date": "29 Oct 2026",
+      "state": "Supreme Court of India (SCI)",
+      "exam": "Supreme Court Judicial Registry / Law Clerk",
+      "title": "Supreme Court trims law practice requirement to 1 year for judicial service",
+      "url": "https://news.google.com/rss/articles/CBMi9AFBVV95cUxOQmtjR3YtZ1pRdDRIZzh1cEdvazJYUkE4N3k0Sld3N20wNkdDbXhEcE9Jd09ESEdid1hnUXJzNndCM3JxMTFTd0Qyc2R1eDBac3RobWZWQnZzZFY5d1NOX25HRjdZcXJESGRBbmdqRDZJU1dOcHJkTUw3eGRzVXcxTGFuMy1OWEFWTGFjdUxGal96a203U3hIdGd6dVZzLVQ5QWZ5bWREeWVfVGlQeW1uTVppQV85RDI1SnR4UWNWdFI4bUt2TllSOGMwODkzZm0zT0ZEUVo1RDk0UlZlOVJ2a2dTUDRSZlVZeXBuWlpGTlZ1OUkt0gH7AUFVX3lxTE9OM190WFJHX2tjeWN5SHd1ZHYzZEI4ZFRiVXZOdVVxNDN4RmQza09yV1p3emg0RHp4QTllbkpGRzBacDFmLURnNkxrN2ZQSEpkN3gwWWxJOHBTZE9zdm5QMXFfdHBjaVBtVm05WWhvMjZOa0FzY1hwU3RnLXhCS25MRHNlZDhIYXRWVE5NZzFXMHZPOTNuY2hBZXlxR0Y0bzdXYXI4YVZOVWdzUFVuRmQ3U0JTUlNhb0pFRWFLU3o2NG5PaGxDWFQySHlSNml2N3EzMDYzSnB6UThnd3BST2VsUEFTV29pcUswbVlSUi0yM3B3a05ueExfV2Jj?oc=5",
+      "date": "21 Aug 2026",
       "category": "Important Notice",
       "priority": "HIGH",
       "marketingAction": "Host faculty live strategy session; offer mock test series and model answers.",
-      "hash": "fee5e336ae1537acdef9",
+      "hash": "fb2d5a06abf2ecbf7bac",
       "isLegalTrack": true,
       "routedTo": "PW Judiciary Wallah"
     },
@@ -991,20 +963,6 @@
     },
     {
       "jurisdiction": "Bar Advocacy & Law",
-      "state": "Securities and Exchange Board of India (SEBI)",
-      "exam": "SEBI Grade A (Legal)",
-      "title": "SEBI Grade A recruitment 2026: What are the new eligibility rules, educational qualifications and other c",
-      "url": "https://news.google.com/rss/articles/CBMilAJBVV95cUxQQjhzNjF1RHNiNjBDVjZnUmN5YjA3X1J2b0dPT3FWd3FBQWhHeUxzVWxUcXFES3Z2V1BheTE2MjlzLVZMSHEyNmI2M25CbVV6cjlIRldKSm5jcXQzeDFVaDg5aEdBZUlNcmFhTDVGVEoybzZNQmF4TDN0Q0VySXhKc3RFZmZSMkFHQy02cHVyVk1ZR2pwaXZ3S1dkaGFBTHdVTmpMcUFxNW9HLVZfUEhHU0NVeDVIXzFRRmZUWkZLRjRVQlk0aExiMWZNS0I3MGVMM1l1M1FVVkZIZkhXUW82V0xLRWh1TWtxcEpNeU1oakdEaUtFd3BfaGhUdnlrOUtER21kTlh5Q25IU1NBc0hKblBlZ2zSAZoCQVVfeXFMUG9YaVQ0cmJXTVo1T1N4V0tkcWVXN0lJbnFWQ29BMlY3WWhiazU4ZjVYZG9LaDdFSDBBRjVRWmZkcU1qaU1HWlVPSmxuU0x6TUlNR09hZ2hjX1VnU2tHdEhKUEsxbTBoZmxWTU1hZzhLN1FpZldrdF9CcEF2bFRVMkh5eXRKTHA3VTA3Y3FvMlZaNVkyWU1SNUNLUlNieGZiUjZpSWZqX2U1VlBTUmRVSjlITjVOakFEWVIyUU9BZ3JLM2pwYzdodzdJbDkzVkVpNmx0Sks1QzhCNGJYTDNRaWZnVXlUZGZlTVloOW9JdDNKOGhnV2sya0h6TXdaclF0VmZiR3VXRnZkTUx4b0t4SVpQU1MzLVBWbjFR?oc=5",
-      "date": "15 Oct 2026",
-      "category": "Notification / Recruitment",
-      "priority": "CRITICAL",
-      "marketingAction": "Host SEBI/IBPS Law Officer batch launch; cover Securities Laws, Company Law & Banking Regulations.",
-      "hash": "c13416ff273ead7bee81",
-      "isLegalTrack": true,
-      "routedTo": "PW Judiciary Wallah"
-    },
-    {
-      "jurisdiction": "Bar Advocacy & Law",
       "state": "Institute of Banking Personnel Selection (IBPS)",
       "exam": "IBPS SO (Law Officer)",
       "title": "IBPS SO Prelims Cut Off 2026 Out, Check Post and Category-wise Cut Off Marks",
@@ -1014,6 +972,20 @@
       "priority": "CRITICAL",
       "marketingAction": "Broadcast PW Law selections; open Mains/Interview mentorship with former banking legal managers.",
       "hash": "bc4864fb2eb0f0e967f8",
+      "isLegalTrack": true,
+      "routedTo": "PW Judiciary Wallah"
+    },
+    {
+      "jurisdiction": "Bar Advocacy & Law",
+      "state": "Institute of Banking Personnel Selection (IBPS)",
+      "exam": "IBPS SO (Law Officer)",
+      "title": "IBPS SO Cut Off 2026 Out, Check Prelims Cut Off Marks",
+      "url": "https://news.google.com/rss/articles/CBMiV0FVX3lxTE9VdS1GeVRSZDVtTWVxdW5xZ1dEQ0xHWHduQ01HY25hbDk4cjNIbF95NHk5MWFHRE10V1lIMFlNZ1UtQnRvWG5PTmpucUdlckwwdjd2VkRRNA?oc=5",
+      "date": "31 Oct 2026",
+      "category": "Result",
+      "priority": "CRITICAL",
+      "marketingAction": "Broadcast PW Law selections; open Mains/Interview mentorship with former banking legal managers.",
+      "hash": "588afde660f962880cd4",
       "isLegalTrack": true,
       "routedTo": "PW Judiciary Wallah"
     },
