@@ -1,6 +1,6 @@
 {
-  "lastUpdated": "2026-11-06T23:03:56.230Z",
-  "totalNotices": 87,
+  "lastUpdated": "2026-11-07T02:43:39.189Z",
+  "totalNotices": 89,
   "commissionsCovered": [
     "BPSC (Bihar)",
     "UPPSC (Uttar Pradesh)",
@@ -319,25 +319,13 @@
       "jurisdiction": "RPSC",
       "state": "Rajasthan",
       "exam": "RPSC State Recruitment",
-      "title": "Process URL",
+      "title": "Letter Search Page",
       "url": "https://news.google.com/rss/articles/CBMiU0FVX3lxTFB2MkgtS3ZPY2F6RHBGODRuSmRaVGl1M1hGclpscGdRNkdWVTVDYVV2Q0F0amxCV2lrTldMdlJiWWlHV1lDeTBUY3RLT0FtVGYxNElF?oc=5",
       "date": "02 Nov 2026",
       "category": "Important Notice",
       "priority": "HIGH",
       "marketingAction": "Review circular details and prepare student guidance/community update.",
-      "hash": "771cd218ed420010a440"
-    },
-    {
-      "jurisdiction": "RPSC",
-      "state": "Rajasthan",
-      "exam": "RPSC State Recruitment",
-      "title": "News and Events Section",
-      "url": "https://news.google.com/rss/articles/CBMiSkFVX3lxTE1WZ1FyN3JQR2hnVzlQb0Q1d242bjRkSzZ0WHJDSVk1c09fT0xMTWs0N2VmNC1LUlZlcjNiVldreEFDTzk2WktPMkl3?oc=5",
-      "date": "26 May 2017",
-      "category": "Important Notice",
-      "priority": "HIGH",
-      "marketingAction": "Review circular details and prepare student guidance/community update.",
-      "hash": "1029ebf67052cc4f50e4"
+      "hash": "1d2f99f7d9b52aba006b"
     },
     {
       "jurisdiction": "OPSC (Odisha)",
@@ -494,6 +482,46 @@
       "priority": "CRITICAL",
       "marketingAction": "Broadcast PW student selections; push next-stage Mains/Interview mentorship batch.",
       "hash": "d26496548fa189f6e60f"
+    },
+    {
+      "jurisdiction": "MPSC (Maharashtra)",
+      "state": "Maharashtra",
+      "exam": "Maharashtra Non-Gazetted Group B & C",
+      "title": "Advt. No. 017/2026 Maharashtra Group-C Services Combine Preliminary Examination 2026 - Corrigendum regarding posts & new application submission",
+      "url": "https://mpsc.gov.in/web/api/v1/downloadFileImage/english/14525",
+      "date": "2026-11-06",
+      "category": "Corrigendum / Revision",
+      "priority": "HIGH",
+      "marketingAction": "Review circular details and prepare student guidance/community update.",
+      "hash": "35c31cf6d6ce2af123cb"
+    },
+    {
+      "jurisdiction": "MPSC (Maharashtra)",
+      "state": "Maharashtra",
+      "exam": "Maharashtra Non-Gazetted Group B & C",
+      "title": "Advt.No. 022/2026- Assistant (Legal), Group B, Law and Judiciary Department- Advertisement",
+      "url": "https://mpsc.gov.in/web/api/v1/downloadFileImage/english/14498",
+      "date": "2026-10-23",
+      "category": "Notification / Recruitment",
+      "priority": "CRITICAL",
+      "marketingAction": "Schedule YouTube Live notification breakdown (<45m) and launch Target Batch ad creatives.",
+      "hash": "3cd84fee00399e7fbf54",
+      "isLegalTrack": true,
+      "routedTo": "PW Judiciary Wallah"
+    },
+    {
+      "jurisdiction": "MPSC (Maharashtra)",
+      "state": "Maharashtra",
+      "exam": "Maharashtra Judicial Service (CJJD / JMFC)",
+      "title": "Advt. No. 013/2026 Civil Judge Junior Division and Judicial Magistrate First Class Preliminary Examination 2024 - Corrigendum regarding application submission of new law graduates",
+      "url": "https://mpsc.gov.in/web/api/v1/downloadFileImage/english/14496",
+      "date": "2026-10-23",
+      "category": "Corrigendum / Revision",
+      "priority": "HIGH",
+      "marketingAction": "Host faculty live strategy session; offer mock test series and model answers.",
+      "hash": "3d75364c1be0fce37dc1",
+      "isLegalTrack": true,
+      "routedTo": "PW Judiciary Wallah"
     },
     {
       "jurisdiction": "Pan-India Judiciary",
@@ -663,6 +691,20 @@
     },
     {
       "jurisdiction": "ADA & Prosecution",
+      "state": "Punjab (PPSC / PSSSB)",
+      "exam": "Punjab Assistant District Attorney (ADA)",
+      "title": "Punjab ADA Cut Off 2026: Expected Category-Wise Cut Off, Previous Trends &amp; Safe Score Analysis",
+      "url": "https://news.google.com/rss/articles/CBMia0FVX3lxTFBqS0FydmVOX05PemE0MmFmcHN6emxOaHpOMTdObGc1V3ZXRHVlZ1pGdlRBLXNWYmdScTRWNGVBdV9oQmswZUsxVHBpOFFZQWZKaHRXZlFTWXd4TE1ocHE0V2V0aHpZZ3poWlU0?oc=5",
+      "date": "03 Aug 2026",
+      "category": "Result",
+      "priority": "CRITICAL",
+      "marketingAction": "Celebrate PW student selections; immediately open ADA Subject Knowledge (Mains) / Interview batch.",
+      "hash": "530bde69ef416d47d773",
+      "isLegalTrack": true,
+      "routedTo": "PW Judiciary Wallah"
+    },
+    {
+      "jurisdiction": "ADA & Prosecution",
       "state": "Uttar Pradesh (UPPSC)",
       "exam": "UP Assistant Prosecution Officer (APO)",
       "title": "UP APO Syllabus 2026: Prelims and Mains Syllabus, Subjects, Marks and Exam Pattern",
@@ -672,20 +714,6 @@
       "priority": "CRITICAL",
       "marketingAction": "Broadcast APO qualifiers; launch interview mentorship program with former prosecutors.",
       "hash": "3ee76178c8c470f8b35d",
-      "isLegalTrack": true,
-      "routedTo": "PW Judiciary Wallah"
-    },
-    {
-      "jurisdiction": "ADA & Prosecution",
-      "state": "Madhya Pradesh (MPPSC)",
-      "exam": "MP Assistant District Public Prosecution Officer (ADPO)",
-      "title": "MP ADPO Cut Off 2026: Check Previous Year Cut Off Marks",
-      "url": "https://news.google.com/rss/articles/CBMiYEFVX3lxTE1IWjByWVNqZVRGWGNVNmxBRkVsUEFpRUpwN1hsUVc5a3dRblE4VUttQnVHSTJKOW9GQkYyV1hFNEp5d1dqNTgzajV4bUVkYnl1Ui1MNktLNkNOUUxJNl9sSw?oc=5",
-      "date": "21 Aug 2026",
-      "category": "Result",
-      "priority": "CRITICAL",
-      "marketingAction": "Broadcast APO qualifiers; launch interview mentorship program with former prosecutors.",
-      "hash": "bba13d2952492353c2c2",
       "isLegalTrack": true,
       "routedTo": "PW Judiciary Wallah"
     },
