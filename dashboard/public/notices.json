@@ -1,6 +1,6 @@
 {
-  "lastUpdated": "2026-11-07T09:18:46.599Z",
-  "totalNotices": 89,
+  "lastUpdated": "2026-11-07T15:47:17.628Z",
+  "totalNotices": 88,
   "commissionsCovered": [
     "BPSC (Bihar)",
     "UPPSC (Uttar Pradesh)",
@@ -309,23 +309,23 @@
       "exam": "RPSC State Recruitment",
       "title": "Admit Card Link Page",
       "url": "https://news.google.com/rss/articles/CBMia0FVX3lxTE93Z0pKUkllTW03dExsRVg0TjBJaEQxZkxTb1ZXWHByNEZEMU85c01qeVNjdUs0S2dicnFuR3dxVmpYdXVzd3JBSUtIUFgzN2VPd3M5dmc1SDRXOHJRX1pKUFhINDFFemlCYVNV?oc=5",
-      "date": "15 Oct 2026",
+      "date": "02 Nov 2026",
       "category": "Admit Card",
       "priority": "CRITICAL",
       "marketingAction": "Blast student app push notification with direct download instructions; launch 7-day revision marathon promo.",
       "hash": "87de4c1dc12dfc181f14"
     },
     {
-      "jurisdiction": "RPSC",
-      "state": "Rajasthan",
-      "exam": "RPSC State Recruitment",
-      "title": "Letter Search Page",
-      "url": "https://news.google.com/rss/articles/CBMiU0FVX3lxTFB2MkgtS3ZPY2F6RHBGODRuSmRaVGl1M1hGclpscGdRNkdWVTVDYVV2Q0F0amxCV2lrTldMdlJiWWlHV1lDeTBUY3RLT0FtVGYxNElF?oc=5",
-      "date": "02 Nov 2026",
-      "category": "Important Notice",
+      "jurisdiction": "OPSC (Odisha)",
+      "state": "Odisha",
+      "exam": "OPSC Recruitment",
+      "title": "Corrigendum to Quotation Call Notice No. 6118/PSC dt.30.11.2026 for selection of bidder for providing Catering Services",
+      "url": "https://www.opsc.gov.in/Public/OPSC/Default.aspx",
+      "date": "",
+      "category": "Corrigendum / Revision",
       "priority": "HIGH",
       "marketingAction": "Review circular details and prepare student guidance/community update.",
-      "hash": "1d2f99f7d9b52aba006b"
+      "hash": "88a5729aa7be7518d4e6"
     },
     {
       "jurisdiction": "OPSC (Odisha)",
@@ -410,18 +410,6 @@
       "priority": "HIGH",
       "marketingAction": "Review circular details and prepare student guidance/community update.",
       "hash": "4a75c20a02ea56a638ae"
-    },
-    {
-      "jurisdiction": "OPSC (Odisha)",
-      "state": "Odisha",
-      "exam": "OPSC Recruitment",
-      "title": "Geologist (Advt. No. 10 of 2026-27) - Programme Notice of Written Examination",
-      "url": "https://www.opsc.gov.in/Public/OPSC/Default.aspx",
-      "date": "",
-      "category": "Important Notice",
-      "priority": "HIGH",
-      "marketingAction": "Review circular details and prepare student guidance/community update.",
-      "hash": "d4324538d380db93d2ec"
     },
     {
       "jurisdiction": "MPSC (Maharashtra)",
