@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-11-07T02:43:39.189Z",
+  "lastUpdated": "2026-11-07T09:18:46.599Z",
   "totalNotices": 89,
   "commissionsCovered": [
     "BPSC (Bihar)",
@@ -105,6 +105,17 @@
       "jurisdiction": "UPPSC",
       "state": "Uttar Pradesh",
       "exam": "UPPSC Recruitment",
+      "title": "RESULT OF ADVT. NO. D-1/E-1/2026, MEDICAL EDUCATION DEPARTMENT U.P. (ALLOPATHY), ASSISTANT PROFESSOR MICROBIOLOGY, S-08/89",
+      "url": "https://uppsc.up.nic.in/Open_PDF_DB.aspx?I4PnQ0tBagk3H4ltFfLCjhRbeHv+Wx86",
+      "category": "Result",
+      "priority": "CRITICAL",
+      "marketingAction": "Broadcast PW student selections; push next-stage Mains/Interview mentorship batch.",
+      "hash": "9fba4010b85a2ffb4576"
+    },
+    {
+      "jurisdiction": "UPPSC",
+      "state": "Uttar Pradesh",
+      "exam": "UPPSC Recruitment",
       "title": "RESULT OF ADVT. NO. D-1/E-1/2026, MEDICAL EDUCATION DEPARTMENT U.P. (ALLOPATHY)/PROFESSOR MICROBIOLOGY, S-08/22",
       "url": "https://uppsc.up.nic.in/Open_PDF_DB.aspx?I4PnQ0tBagk3H4ltFfLCjjLGzSSzDMLp",
       "category": "Result",
@@ -179,17 +190,6 @@
       "hash": "faf5eff13d29c58c63d7"
     },
     {
-      "jurisdiction": "UPPSC",
-      "state": "Uttar Pradesh",
-      "exam": "UPPSC Recruitment",
-      "title": "NOTICE REGARDING ADVT. NO. A-10/E-1/2023 U.P. KHADI AND VILLAGE INDUSTRIES BOARD, PRASHIKSHAK (BEE KEEPING)",
-      "url": "https://uppsc.up.nic.in/Open_PDF_DB.aspx?I4PnQ0tBagk3H4ltFfLCjlvqxDfiA2PU",
-      "category": "Important Notice",
-      "priority": "HIGH",
-      "marketingAction": "Review circular details and prepare student guidance/community update.",
-      "hash": "6541b4af0a42da7508a8"
-    },
-    {
       "jurisdiction": "MPPSC",
       "state": "Madhya Pradesh",
       "exam": "MP Assistant District Public Prosecution Officer (ADPO)",
@@ -230,20 +230,6 @@
     {
       "jurisdiction": "MPPSC",
       "state": "Madhya Pradesh",
-      "exam": "MP Assistant District Public Prosecution Officer (ADPO)",
-      "title": "MPPSC ADPO answer key 2026 out, objection window opens for five days: Direct link here",
-      "url": "https://news.google.com/rss/articles/CBMi0wFBVV95cUxPSVd1blFIbTk5NkZXcjgwLURyLVR4QkdyZVJUV3FYMENfcTk2UEI0R0RySU4yVGxDUE8yajNaUTVuOGptWF95eERsUl8teG9od0k0OUpoT2pKZDE3TGRZN1JtbEtQcWo4VUtCT290Z3BXRHMwLVU2OGhwdWlNVUZBS3NSWG5jWVBmUXlPUl95ZU1FODRmQ2huamhId1ZDQzNDZExaQU1Zbkh0WmU0RktCalJaeWJVU282djh1X2dTQWRoVjlhTDBEVnNKQlFxRmlRQ2VR?oc=5",
-      "date": "03 Nov 2026",
-      "category": "Answer Key",
-      "priority": "HIGH",
-      "marketingAction": "Share updated prosecution syllabus & previous year paper analysis on PW Judiciary channel.",
-      "hash": "b2cda77284e46cebd5c9",
-      "isLegalTrack": true,
-      "routedTo": "PW Judiciary Wallah"
-    },
-    {
-      "jurisdiction": "MPPSC",
-      "state": "Madhya Pradesh",
       "exam": "MPPSC State Recruitment",
       "title": "MPPSC Law Officer Exam Date 2026 Announced (Out)",
       "url": "https://news.google.com/rss/articles/CBMid0FVX3lxTE9pYjNxUGV6ZTU5VEZhM3lDZExLeFZxVVpGWWd4UHVTQ1ctMkZ6RXR1SlF4dzBkdXZUVzlkaDg0RTBaX093b0lpUl90RzZBUmdvRmpLNXY5aDd2NGFzTFNWTTBxTGJlakVkVkxBWUMwRVhiQ3NmSXo4?oc=5",
@@ -252,6 +238,20 @@
       "priority": "HIGH",
       "marketingAction": "Push 'Countdown Begins' campaign; offer 20% discount on test series and mock exams.",
       "hash": "fd9f22725ee36464b959",
+      "isLegalTrack": true,
+      "routedTo": "PW Judiciary Wallah"
+    },
+    {
+      "jurisdiction": "MPPSC",
+      "state": "Madhya Pradesh",
+      "exam": "MP Assistant District Public Prosecution Officer (ADPO)",
+      "title": "MPPSC ADPO answer key 2026 out, objection window opens for five days: Direct link here",
+      "url": "https://news.google.com/rss/articles/CBMi0wFBVV95cUxPSVd1blFIbTk5NkZXcjgwLURyLVR4QkdyZVJUV3FYMENfcTk2UEI0R0RySU4yVGxDUE8yajNaUTVuOGptWF95eERsUl8teG9od0k0OUpoT2pKZDE3TGRZN1JtbEtQcWo4VUtCT290Z3BXRHMwLVU2OGhwdWlNVUZBS3NSWG5jWVBmUXlPUl95ZU1FODRmQ2huamhId1ZDQzNDZExaQU1Zbkh0WmU0RktCalJaeWJVU282djh1X2dTQWRoVjlhTDBEVnNKQlFxRmlRQ2VR?oc=5",
+      "date": "03 Nov 2026",
+      "category": "Answer Key",
+      "priority": "HIGH",
+      "marketingAction": "Share updated prosecution syllabus & previous year paper analysis on PW Judiciary channel.",
+      "hash": "b2cda77284e46cebd5c9",
       "isLegalTrack": true,
       "routedTo": "PW Judiciary Wallah"
     },
@@ -569,6 +569,34 @@
     },
     {
       "jurisdiction": "Pan-India Judiciary",
+      "state": "Delhi High Court (DHC)",
+      "exam": "Delhi Judicial Service (DJS)",
+      "title": "With over 1,000 posts vacant, Delhi High Court orders early recruitment in government hospitals",
+      "url": "https://news.google.com/rss/articles/CBMiwwFBVV95cUxPY2k1RjVxQjBwODIzRWZhMHNBc0h2aW0wU1NEMk9FMnB3TC1nb1ZPdkhLdTlvSDNDLTk5am9vTkVCN1E2a0xqdVlveUxUS29tMXJhQlRyRFA1dkVPdGNYU1N1ZTBWY0pzdmY0LTBZajJDajNXU0Z3bGZHZEhVUVNrVUl6QU9fbkZWWW5ENy1WS3oxVktFeGpUR0JJWWJuRlpaNXVHVG1nLWl2ODlYZWJwT3pKcXJOTUNpNk1wbi10dG5hRkXSAcoBQVVfeXFMUDlzWjR4WkY4ZHVnMFdkTTRES3pSbWF4LVhscVpWcHBHT1Nfd0c4UklaR082WDFHSUFxbzlTbDB1ZUVpaUJibVdFbGVBSFZSWWxOTlg2NFl5RVdDdF9VbThxQWt0cWZGRmVFTzBlSS13MmdNWExUVHY0MUEta2dfN3hqVU5lbFV2LTA2akQyT09qM3lxLUVlelJ4OFFGcXNtdzVDR2ZaMC1vTFhJbF8zUkQ4SlBPU24xQUlPaTkyUU9xWnBHX1J6ZEJsUQ?oc=5",
+      "date": "07 Nov 2026",
+      "category": "Notification / Recruitment",
+      "priority": "CRITICAL",
+      "marketingAction": "Schedule YouTube Live notification breakdown (<45m) and launch Target Batch ad creatives.",
+      "hash": "3b6660ac2306292c193e",
+      "isLegalTrack": true,
+      "routedTo": "PW Judiciary Wallah"
+    },
+    {
+      "jurisdiction": "Pan-India Judiciary",
+      "state": "Pan-India Judiciary",
+      "exam": "High Court Judicial Recruitment",
+      "title": "No Distinction Between “Law Graduates” And “Candidates”: Bombay High Court Upholds Bar On Fresh Law...",
+      "url": "https://news.google.com/rss/articles/CBMi4wFBVV95cUxPQnBhNVRHRXZ4SzNpYnRYNjlJcDFDR0pSQTNEQUw0VEdXUlY2WWlSY3NUR3dEVE9LU1Zqc18tcWN4bjkyeVlmYkt0a2F6VzhEaUZ6RmFQZXhOUGFIM0tHcEZYWFNHLXNUeEZnY1daLWIyWjVaRzI5Qi1oZDEtd3BrdEcwYXA2RG9fdUJXTHZaY2dWeTFZb0VYcE0wczNVNHl1OF9PcDVvV1hxU0xQVjFXa2VEVWVBdkc1bGdlM2MxTk92ejRMdjFySkdIRmFGUWNkaUNGVnY1XzBKRHFyYTB2QVBhTdIB6AFBVV95cUxPX20xZXJ5LUhXUTU3dGtSa0E2eHAwUTR0V3BnV1dDa3Y5VFlWZ2g5TlRnTkdBa0R2UHBzLWo0aGtFSGVMSjd0czhMU205aHo1Y3NNRnNCanFqbjNxcmRJTE1hb05HUU11UGdXNDZfeXd3dzk4ckNjMFNrUlFJZnl3YTFCZDJQbU9oT0dTNkxFdm5zdWo0QkFjejFXV3BSMG9QTXVyU19OZF9qSlZLUkVkSmtqUVAwSVlZUGh2QkJBc2hfY0FlN0R2NUMwcVRrdjBsSkZ4bUI3eTNuNnN1cVJDNXhFV2JRbHdk?oc=5",
+      "date": "06 Nov 2026",
+      "category": "Important Notice",
+      "priority": "HIGH",
+      "marketingAction": "Host faculty live strategy session; offer mock test series and model answers.",
+      "hash": "9cf73d51a0f41825a136",
+      "isLegalTrack": true,
+      "routedTo": "PW Judiciary Wallah"
+    },
+    {
+      "jurisdiction": "Pan-India Judiciary",
       "state": "Madhya Pradesh High Court (MPHC)",
       "exam": "MP High Court Judicial Recruitment",
       "title": "MP High Court Quashes Constable’s Dismissal For Not Listing Acquitted Cases In Recruitment Form",
@@ -590,34 +618,6 @@
       "priority": "HIGH",
       "marketingAction": "Schedule YouTube Live notification breakdown (<45m) and launch Target Batch ad creatives.",
       "hash": "ca3949cfb84c90ddcf36"
-    },
-    {
-      "jurisdiction": "Pan-India Judiciary",
-      "state": "Delhi High Court (DHC)",
-      "exam": "Delhi Judicial Service (DJS)",
-      "title": "Delhi High Court issues notice to Centre on Telegram’s challenge to temporary ban ahead of NEET exam",
-      "url": "https://news.google.com/rss/articles/CBMi7wFBVV95cUxNNkhSZjFualRqSVpZeEVwT29SUmt4MDBPbEhQRmNjTlh6N2MtRUlBTzUyUV9udDB3cFEtaE92d3FNQzl4cGhuU1NUVkliU3pvLXJ2d25SOUhRYlFCWkhNUGF6RmZ5bGRiTk9xX2pKUEJ2UEZZMTBwcElxaWhveU45VmFrSFpzaHprSzdBdjZ0NmZFZ2VremRvRTh0ZGNEOUVvdC1aMWNFc0VrS2ZRUk5mdVd3bThHbFRTXzZJeFZHUFVhSUFkYzVlOXVoWVY4Wmh5MkRvYXktX3djLXg3UlI5OWhrS1d2T1VKVGpxOElBTdIB9gFBVV95cUxPOFZCczB0WFAwWkFZUm1pLUtHU1dyYkxfdkNOb0JuMEhsWVpmY1NqbkZ4RDVqLXowdDU2eUFNcW5QclMzcmZiMm9WLUtneXdybVBOTDNRcDdjZjlxMW1uTUpGR2p2M1l4cUEwcDFJOXZoanpaR2psNGV5dkZ0eXlrMVh4bGxmdkVXZWtzODJoQklISGowb1pWNm1MMGZKUjFaSWpnek1NRm5WcFM1ZDladlJUT2dhNUlBNzMzb0s0bnB5NEhzeW4zcFRSU2dZY084U3hHOFVFYU9pdUh2S0NGM0lucGl2YWE5djlsTEowRkFfUnI3NXc?oc=5",
-      "date": "17 Jun 2026",
-      "category": "Important Notice",
-      "priority": "HIGH",
-      "marketingAction": "Host faculty live strategy session; offer mock test series and model answers.",
-      "hash": "863b1be66859645c2318",
-      "isLegalTrack": true,
-      "routedTo": "PW Judiciary Wallah"
-    },
-    {
-      "jurisdiction": "Pan-India Judiciary",
-      "state": "Madhya Pradesh High Court (MPHC)",
-      "exam": "MP Civil Judge",
-      "title": "Supreme Court Judicial Service Practice Rule Verdict : What Changes For Law Graduates Before &amp; After...",
-      "url": "https://news.google.com/rss/articles/CBMi3gFBVV95cUxNM3BRbldGSVhrR2lMR2k3c2lfVUhySWd2NU9SamNLUWFRaGNRMzJCRXlmRmJ1WEZGSTcyQzNJVHlCMU5yeW00M2tuT1lWM3lWbXppdHB3NlpPOEFpaFI4bzVCbmVuSl81ZURFMENZY25nZjRjTnhfVVg4ZF9RLVlqaUJ5X0NMVWRDczF1QnJNWmk3UFZmRmw0akFfRW93bW04ZW9iUDVicWpDSThYVDJtclRYaGs4ZC1Bd1dkOUx4REVhUmJERVV1N0xIaUZ6NWt5U3hNVXFGdnpGOTlIc0HSAeMBQVVfeXFMUGlKNEg1QUZHZzlBVFl0MEhmRkx6MWxQdTQxTlVvZ3pmVWtCMVZ5U0FpM216dDBGQVE3Zm96azBUZ3Fid29vLUpyNFNkWUoxWlhQd0s3UG1pbG1qMmVqWnpHbmpjdjBEa0JhWWZJLXRwdEZSdHVBZXY4aTZVMVZidlNYVmV6eEczcFlCS2xOdW9FTXA1aHp3T2hpV1Vxd19FNlNzd1VWVVpwbDlodDZUOVdKMEQ2aTZSaC1mWjM1cmJMaVpUZ2xCelVvblRaclh5R1FoOE5EMUZTRlZ0a1B2aHlBNUU?oc=5",
-      "date": "23 Aug 2026",
-      "category": "Important Notice",
-      "priority": "HIGH",
-      "marketingAction": "Host faculty live strategy session; offer mock test series and model answers.",
-      "hash": "124b9a88f6250150e7a0",
-      "isLegalTrack": true,
-      "routedTo": "PW Judiciary Wallah"
     },
     {
       "jurisdiction": "ADA & Prosecution",
