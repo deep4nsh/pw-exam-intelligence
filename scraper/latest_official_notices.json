@@ -1,6 +1,6 @@
 {
-  "lastUpdated": "2026-11-10T12:46:35.825Z",
-  "totalNotices": 89,
+  "lastUpdated": "2026-11-10T20:04:16.846Z",
+  "totalNotices": 88,
   "commissionsCovered": [
     "BPSC (Bihar)",
     "UPPSC (Uttar Pradesh)",
@@ -170,17 +170,6 @@
     {
       "jurisdiction": "UPPSC",
       "state": "Uttar Pradesh",
-      "exam": "UPPSC Combined State / PCS",
-      "title": "NOTICE REGARDING ADVT. NO. A-1/E-1/2025, COMBINED STATE/UPPER SUBORDINATE SERVICES EXAM.-2025",
-      "url": "https://uppsc.up.nic.in/Open_PDF_DB.aspx?I4PnQ0tBagk3H4ltFfLCjsv7tAk2LK46",
-      "category": "Important Notice",
-      "priority": "HIGH",
-      "marketingAction": "Review circular details and prepare student guidance/community update.",
-      "hash": "54e451a9c8a40cbac514"
-    },
-    {
-      "jurisdiction": "UPPSC",
-      "state": "Uttar Pradesh",
       "exam": "UPPSC Recruitment",
       "title": "NOTICE REGARDING ADVT. NO. A-10/E-1/2023 U.P. KHADI AND VILLAGE INDUSTRIES BOARD, PRASHIKSHAK (NON EDIBLE OIL AND SOAP)",
       "url": "https://uppsc.up.nic.in/Open_PDF_DB.aspx?I4PnQ0tBagk3H4ltFfLCjq0Sebp9/0+P",
@@ -188,6 +177,17 @@
       "priority": "HIGH",
       "marketingAction": "Review circular details and prepare student guidance/community update.",
       "hash": "faf5eff13d29c58c63d7"
+    },
+    {
+      "jurisdiction": "UPPSC",
+      "state": "Uttar Pradesh",
+      "exam": "UPPSC Recruitment",
+      "title": "NOTICE REGARDING ADVT. NO. A-10/E-1/2023 U.P. KHADI AND VILLAGE INDUSTRIES BOARD, PRASHIKSHAK (BEE KEEPING)",
+      "url": "https://uppsc.up.nic.in/Open_PDF_DB.aspx?I4PnQ0tBagk3H4ltFfLCjlvqxDfiA2PU",
+      "category": "Important Notice",
+      "priority": "HIGH",
+      "marketingAction": "Review circular details and prepare student guidance/community update.",
+      "hash": "6541b4af0a42da7508a8"
     },
     {
       "jurisdiction": "MPPSC",
@@ -283,13 +283,13 @@
       "jurisdiction": "MPPSC",
       "state": "Madhya Pradesh",
       "exam": "MPPSC State Recruitment",
-      "title": "From Jail to DSP: How Jainendra Kumar Nigam overcame adversity to secure 12th rank in MPPSC exam – know his journey | Hindustan Times",
-      "url": "https://news.google.com/rss/articles/CBMimgJBVV95cUxQZ240Q3JqTU01V3VhSUxDQzNJYTcwZ1Zhd0h4NDZ5aWFYRUw0MVE0Q3ZPQW1uNU9ORTdFTTE2X21hV00wZ2VrRWhiM0xOTEtxME9ySEFoR1ZleHlRczBSZk9VOU1XbVJ6NEpzRU1CV1VNXzVMQUFlUzY1VGQtdFJ6UnNuaXhzRExOMVJsV25na09KWDJ3emg2TnJRR2FDam54cWxDbkNGRkZlTmtjelFDeURlNEZwcmk3clJYVGFRajZWNkRidVRWeWdpNThHU3c3cUllc0lfbWk2TmJjbDFfRll3RVdWMkVJaFpnTGdGOVR3TTJxS0wxMllyaHc4Zm14VHlqVEttNHpsMEV1ZllsbkV3X0FGQjZGZVHSAZ8CQVVfeXFMUGdkNU1XWkdHdXg2dllGX2Z0YUFhZjhMZVF6aFNzNWlUNkljX29DNzkwSjN6akdsYlJGQndRQ2Q5RHE0bV8xemxnNWdFNkpFY1BRN2tUSWRSZzk5RVhmM3FKSTk2cTRncGZxUll2bUNwTVNOdkJPVVRuOGRINFQzamF6NENvb2h1bzNDN3NXSE1CZmZrUHlLZ3BzT05kZ2JRNmUtRkg4N2RhTkxVdTVTb0pMVnF1MGdiUGd3THhCYUN2QnhMZGpFdG1PZDdDRE53US1tNFdadUxHUEUxRk9oWEhTelBDSHdURDRFTDFFV3BGSFo4NS1XUkp0bHBpNWIwdU9CSjJjXzB1TG9TYVJ0bjFoWFkxcV9jd2pzNFlkLWM?oc=5",
-      "date": "22 Oct 2026",
+      "title": "Daily Madhya Pradesh Current Affairs for MPPSC Exam (20-10-2026)",
+      "url": "https://news.google.com/rss/articles/CBMibkFVX3lxTE5PeExpNHdqckRyZmJJNVF2SEtrd3k5cmhkSW82TldzcGJmcXFPREl5ZUNBSUhjVlMwMlNqTnVSRGNvd0ZFV3pDcjhyU3hIdy1QS01PcTNubWZTR0RPVE1oQ2JuNzdOeW02YW45MWFR?oc=5",
+      "date": "20 Oct 2026",
       "category": "Important Notice",
       "priority": "HIGH",
       "marketingAction": "Review circular details and prepare student guidance/community update.",
-      "hash": "784002246f1502f3816f"
+      "hash": "a65f457d9a298e46de96"
     },
     {
       "jurisdiction": "RPSC",
@@ -314,18 +314,6 @@
       "priority": "HIGH",
       "marketingAction": "Review circular details and prepare student guidance/community update.",
       "hash": "793c46a4cb486c8eef41"
-    },
-    {
-      "jurisdiction": "RPSC",
-      "state": "Rajasthan",
-      "exam": "RPSC State Recruitment",
-      "title": "Important Court Judgments",
-      "url": "https://news.google.com/rss/articles/CBMiYkFVX3lxTFBNVW9rVkFTb09CeUk4Y291X2hhR29tRjhCcGVCT1o2Um1PZzlHVUlXNWtadGZyRWxCQUhjYTdEMVk0LXZ3MnpFbE1HQTVEMFBGc095Wi1zUVJLcWw1V01hc19R?oc=5",
-      "date": "02 Nov 2026",
-      "category": "Important Notice",
-      "priority": "HIGH",
-      "marketingAction": "Review circular details and prepare student guidance/community update.",
-      "hash": "d354f15ec3b15188cc44"
     },
     {
       "jurisdiction": "OPSC (Odisha)",
@@ -959,20 +947,6 @@
       "jurisdiction": "Bar Advocacy & Law",
       "state": "Institute of Banking Personnel Selection (IBPS)",
       "exam": "IBPS SO (Law Officer)",
-      "title": "IBPS SO Result 2026 (Out) - Check IBPS SO Prelims Scorecard at ibps.in",
-      "url": "https://news.google.com/rss/articles/CBMiakFVX3lxTE40ZTJ2WDdael9zTkR0NkphUXRyRm9lQzhWdG91aDNXTFpOTFFiZ2w1MzhaSXZRbkVLNnNra29QN0RaNGtPRnFVNFY3QUx1TFpSNDh6c29OdV9YZmw1NDBlUnJqY1dMZUh1LUE?oc=5",
-      "date": "15 Oct 2026",
-      "category": "Result",
-      "priority": "CRITICAL",
-      "marketingAction": "Broadcast PW Law selections; open Mains/Interview mentorship with former banking legal managers.",
-      "hash": "d8d5e811f4fb65a69726",
-      "isLegalTrack": true,
-      "routedTo": "PW Judiciary Wallah"
-    },
-    {
-      "jurisdiction": "Bar Advocacy & Law",
-      "state": "Institute of Banking Personnel Selection (IBPS)",
-      "exam": "IBPS SO (Law Officer)",
       "title": "IBPS SO Prelims Cut Off 2026 Out, Check Post and Category-wise Cut Off Marks",
       "url": "https://news.google.com/rss/articles/CBMiWEFVX3lxTE1pOHdtX2VZMFB6MjlNSUVIUmN2WTc2QjQ5N2c2WHpVZGdUeFRWSDVDMnBtVEVZVlNLY1M2SHZ2Yy1SNVRNRnEzLWpXR0dBTHBwdnpjOXROTFQ?oc=5",
       "date": "23 Oct 2026",
@@ -980,6 +954,20 @@
       "priority": "CRITICAL",
       "marketingAction": "Broadcast PW Law selections; open Mains/Interview mentorship with former banking legal managers.",
       "hash": "bc4864fb2eb0f0e967f8",
+      "isLegalTrack": true,
+      "routedTo": "PW Judiciary Wallah"
+    },
+    {
+      "jurisdiction": "Bar Advocacy & Law",
+      "state": "Institute of Banking Personnel Selection (IBPS)",
+      "exam": "IBPS SO (Law Officer)",
+      "title": "IBPS SO Exam Centres 2027 - Check State-wise Test Centres List",
+      "url": "https://news.google.com/rss/articles/CBMickFVX3lxTFBVWTRNNmk3SjVHY21pcnAtRjhpRS1TQkhPeURkUFBLYWFqQUZJSlNjbWZuWFlPcGhIM1otY2NSUVI5UTVKb184NkpjZE1UeF9uY0FubU9mVlNRTkFENEdPVDNYenoxLS1LcTlkTndmREFrdw?oc=5",
+      "date": "21 Oct 2026",
+      "category": "Important Notice",
+      "priority": "HIGH",
+      "marketingAction": "Share legal officer exam pattern breakdown & previous year cutoff analysis on PW Law Wallah.",
+      "hash": "53bf43c84e3110a8926b",
       "isLegalTrack": true,
       "routedTo": "PW Judiciary Wallah"
     },
