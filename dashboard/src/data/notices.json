@@ -1,6 +1,6 @@
 {
-  "lastUpdated": "2026-11-12T23:51:16.188Z",
-  "totalNotices": 86,
+  "lastUpdated": "2026-11-13T03:42:05.382Z",
+  "totalNotices": 89,
   "commissionsCovered": [
     "BPSC (Bihar)",
     "UPPSC (Uttar Pradesh)",
@@ -486,6 +486,46 @@
       "hash": "d26496548fa189f6e60f"
     },
     {
+      "jurisdiction": "MPSC (Maharashtra)",
+      "state": "Maharashtra",
+      "exam": "Maharashtra Non-Gazetted Group B & C",
+      "title": "Advt. No. 017/2026 Maharashtra Group-C Services Combine Preliminary Examination 2026 - Corrigendum regarding posts & new application submission",
+      "url": "https://mpsc.gov.in/web/api/v1/downloadFileImage/english/14525",
+      "date": "2026-11-06",
+      "category": "Corrigendum / Revision",
+      "priority": "HIGH",
+      "marketingAction": "Review circular details and prepare student guidance/community update.",
+      "hash": "35c31cf6d6ce2af123cb"
+    },
+    {
+      "jurisdiction": "MPSC (Maharashtra)",
+      "state": "Maharashtra",
+      "exam": "Maharashtra Non-Gazetted Group B & C",
+      "title": "Advt.No. 022/2026- Assistant (Legal), Group B, Law and Judiciary Department- Advertisement",
+      "url": "https://mpsc.gov.in/web/api/v1/downloadFileImage/english/14498",
+      "date": "2026-10-23",
+      "category": "Notification / Recruitment",
+      "priority": "CRITICAL",
+      "marketingAction": "Schedule YouTube Live notification breakdown (<45m) and launch Target Batch ad creatives.",
+      "hash": "3cd84fee00399e7fbf54",
+      "isLegalTrack": true,
+      "routedTo": "PW Judiciary Wallah"
+    },
+    {
+      "jurisdiction": "MPSC (Maharashtra)",
+      "state": "Maharashtra",
+      "exam": "Maharashtra Judicial Service (CJJD / JMFC)",
+      "title": "Advt. No. 013/2026 Civil Judge Junior Division and Judicial Magistrate First Class Preliminary Examination 2024 - Corrigendum regarding application submission of new law graduates",
+      "url": "https://mpsc.gov.in/web/api/v1/downloadFileImage/english/14496",
+      "date": "2026-10-23",
+      "category": "Corrigendum / Revision",
+      "priority": "HIGH",
+      "marketingAction": "Host faculty live strategy session; offer mock test series and model answers.",
+      "hash": "3d75364c1be0fce37dc1",
+      "isLegalTrack": true,
+      "routedTo": "PW Judiciary Wallah"
+    },
+    {
       "jurisdiction": "Pan-India Judiciary",
       "state": "Allahabad High Court (UP)",
       "exam": "High Court Judicial Recruitment",
@@ -546,14 +586,16 @@
     {
       "jurisdiction": "Pan-India Judiciary",
       "state": "Madhya Pradesh High Court (MPHC)",
-      "exam": "MP High Court Judicial Recruitment",
-      "title": "MP High Court Quashes Constable’s Dismissal For Not Listing Acquitted Cases In Recruitment Form",
-      "url": "https://news.google.com/rss/articles/CBMizwFBVV95cUxNc0NTakYtZS1yd0c2c21yQ3hmSjlIRllVX015Wjdwa2REUWZEZWNISF9jQmpIX3FjbDE3YjVrNU9NbmNLQXFfN2RhdHpyNVVILTl6ZlZkV19VeEgxRTVsdzZpR25fSXltc0g1MjhfTTRycVVOLUpXczkwQXZOWm9sRU9nS0VQTmNFWkhmRzRaZU9uQml4SHJFdVI4eUp2V3YwTUhXQ090ZDZrdzlza1BGbEo0MFNqTzVBeXhubnhsdzAzMjVBY2RvQm94SmRlUmfSAdQBQVVfeXFMTWNsVXhTZGlDeUZFcUFhZEl3S2IwelhVNkRBYU9HUDZEMmFiWmc3aFh1VmZKUTIyM0czSDVHYVQwbzdyRlI5Ylk1SDN3SkhvTTlwVnduYnFZLUFuai00MGtIemw2NW9lWjA4OHlwckRhcHZvM01SZERiYkRVM1JlYUI3eFNBTDdTVU5OMDh5T0JRSk9EV3ZCR3BmMlp4SDQ1VE1TNEFTbGJwQVo5M0FMbk96RTJMTnNNZ3EtVXZja0QyUHVGLUFKbGM5SkYxRDBDTFBuNjM?oc=5",
-      "date": "02 Nov 2026",
-      "category": "Notification / Recruitment",
+      "exam": "MP Civil Judge",
+      "title": "Supreme Court Judicial Service Practice Rule Verdict : What Changes For Law Graduates Before &amp; After...",
+      "url": "https://news.google.com/rss/articles/CBMi3gFBVV95cUxNM3BRbldGSVhrR2lMR2k3c2lfVUhySWd2NU9SamNLUWFRaGNRMzJCRXlmRmJ1WEZGSTcyQzNJVHlCMU5yeW00M2tuT1lWM3lWbXppdHB3NlpPOEFpaFI4bzVCbmVuSl81ZURFMENZY25nZjRjTnhfVVg4ZF9RLVlqaUJ5X0NMVWRDczF1QnJNWmk3UFZmRmw0akFfRW93bW04ZW9iUDVicWpDSThYVDJtclRYaGs4ZC1Bd1dkOUx4REVhUmJERVV1N0xIaUZ6NWt5U3hNVXFGdnpGOTlIc0HSAeMBQVVfeXFMUGlKNEg1QUZHZzlBVFl0MEhmRkx6MWxQdTQxTlVvZ3pmVWtCMVZ5U0FpM216dDBGQVE3Zm96azBUZ3Fid29vLUpyNFNkWUoxWlhQd0s3UG1pbG1qMmVqWnpHbmpjdjBEa0JhWWZJLXRwdEZSdHVBZXY4aTZVMVZidlNYVmV6eEczcFlCS2xOdW9FTXA1aHp3T2hpV1Vxd19FNlNzd1VWVVpwbDlodDZUOVdKMEQ2aTZSaC1mWjM1cmJMaVpUZ2xCelVvblRaclh5R1FoOE5EMUZTRlZ0a1B2aHlBNUU?oc=5",
+      "date": "23 Aug 2026",
+      "category": "Important Notice",
       "priority": "HIGH",
-      "marketingAction": "Schedule YouTube Live notification breakdown (<45m) and launch Target Batch ad creatives.",
-      "hash": "42c2445867bc99d8ddf4"
+      "marketingAction": "Host faculty live strategy session; offer mock test series and model answers.",
+      "hash": "124b9a88f6250150e7a0",
+      "isLegalTrack": true,
+      "routedTo": "PW Judiciary Wallah"
     },
     {
       "jurisdiction": "Pan-India Judiciary",
@@ -571,13 +613,13 @@
       "jurisdiction": "Pan-India Judiciary",
       "state": "Delhi High Court (DHC)",
       "exam": "Delhi Judicial Service (DJS)",
-      "title": "Delhi High Court issues notice to Centre on Telegram’s challenge to temporary ban ahead of NEET exam",
-      "url": "https://news.google.com/rss/articles/CBMi7wFBVV95cUxNNkhSZjFualRqSVpZeEVwT29SUmt4MDBPbEhQRmNjTlh6N2MtRUlBTzUyUV9udDB3cFEtaE92d3FNQzl4cGhuU1NUVkliU3pvLXJ2d25SOUhRYlFCWkhNUGF6RmZ5bGRiTk9xX2pKUEJ2UEZZMTBwcElxaWhveU45VmFrSFpzaHprSzdBdjZ0NmZFZ2VremRvRTh0ZGNEOUVvdC1aMWNFc0VrS2ZRUk5mdVd3bThHbFRTXzZJeFZHUFVhSUFkYzVlOXVoWVY4Wmh5MkRvYXktX3djLXg3UlI5OWhrS1d2T1VKVGpxOElBTdIB9gFBVV95cUxPOFZCczB0WFAwWkFZUm1pLUtHU1dyYkxfdkNOb0JuMEhsWVpmY1NqbkZ4RDVqLXowdDU2eUFNcW5QclMzcmZiMm9WLUtneXdybVBOTDNRcDdjZjlxMW1uTUpGR2p2M1l4cUEwcDFJOXZoanpaR2psNGV5dkZ0eXlrMVh4bGxmdkVXZWtzODJoQklISGowb1pWNm1MMGZKUjFaSWpnek1NRm5WcFM1ZDladlJUT2dhNUlBNzMzb0s0bnB5NEhzeW4zcFRSU2dZY084U3hHOFVFYU9pdUh2S0NGM0lucGl2YWE5djlsTEowRkFfUnI3NXc?oc=5",
-      "date": "17 Jun 2026",
+      "title": "Delhi High Court Issues Notice In Plea Alleging Gender Discrimination In Territorial Army Officers’...",
+      "url": "https://news.google.com/rss/articles/CBMixAFBVV95cUxNNUc2V0E0QlUyckU0UkxBNGdXU2tjQW14UndZbmZJbG9SalZZaDR6S0g4WWJzX2ZKVEtEVzltWFFjbXp1elhLcS1wanJVdmQtak9EOEVQZDlxbWFQZlpIVkwwWmItQ3VPdzNwd1RBTDNEd0lHUV96WjJhcEpEUFZVS09pYTROWU1Rb1BTREhUTVVpMkhmZzNSRGxVaW1BVGlXeHNEUlJVdWNoZUNaamVvaW16QUh2d2E3NXBTQjh4ZTl1Y0Fk0gHKAUFVX3lxTE5RX3NFT3V6MVNvUnVnVFowbjRYQ2c5bndTa3pjSjhlTWhoVFhHY0NSaGc1STBfckZSRWlfNkVUSXpTeU5jQzN2X3JlS1V2RHNZcHJhUEFEaDdFZnZTTXRnT2pzUXlvaElQN0RmNmVnd3RWTHF6dU1ITXRkeWZ1bE1nbk5MRHlMYkl2YjZfSXNsV1BDOWdzZW1pb3R2SDA2YTNUaVdMci1NSlNHak5ncXNWWkp3dnBNbVlfZ2hoV2NqQ0JUdWd1dlAycHc?oc=5",
+      "date": "23 Sep 2026",
       "category": "Important Notice",
       "priority": "HIGH",
       "marketingAction": "Host faculty live strategy session; offer mock test series and model answers.",
-      "hash": "863b1be66859645c2318",
+      "hash": "796e96b21cc796980b28",
       "isLegalTrack": true,
       "routedTo": "PW Judiciary Wallah"
     },
