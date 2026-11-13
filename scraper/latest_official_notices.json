@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-11-13T11:37:56.929Z",
+  "lastUpdated": "2026-11-13T18:47:11.125Z",
   "totalNotices": 89,
   "commissionsCovered": [
     "BPSC (Bihar)",
@@ -105,6 +105,39 @@
       "jurisdiction": "UPPSC",
       "state": "Uttar Pradesh",
       "exam": "UPPSC Recruitment",
+      "title": "RESULT OF ADVT. NO. D-1/E-1/2026,MEDICAL EDUCATION DEPARTMENT U.P. (ALLOPATHY)/ASSISTANT PROFESSOR TRANSFUSION MEDICINE, S-08/118",
+      "url": "https://uppsc.up.nic.in/Open_PDF_DB.aspx?I4PnQ0tBagn3Lnqaz4gdq6pNygydf5ja",
+      "category": "Result",
+      "priority": "CRITICAL",
+      "marketingAction": "Broadcast PW student selections; push next-stage Mains/Interview mentorship batch.",
+      "hash": "35b894860348ead018f4"
+    },
+    {
+      "jurisdiction": "UPPSC",
+      "state": "Uttar Pradesh",
+      "exam": "UPPSC Recruitment",
+      "title": "RESULT OF ADVT. NO. D-1/E-1/2026,MEDICAL EDUCATION DEPARTMENT U.P. (ALLOPATHY)/ASSISTANT PROFESSOR CARDIOLOGY, S-08/54",
+      "url": "https://uppsc.up.nic.in/Open_PDF_DB.aspx?I4PnQ0tBagn3Lnqaz4gdqx0OkEkFHHmZ",
+      "category": "Result",
+      "priority": "CRITICAL",
+      "marketingAction": "Broadcast PW student selections; push next-stage Mains/Interview mentorship batch.",
+      "hash": "f5087cc4849542180e20"
+    },
+    {
+      "jurisdiction": "UPPSC",
+      "state": "Uttar Pradesh",
+      "exam": "UPPSC Recruitment",
+      "title": "RESULT OF ADVT. NO. D-1/E-1/2026,MEDICAL EDUCATION DEPARTMENT U.P. (ALLOPATHY)/ASSISTANT PROFESSOR EMERGENCY MEDICINE, S-08/43",
+      "url": "https://uppsc.up.nic.in/Open_PDF_DB.aspx?I4PnQ0tBagn3Lnqaz4gdq47NrLLiwkPi",
+      "category": "Result",
+      "priority": "CRITICAL",
+      "marketingAction": "Broadcast PW student selections; push next-stage Mains/Interview mentorship batch.",
+      "hash": "d6beb3b836e5d3e2024e"
+    },
+    {
+      "jurisdiction": "UPPSC",
+      "state": "Uttar Pradesh",
+      "exam": "UPPSC Recruitment",
       "title": "RESULT OF ADVT. NO. D-1/E-1/2026, MEDICAL EDUCATION DEPARTMENT U.P. (ALLOPATHY) /ASSISTANT PROFESSOR TRANSFUSION MEDICINE, S-08/58...",
       "url": "https://uppsc.up.nic.in/Open_PDF_DB.aspx?I4PnQ0tBagn3Lnqaz4gdq9A2tZjX6yGV",
       "category": "Result",
@@ -155,39 +188,6 @@
       "priority": "CRITICAL",
       "marketingAction": "Broadcast PW student selections; push next-stage Mains/Interview mentorship batch.",
       "hash": "4701e1264b8245a586a4"
-    },
-    {
-      "jurisdiction": "UPPSC",
-      "state": "Uttar Pradesh",
-      "exam": "UPPSC Recruitment",
-      "title": "RESULT OF ADVT. NO. D-1/E-1/2026, MEDICAL EDUCATION DEPARTMENT U.P. (ALLOPATHY)/PROFESSOR OTO-RHINO-LARYNGOLOGY(ENT), S-08/06",
-      "url": "https://uppsc.up.nic.in/Open_PDF_DB.aspx?I4PnQ0tBagk3H4ltFfLCjpK9HT4ZBX4T",
-      "category": "Result",
-      "priority": "CRITICAL",
-      "marketingAction": "Broadcast PW student selections; push next-stage Mains/Interview mentorship batch.",
-      "hash": "56b97fe1c5a541ae794a"
-    },
-    {
-      "jurisdiction": "UPPSC",
-      "state": "Uttar Pradesh",
-      "exam": "UPPSC Recruitment",
-      "title": "RESULT OF ADVT. NO. D-1/E-1/2026, MEDICAL EDUCATION DEPARTMENT U.P. (ALLOPATHY)/PROFESSOR CARDIOLOGY, S-08/09",
-      "url": "https://uppsc.up.nic.in/Open_PDF_DB.aspx?I4PnQ0tBagk3H4ltFfLCjiNtMjnSs/ca",
-      "category": "Result",
-      "priority": "CRITICAL",
-      "marketingAction": "Broadcast PW student selections; push next-stage Mains/Interview mentorship batch.",
-      "hash": "da8e7c5842458619da60"
-    },
-    {
-      "jurisdiction": "UPPSC",
-      "state": "Uttar Pradesh",
-      "exam": "UPPSC Recruitment",
-      "title": "RESULT OF ADVT. NO. D-1/E-1/2026, MEDICAL EDUCATION DEPARTMENT U.P. (ALLOPATHY)/PROFESSOR ANATOMY, S-08/04",
-      "url": "https://uppsc.up.nic.in/Open_PDF_DB.aspx?I4PnQ0tBagk3H4ltFfLCjpt+NPYatWx2",
-      "category": "Result",
-      "priority": "CRITICAL",
-      "marketingAction": "Broadcast PW student selections; push next-stage Mains/Interview mentorship batch.",
-      "hash": "3c649f4cf4881eed3838"
     },
     {
       "jurisdiction": "MPPSC",
@@ -332,6 +332,18 @@
     {
       "jurisdiction": "OPSC (Odisha)",
       "state": "Odisha",
+      "exam": "OPSC Engineering Services (AEE)",
+      "title": "Assistant Executive Engineer (Civil &amp; Mechanical) (Advt. No. 13 of 2026-27) - Category wise Break-up Notice",
+      "url": "https://www.opsc.gov.in/Public/OPSC/Default.aspx",
+      "date": "",
+      "category": "Important Notice",
+      "priority": "HIGH",
+      "marketingAction": "Review circular details and prepare student guidance/community update.",
+      "hash": "b891bd2f2e5aa2cdb0fb"
+    },
+    {
+      "jurisdiction": "OPSC (Odisha)",
+      "state": "Odisha",
       "exam": "OPSC Veterinary Services",
       "title": "Veterinary Assistant Surgeon/ Additional Veterinary Assistant Surgeon (Advt. No. 04 of 2026-27) - Download Admission Certificate &amp; Instructions for Written Examination",
       "url": "https://www.opsc.gov.in/Public/OPSC/Default.aspx",
@@ -414,16 +426,16 @@
       "hash": "756fce5ee4e062d9481e"
     },
     {
-      "jurisdiction": "OPSC (Odisha)",
-      "state": "Odisha",
-      "exam": "OPSC Recruitment",
-      "title": "Assistant Professor (Stage-I) (Odia) (Advt. No. 27 of 2023-24) - Recommendation Notice",
-      "url": "https://www.opsc.gov.in/Public/OPSC/Default.aspx",
-      "date": "",
+      "jurisdiction": "MPSC (Maharashtra)",
+      "state": "Maharashtra",
+      "exam": "MPSC Recruitment",
+      "title": "Commission of Inquiry for MPSC Examination Malpractices - Deadline to Submit Statements Extended Till November 23, 2026",
+      "url": "https://mpsc.gov.in/web/api/v1/downloadFileImage/english/14529",
+      "date": "2026-11-13",
       "category": "Important Notice",
       "priority": "HIGH",
       "marketingAction": "Review circular details and prepare student guidance/community update.",
-      "hash": "394fc16698e93763db07"
+      "hash": "a06327ee16a89f002b6c"
     },
     {
       "jurisdiction": "MPSC (Maharashtra)",
@@ -472,18 +484,6 @@
       "priority": "HIGH",
       "marketingAction": "Review circular details and prepare student guidance/community update.",
       "hash": "8b3872f1a2fffb66e0d2"
-    },
-    {
-      "jurisdiction": "MPSC (Maharashtra)",
-      "state": "Maharashtra",
-      "exam": "Maharashtra Non-Gazetted Group B & C",
-      "title": "Advt. No. 155/2023 Assistant Professor General Medicine, Maharashtra Medical and Research Service, Group-B - Announcement regarding revised result",
-      "url": "https://mpsc.gov.in/web/api/v1/downloadFileImage/english/14515",
-      "date": "2026-11-05",
-      "category": "Result",
-      "priority": "CRITICAL",
-      "marketingAction": "Broadcast PW student selections; push next-stage Mains/Interview mentorship batch.",
-      "hash": "107a024c7fb4431da2fe"
     },
     {
       "jurisdiction": "MPSC (Maharashtra)",
@@ -571,17 +571,15 @@
     },
     {
       "jurisdiction": "Pan-India Judiciary",
-      "state": "Delhi High Court (DHC)",
-      "exam": "Delhi Judicial Service (DJS)",
-      "title": "Delhi High Court SPA Admit Card 2026 Out, Direct Link",
-      "url": "https://news.google.com/rss/articles/CBMic0FVX3lxTE9LVjRzbzcxZnIyRU9waUc5MVd0b18tM3d4YXd0X0JWUF9POW90b1JWSFdlZzdsNDl2TnBoZEU5OWhmYmljYWpoVW44TGRvVGpOamdwd0VyQW1FMWREWjhRbG5NUXJiY0xHUkRtXzUxWGVtVFk?oc=5",
-      "date": "12 Nov 2026",
-      "category": "Admit Card",
-      "priority": "CRITICAL",
-      "marketingAction": "Blast student app push notification with direct download instructions; launch 7-day revision marathon.",
-      "hash": "1db056e905f07841aa77",
-      "isLegalTrack": true,
-      "routedTo": "PW Judiciary Wallah"
+      "state": "Madhya Pradesh High Court (MPHC)",
+      "exam": "MP High Court Judicial Recruitment",
+      "title": "MP High Court Quashes Constable’s Dismissal For Not Listing Acquitted Cases In Recruitment Form",
+      "url": "https://news.google.com/rss/articles/CBMizwFBVV95cUxNc0NTakYtZS1yd0c2c21yQ3hmSjlIRllVX015Wjdwa2REUWZEZWNISF9jQmpIX3FjbDE3YjVrNU9NbmNLQXFfN2RhdHpyNVVILTl6ZlZkV19VeEgxRTVsdzZpR25fSXltc0g1MjhfTTRycVVOLUpXczkwQXZOWm9sRU9nS0VQTmNFWkhmRzRaZU9uQml4SHJFdVI4eUp2V3YwTUhXQ090ZDZrdzlza1BGbEo0MFNqTzVBeXhubnhsdzAzMjVBY2RvQm94SmRlUmfSAdQBQVVfeXFMTWNsVXhTZGlDeUZFcUFhZEl3S2IwelhVNkRBYU9HUDZEMmFiWmc3aFh1VmZKUTIyM0czSDVHYVQwbzdyRlI5Ylk1SDN3SkhvTTlwVnduYnFZLUFuai00MGtIemw2NW9lWjA4OHlwckRhcHZvM01SZERiYkRVM1JlYUI3eFNBTDdTVU5OMDh5T0JRSk9EV3ZCR3BmMlp4SDQ1VE1TNEFTbGJwQVo5M0FMbk96RTJMTnNNZ3EtVXZja0QyUHVGLUFKbGM5SkYxRDBDTFBuNjM?oc=5",
+      "date": "02 Nov 2026",
+      "category": "Notification / Recruitment",
+      "priority": "HIGH",
+      "marketingAction": "Schedule YouTube Live notification breakdown (<45m) and launch Target Batch ad creatives.",
+      "hash": "42c2445867bc99d8ddf4"
     },
     {
       "jurisdiction": "Pan-India Judiciary",
@@ -599,15 +597,17 @@
     },
     {
       "jurisdiction": "Pan-India Judiciary",
-      "state": "Madhya Pradesh High Court (MPHC)",
-      "exam": "MP High Court Judicial Recruitment",
-      "title": "MP High Court Quashes Constable’s Dismissal For Not Listing Acquitted Cases In Recruitment Form",
-      "url": "https://news.google.com/rss/articles/CBMizwFBVV95cUxNc0NTakYtZS1yd0c2c21yQ3hmSjlIRllVX015Wjdwa2REUWZEZWNISF9jQmpIX3FjbDE3YjVrNU9NbmNLQXFfN2RhdHpyNVVILTl6ZlZkV19VeEgxRTVsdzZpR25fSXltc0g1MjhfTTRycVVOLUpXczkwQXZOWm9sRU9nS0VQTmNFWkhmRzRaZU9uQml4SHJFdVI4eUp2V3YwTUhXQ090ZDZrdzlza1BGbEo0MFNqTzVBeXhubnhsdzAzMjVBY2RvQm94SmRlUmfSAdQBQVVfeXFMTWNsVXhTZGlDeUZFcUFhZEl3S2IwelhVNkRBYU9HUDZEMmFiWmc3aFh1VmZKUTIyM0czSDVHYVQwbzdyRlI5Ylk1SDN3SkhvTTlwVnduYnFZLUFuai00MGtIemw2NW9lWjA4OHlwckRhcHZvM01SZERiYkRVM1JlYUI3eFNBTDdTVU5OMDh5T0JRSk9EV3ZCR3BmMlp4SDQ1VE1TNEFTbGJwQVo5M0FMbk96RTJMTnNNZ3EtVXZja0QyUHVGLUFKbGM5SkYxRDBDTFBuNjM?oc=5",
-      "date": "02 Nov 2026",
-      "category": "Notification / Recruitment",
-      "priority": "HIGH",
-      "marketingAction": "Schedule YouTube Live notification breakdown (<45m) and launch Target Batch ad creatives.",
-      "hash": "42c2445867bc99d8ddf4"
+      "state": "Delhi High Court (DHC)",
+      "exam": "Delhi Judicial Service (DJS)",
+      "title": "Delhi High Court SPA Admit Card 2026 Out, Direct Link",
+      "url": "https://news.google.com/rss/articles/CBMic0FVX3lxTE9LVjRzbzcxZnIyRU9waUc5MVd0b18tM3d4YXd0X0JWUF9POW90b1JWSFdlZzdsNDl2TnBoZEU5OWhmYmljYWpoVW44TGRvVGpOamdwd0VyQW1FMWREWjhRbG5NUXJiY0xHUkRtXzUxWGVtVFk?oc=5",
+      "date": "12 Nov 2026",
+      "category": "Admit Card",
+      "priority": "CRITICAL",
+      "marketingAction": "Blast student app push notification with direct download instructions; launch 7-day revision marathon.",
+      "hash": "1db056e905f07841aa77",
+      "isLegalTrack": true,
+      "routedTo": "PW Judiciary Wallah"
     },
     {
       "jurisdiction": "Pan-India Judiciary",
@@ -973,6 +973,20 @@
     },
     {
       "jurisdiction": "Bar Advocacy & Law",
+      "state": "Securities and Exchange Board of India (SEBI)",
+      "exam": "SEBI Grade A (Legal)",
+      "title": "SEBI Grade A recruitment 2026: What are the new eligibility rules, educational qualifications and other c",
+      "url": "https://news.google.com/rss/articles/CBMilAJBVV95cUxQQjhzNjF1RHNiNjBDVjZnUmN5YjA3X1J2b0dPT3FWd3FBQWhHeUxzVWxUcXFES3Z2V1BheTE2MjlzLVZMSHEyNmI2M25CbVV6cjlIRldKSm5jcXQzeDFVaDg5aEdBZUlNcmFhTDVGVEoybzZNQmF4TDN0Q0VySXhKc3RFZmZSMkFHQy02cHVyVk1ZR2pwaXZ3S1dkaGFBTHdVTmpMcUFxNW9HLVZfUEhHU0NVeDVIXzFRRmZUWkZLRjRVQlk0aExiMWZNS0I3MGVMM1l1M1FVVkZIZkhXUW82V0xLRWh1TWtxcEpNeU1oakdEaUtFd3BfaGhUdnlrOUtER21kTlh5Q25IU1NBc0hKblBlZ2zSAZoCQVVfeXFMUG9YaVQ0cmJXTVo1T1N4V0tkcWVXN0lJbnFWQ29BMlY3WWhiazU4ZjVYZG9LaDdFSDBBRjVRWmZkcU1qaU1HWlVPSmxuU0x6TUlNR09hZ2hjX1VnU2tHdEhKUEsxbTBoZmxWTU1hZzhLN1FpZldrdF9CcEF2bFRVMkh5eXRKTHA3VTA3Y3FvMlZaNVkyWU1SNUNLUlNieGZiUjZpSWZqX2U1VlBTUmRVSjlITjVOakFEWVIyUU9BZ3JLM2pwYzdodzdJbDkzVkVpNmx0Sks1QzhCNGJYTDNRaWZnVXlUZGZlTVloOW9JdDNKOGhnV2sya0h6TXdaclF0VmZiR3VXRnZkTUx4b0t4SVpQU1MzLVBWbjFR?oc=5",
+      "date": "15 Oct 2026",
+      "category": "Notification / Recruitment",
+      "priority": "CRITICAL",
+      "marketingAction": "Host SEBI/IBPS Law Officer batch launch; cover Securities Laws, Company Law & Banking Regulations.",
+      "hash": "c13416ff273ead7bee81",
+      "isLegalTrack": true,
+      "routedTo": "PW Judiciary Wallah"
+    },
+    {
+      "jurisdiction": "Bar Advocacy & Law",
       "state": "Institute of Banking Personnel Selection (IBPS)",
       "exam": "IBPS SO (Law Officer)",
       "title": "IBPS SO Cut Off 2026 Out, Check Prelims Cut Off Marks",
@@ -982,20 +996,6 @@
       "priority": "CRITICAL",
       "marketingAction": "Broadcast PW Law selections; open Mains/Interview mentorship with former banking legal managers.",
       "hash": "588afde660f962880cd4",
-      "isLegalTrack": true,
-      "routedTo": "PW Judiciary Wallah"
-    },
-    {
-      "jurisdiction": "Bar Advocacy & Law",
-      "state": "Institute of Banking Personnel Selection (IBPS)",
-      "exam": "IBPS SO (Law Officer)",
-      "title": "IBPS SO Mains Admit Card 2026 Out, Check Download Link and Exam Guidelines",
-      "url": "https://news.google.com/rss/articles/CBMia0FVX3lxTFBjUVB5MTZxcmVQT2s1c1YwZHJid2NjbmVLTjVaMEdlNWlnOTlBOXQwZXhKOEN5enU0TV9xMDNxT1FOR3pRVE11ZEQyTW4tdVJDWEVKZXJtYjA0WnFBWndRWmk3aVNkVmltbWlR?oc=5",
-      "date": "31 Oct 2026",
-      "category": "Admit Card",
-      "priority": "CRITICAL",
-      "marketingAction": "Release last-minute commercial bare acts revision notes; promote mock test series.",
-      "hash": "fb2898d6d357b5348600",
       "isLegalTrack": true,
       "routedTo": "PW Judiciary Wallah"
     },
@@ -1031,13 +1031,13 @@
       "jurisdiction": "Bar Advocacy & Law",
       "state": "Bar Council of India (BCI)",
       "exam": "All India Bar Examination (AIBE)",
-      "title": "AIBE 22: Check application process, exam pattern and admit card details here",
-      "url": "https://news.google.com/rss/articles/CBMi0gFBVV95cUxPamhMU1BmdkVZYnl5bHZTSENKVHE2MEpLVVNNenhOMVJEXzU5cm9UbV9TNHlHX1l0WmFVbXJ3M3oxdWd5UkFlX3pHelE2bmlNdW1kR0hidmdleVNUb1lQVjU0VU9jVkdKSUNDYTRxanRfRzBzcWpoTWJmQVVaQ0JpWEVNeENZX2x3X0pvVzU4bGhBTzN6bW1PVWMyaGp0UXMwNU11MkdKU2tsb0ZQRk16eEI4bnY5RFFocmFGUDhJOHVtVG0yb0pEVTY2T3BJS2ludHc?oc=5",
-      "date": "23 Oct 2026",
+      "title": "AIBE 22 Admit Card 2026 Releasing Tomorrow: Know How To Download, Exam Details",
+      "url": "https://news.google.com/rss/articles/CBMitwFBVV95cUxPTFhockNtN2FUeUhEN1VUTmhsTll1elIzWWowdTZvU21iTmpEaFRoUlgxbWxrTnlPQ1J3SmUxcjNuN2FJVVdEZW9SZEJ2OGdjeVFTWm5uQ2VOeVhUVWRZMnNjRk1qRTNjQm5CUWRmQ09QWkJsTWN3QnhTWnpwUTBmSDdOZ2hsRTJwV3FHSm03Zm43Q2xMaVFuakh6RFBsV29mYzFrMlFvc283Q3JYekx5aXlyX2tHeWvSAb8BQVVfeXFMUFBtVjFvLUhxNFhoMUNrMnlkTEVEcVBPMmJBekk2MnZQbDRsSFpEVjVnLW9ibTd5TWZBRTQ1OW1iNnRmemVHa0htd1VRX3gxd0F5VzV1dGkyZ2p5SlRyWFN4bWNqeWhnTHpqUmZNdlRuazNOelBncmFlbldfZjRPLTY2blhiQmk1Y0pybmw3ellORGxnelpRT05BTzlZOXpLdWxsTzRVaktCeE02Y2szdm9USEdjVUVOeGxKMUxyWkk?oc=5",
+      "date": "13 Nov 2026",
       "category": "Admit Card",
       "priority": "CRITICAL",
       "marketingAction": "Release AIBE Exam Day Do's and Don'ts video; share PDF of index bare acts list.",
-      "hash": "03e2065d543c328bd076",
+      "hash": "301c46f87f08f1655b4e",
       "isLegalTrack": true,
       "routedTo": "PW Judiciary Wallah"
     },
