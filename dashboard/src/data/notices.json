@@ -1,6 +1,6 @@
 {
-  "lastUpdated": "2026-11-17T18:36:13.860Z",
-  "totalNotices": 90,
+  "lastUpdated": "2026-11-18T01:20:23.609Z",
+  "totalNotices": 87,
   "commissionsCovered": [
     "BPSC (Bihar)",
     "UPPSC (Uttar Pradesh)",
@@ -322,12 +322,12 @@
       "state": "Rajasthan",
       "exam": "RPSC State Recruitment",
       "title": "Press Note(s) section",
-      "url": "https://news.google.com/rss/articles/CBMiZ0FVX3lxTFBUSDZobDAycU5ra1JnRnF6Vk1feXN5UldpNGdBWDRNVjZRLWN0UHE2N2pCN0dyS2JFdldGd1ZrNDQ4RWxoZ2lXWjBFMFJOXzhkd0tzcGNBR1J2TEFJbF95c09wSGxST3M?oc=5",
-      "date": "13 Nov 2026",
+      "url": "https://news.google.com/rss/articles/CBMiaEFVX3lxTE9kemNDMEJXYzlWUExMSk5hSFd0Vmc0ZnZscDJsN24zODlJTUtndFpJdUo0cHpBd1N0dkNTaHVad241X21vU1o5Qk5RNVB6WVNhSGFIekZDRnp0WXdBN2NDQTR1bkN1X0VU?oc=5",
+      "date": "16 Nov 2026",
       "category": "Important Notice",
       "priority": "HIGH",
       "marketingAction": "Review circular details and prepare student guidance/community update.",
-      "hash": "1971720d39ae2c8dd2e6"
+      "hash": "fc940ec4a2f76a9c2774"
     },
     {
       "jurisdiction": "RPSC",
@@ -442,66 +442,6 @@
     {
       "jurisdiction": "MPSC (Maharashtra)",
       "state": "Maharashtra",
-      "exam": "MPSC Recruitment",
-      "title": "Commission of Inquiry for MPSC Examination Malpractices - Deadline to Submit Statements Extended Till November 23, 2026",
-      "url": "https://mpsc.gov.in/web/api/v1/downloadFileImage/english/14529",
-      "date": "2026-11-13",
-      "category": "Important Notice",
-      "priority": "HIGH",
-      "marketingAction": "Review circular details and prepare student guidance/community update.",
-      "hash": "a06327ee16a89f002b6c"
-    },
-    {
-      "jurisdiction": "MPSC (Maharashtra)",
-      "state": "Maharashtra",
-      "exam": "Maharashtra Non-Gazetted Group B & C",
-      "title": "Advt. No. 017/2026 Maharashtra Group-C Services Combined Preliminary Examination 2026 - Announcement regarding Qualification Criteria",
-      "url": "https://mpsc.gov.in/web/api/v1/downloadFileImage/english/14526",
-      "date": "2026-11-13",
-      "category": "Important Notice",
-      "priority": "HIGH",
-      "marketingAction": "Review circular details and prepare student guidance/community update.",
-      "hash": "2856f623c2290fa1d6ca"
-    },
-    {
-      "jurisdiction": "MPSC (Maharashtra)",
-      "state": "Maharashtra",
-      "exam": "Maharashtra Non-Gazetted Group B & C",
-      "title": "Advt. No. 017/2026 Maharashtra Group-C Services Combine Preliminary Examination 2026 - Announcement",
-      "url": "https://mpsc.gov.in/web/api/v1/downloadFileImage/english/14520",
-      "date": "2026-11-06",
-      "category": "Important Notice",
-      "priority": "HIGH",
-      "marketingAction": "Review circular details and prepare student guidance/community update.",
-      "hash": "4b01de66227932e6e8f9"
-    },
-    {
-      "jurisdiction": "MPSC (Maharashtra)",
-      "state": "Maharashtra",
-      "exam": "MPSC Recruitment",
-      "title": "Advt.No.109/2022 Deputy Engineer (Mechanical), Group-A in the Directorate of Groundwater Surveys and Development Agency - Announcement regarding revised result",
-      "url": "https://mpsc.gov.in/web/api/v1/downloadFileImage/english/14519",
-      "date": "2026-11-05",
-      "category": "Result",
-      "priority": "CRITICAL",
-      "marketingAction": "Broadcast PW student selections; push next-stage Mains/Interview mentorship batch.",
-      "hash": "9d2f9e7ff5cc262d9920"
-    },
-    {
-      "jurisdiction": "MPSC (Maharashtra)",
-      "state": "Maharashtra",
-      "exam": "MPSC Recruitment",
-      "title": "Press Note : MPSC Examination Irregularities: Inquiry Commission Invites Submissions in Prescribed Forma",
-      "url": "https://mpsc.gov.in/web/api/v1/downloadFileImage/english/14516",
-      "date": "2026-11-05",
-      "category": "Important Notice",
-      "priority": "HIGH",
-      "marketingAction": "Review circular details and prepare student guidance/community update.",
-      "hash": "8b3872f1a2fffb66e0d2"
-    },
-    {
-      "jurisdiction": "MPSC (Maharashtra)",
-      "state": "Maharashtra",
       "exam": "Maharashtra Non-Gazetted Group B & C",
       "title": "Advt. No. 017/2026 Maharashtra Group-C Services Combine Preliminary Examination 2026 - Corrigendum",
       "url": "https://mpsc.gov.in/web/api/v1/downloadFileImage/english/14530",
@@ -510,6 +450,18 @@
       "priority": "HIGH",
       "marketingAction": "Review circular details and prepare student guidance/community update.",
       "hash": "ea88470a18c0f4c84cce"
+    },
+    {
+      "jurisdiction": "MPSC (Maharashtra)",
+      "state": "Maharashtra",
+      "exam": "Maharashtra Non-Gazetted Group B & C",
+      "title": "Advt. No. 017/2026 Maharashtra Group-C Services Combined Preliminary Examination 2026 - Announcement regarding Qualification Criteria",
+      "url": "https://mpsc.gov.in/web/api/v1/downloadFileImage/english/14527",
+      "date": "2026-11-13",
+      "category": "Important Notice",
+      "priority": "HIGH",
+      "marketingAction": "Review circular details and prepare student guidance/community update.",
+      "hash": "1731c04f45fe5f23a58c"
     },
     {
       "jurisdiction": "MPSC (Maharashtra)",
@@ -534,6 +486,20 @@
       "priority": "CRITICAL",
       "marketingAction": "Schedule YouTube Live notification breakdown (<45m) and launch Target Batch ad creatives.",
       "hash": "3cd84fee00399e7fbf54",
+      "isLegalTrack": true,
+      "routedTo": "PW Judiciary Wallah"
+    },
+    {
+      "jurisdiction": "MPSC (Maharashtra)",
+      "state": "Maharashtra",
+      "exam": "Maharashtra Judicial Service (CJJD / JMFC)",
+      "title": "Advt. No. 013/2026 Civil Judge Junior Division and Judicial Magistrate First Class Preliminary Examination 2024 - Corrigendum regarding application submission of new law graduates",
+      "url": "https://mpsc.gov.in/web/api/v1/downloadFileImage/english/14496",
+      "date": "2026-10-23",
+      "category": "Corrigendum / Revision",
+      "priority": "HIGH",
+      "marketingAction": "Host faculty live strategy session; offer mock test series and model answers.",
+      "hash": "3d75364c1be0fce37dc1",
       "isLegalTrack": true,
       "routedTo": "PW Judiciary Wallah"
     },
@@ -969,6 +935,20 @@
     },
     {
       "jurisdiction": "Bar Advocacy & Law",
+      "state": "Securities and Exchange Board of India (SEBI)",
+      "exam": "SEBI Grade A (Legal)",
+      "title": "IFSCA Grade A Eligibility 2026: Will It Change After SEBI Grade A🤔?",
+      "url": "https://news.google.com/rss/articles/CBMiQkFVX3lxTE5KaDN3ZlpWWFpIZ1JIOER4VUhKcUx0Y2dSajk2TExYVE1UODNVY2R0TU51ay1aSElub2lad2E3ZVp4dw?oc=5",
+      "date": "23 Oct 2026",
+      "category": "Important Notice",
+      "priority": "HIGH",
+      "marketingAction": "Share legal officer exam pattern breakdown & previous year cutoff analysis on PW Law Wallah.",
+      "hash": "52cdec29b1ed64f4ea54",
+      "isLegalTrack": true,
+      "routedTo": "PW Judiciary Wallah"
+    },
+    {
+      "jurisdiction": "Bar Advocacy & Law",
       "state": "Institute of Banking Personnel Selection (IBPS)",
       "exam": "IBPS SO (Law Officer)",
       "title": "IBPS SO Mains Admit Card 2026 Out, Check Download Link and Exam Guidelines",
@@ -992,20 +972,6 @@
       "priority": "CRITICAL",
       "marketingAction": "Broadcast PW Law selections; open Mains/Interview mentorship with former banking legal managers.",
       "hash": "588afde660f962880cd4",
-      "isLegalTrack": true,
-      "routedTo": "PW Judiciary Wallah"
-    },
-    {
-      "jurisdiction": "Bar Advocacy & Law",
-      "state": "Institute of Banking Personnel Selection (IBPS)",
-      "exam": "IBPS SO (Law Officer)",
-      "title": "IBPS SO Exam 2026 on 1 November: Exam Day Guidelines and Important Instructions",
-      "url": "https://news.google.com/rss/articles/CBMiqwFBVV95cUxPUG41SkhTUVlacmhMeVR1R1BvVVBoSVBrVUhZbm9UcEpuSXJkM1FjcWNVSG9iQWFJVG9qaXBrNm9BR3B5RDRXa2ZaQ1l1OFMyTFFqd0VpczE2QVROazRhVW5uWFBOYTEyT1lpTFlFUENybUtSQkZtUXQtUk1LLUhqUS1DanpkU0tXa2tZUEhHQjZXeEZUV09GdzhpTVl3VWtTWWhwZ0g4YTUtcEk?oc=5",
-      "date": "30 Oct 2026",
-      "category": "Important Notice",
-      "priority": "HIGH",
-      "marketingAction": "Share legal officer exam pattern breakdown & previous year cutoff analysis on PW Law Wallah.",
-      "hash": "1d7839c10619c13c341d",
       "isLegalTrack": true,
       "routedTo": "PW Judiciary Wallah"
     },
