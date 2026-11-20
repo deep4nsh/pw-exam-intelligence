@@ -1,10 +1,10 @@
 name: "24/7 Official Exam Intelligence Radar"
 
 on:
-  schedule:
-    # Runs every 5 minutes round the clock (₹0 server cost)
-    - cron: '*/5 * * * *'
   workflow_dispatch: # Allows manual trigger from GitHub Actions tab anytime
+  # Scheduled cron retired in favor of continuous 120s Render Cloud Daemon:
+  # schedule:
+  #   - cron: '*/5 * * * *'
 
 concurrency:
   group: exam-intelligence-scrape
