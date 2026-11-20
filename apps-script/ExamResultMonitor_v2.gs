@@ -35,7 +35,10 @@ const CFG = {
   FONT: 'Arial',
   FONT_SIZE: 10,
   GEMINI_MODEL: 'gemini-1.5-flash',
-  GITHUB_NOTICES_URL: 'https://raw.githubusercontent.com/deep4nsh/pw-exam-intelligence/main/scraper/latest_official_notices.json'
+  GITHUB_NOTICES_URL: 'https://raw.githubusercontent.com/deep4nsh/pw-exam-intelligence/main/scraper/latest_official_notices.json',
+  TRACKER_SHEET_ID: '1IIdA-chEZvTRT4xPKmvFp_U-6mCv6t2VdPTXOOhooYQ', // Default tracker spreadsheet
+  TAGS_SHEET_ID: '1IIdA-chEZvTRT4xPKmvFp_U-6mCv6t2VdPTXOOhooYQ', // Central CMM Multi-Category Sheet
+  ENABLE_DYNAMIC_CMM_TAGS: true // Auto-load CMM categories, tags & emails directly from Sheet
 };
 
 const HEADERS = [
@@ -50,6 +53,276 @@ const HEADERS = [
   'Telegram Alert',
   'Unique ID'
 ];
+
+/**
+ * Built-in Category Scopes for CMM Routing (Fallback & Base Config)
+ */
+const BUILTIN_CMM_SCOPES = [
+  {
+    name: 'UP State Board',
+    sheetTab: 'UP State board',
+    jurisdiction: 'Uttar Pradesh',
+    exam: 'UP Board (Class 10 / 12)',
+    category: 'UP State Board',
+    recipientEmail: 'anshu.mishra@pw.live',
+    aliases: ['UP State Board', 'UPMSP', 'Uttar Pradesh Madhyamik Shiksha Parishad', 'UP Board', 'Madhyamik'],
+    includes: [
+      'https://upmsp.edu.in/',
+      'amarujala',
+      'Jagran Josh',
+      'UPMSP Result',
+      'UPMSP Model Paper',
+      'UPMSP Datesheet',
+      'UPMSP Timetable',
+      'UPMSP Scrutiny',
+      'हाईस्कूल',
+      'इण्टरमीडिएट'
+    ],
+    excludes: [],
+    queries: [
+      'UPMSP result board pariksha date sheet',
+      'UP State Board timetable datesheet scrutiny',
+      'UPMSP Model Paper amarujala jagran josh',
+      'UPMSP Class 10 12 board pariksha',
+      'Uttar Pradesh Madhyamik Shiksha Parishad UPMSP notice'
+    ],
+    kind: 'cmm_category'
+  },
+  {
+    name: 'CA Inter & Fond Online',
+    sheetTab: 'CA',
+    jurisdiction: 'ICAI / National',
+    exam: 'CA Foundation / Intermediate',
+    category: 'CA Inter & Fond Online',
+    recipientEmail: 'moksh.sharma@pw.live',
+    aliases: [
+      'CA Inter',
+      'CA Inter results',
+      'ICAI',
+      'Foundation',
+      'Intermediate',
+      'Chartered Accountants',
+      'CA Foundation',
+      'CA Intermediate'
+    ],
+    includes: [
+      'CA Foundation',
+      'CA Intermediate',
+      'CA Foundation Result',
+      'CA Intermediate Results',
+      'https://www.icai.org/category/announcements'
+    ],
+    excludes: [
+      'Mock test'
+    ],
+    queries: [
+      'ICAI CA Foundation result announcement date',
+      'ICAI CA Intermediate result exam schedule',
+      'Chartered Accountants CA Inter foundation notice',
+      'ICAI examination announcement circular',
+      'ICAI CA Inter results date sheet'
+    ],
+    kind: 'cmm_category'
+  }
+];
+
+let _cachedScopes = null;
+
+function getActiveCategoryScopes_() {
+  if (_cachedScopes && _cachedScopes.length > 0) return _cachedScopes;
+
+  if (CFG.ENABLE_DYNAMIC_CMM_TAGS) {
+    try {
+      const dynamicScopes = loadCategoryScopesFromTagsSheet_();
+      if (dynamicScopes && dynamicScopes.length > 0) {
+        _cachedScopes = dynamicScopes;
+        return _cachedScopes;
+      }
+    } catch (e) {
+      Logger.log('Dynamic tags loading notice: ' + e.message);
+    }
+  }
+
+  _cachedScopes = getBuiltInScopes_();
+  return _cachedScopes;
+}
+
+function getBuiltInScopes_() {
+  return [...EXAM_SCOPES, ...BUILTIN_CMM_SCOPES];
+}
+
+/**
+ * Loads dynamic categories, tags (INCLUDE, ALIAS, EXCLUDE) and CMM emails
+ * directly from the shared Google Spreadsheet tabs!
+ */
+function loadCategoryScopesFromTagsSheet_() {
+  const props = PropertiesService.getScriptProperties();
+  const tagsSheetId = props.getProperty('TAGS_SHEET_ID') || CFG.TAGS_SHEET_ID;
+  if (!tagsSheetId) return null;
+
+  try {
+    const ss = SpreadsheetApp.openById(tagsSheetId);
+    const sheets = ss.getSheets();
+    const dynamicScopes = [];
+
+    sheets.forEach(sheet => {
+      const sheetName = sheet.getName().trim();
+      if (sheetName.toLowerCase() === 'sample') return;
+
+      const lastRow = sheet.getLastRow();
+      if (lastRow < 2) return;
+
+      const numCols = Math.min(sheet.getLastColumn(), 5);
+      const data = sheet.getRange(1, 1, lastRow, numCols).getValues();
+
+      let categoryName = sheetName;
+      let cmmEmail = '';
+      const includes = [];
+      const aliases = [];
+      const excludes = [];
+
+      data.forEach(row => {
+        const colA = String(row[0] || '').trim();
+        const colB = String(row[1] || '').trim();
+        const colC = String(row[2] || '').trim().toUpperCase();
+
+        if (colA && !/category|exam|mail|email/i.test(colA)) {
+          categoryName = colA;
+        }
+
+        if (/mail|email/i.test(colA) && colB.includes('@')) {
+          cmmEmail = colB.trim();
+        } else if (colB.includes('@') && !cmmEmail) {
+          cmmEmail = colB.trim();
+        } else if (colA.includes('@') && !cmmEmail) {
+          cmmEmail = colA.trim();
+        }
+
+        if (colB && !/tag to add|category|exam/i.test(colB) && !colB.includes('@')) {
+          if (colC === 'ALIAS') {
+            aliases.push(colB);
+          } else if (colC === 'EXCLUDE') {
+            excludes.push(colB);
+          } else {
+            includes.push(colB);
+          }
+        }
+      });
+
+      if (!cmmEmail) {
+        if (/up state|upmsp|up board/i.test(categoryName + ' ' + sheetName)) cmmEmail = 'anshu.mishra@pw.live';
+        else if (/ca |icai/i.test(categoryName + ' ' + sheetName)) cmmEmail = 'moksh.sharma@pw.live';
+        else cmmEmail = CFG.EMAIL_TO;
+      }
+
+      const queryKeywords = [...includes, ...aliases]
+        .filter(k => !k.startsWith('http') && k.length > 2 && !/amarujala|jagran/i.test(k))
+        .slice(0, 6);
+
+      const queries = queryKeywords.map(k => `${categoryName} ${k}`);
+      if (queries.length === 0) {
+        queries.push(`${categoryName} exam notification result dates`);
+      }
+
+      dynamicScopes.push({
+        name: categoryName,
+        sheetTab: sheetName,
+        jurisdiction: sheetName,
+        exam: categoryName,
+        category: categoryName,
+        recipientEmail: cmmEmail,
+        aliases: aliases.length > 0 ? aliases : [categoryName],
+        includes: includes,
+        excludes: excludes,
+        queries: queries,
+        kind: 'cmm_category'
+      });
+    });
+
+    if (dynamicScopes.length > 0) {
+      log_('INFO', `Loaded ${dynamicScopes.length} dynamic CMM categories from Sheet.`, JSON.stringify(dynamicScopes.map(s => ({ tab: s.sheetTab, email: s.recipientEmail }))));
+      return [...EXAM_SCOPES, ...dynamicScopes];
+    }
+  } catch (err) {
+    Logger.log('Could not read tags sheet via SpreadsheetApp: ' + err.message);
+  }
+
+  return null;
+}
+
+function isUpBoardItem_(item) {
+  if (!item) return false;
+  if (item.recipientEmail === 'anshu.mishra@pw.live' || item.targetEmail === 'anshu.mishra@pw.live') return true;
+  const text = (
+    String(item.category || '') + ' ' +
+    String(item.exam || '') + ' ' +
+    String(item.jurisdiction || '') + ' ' +
+    String(item.scope || '') + ' ' +
+    String(item.title || '') + ' ' +
+    String(item.url || '') + ' ' +
+    String(item.queryLabel || '')
+  ).toLowerCase();
+
+  return /up state board|up board|upmsp|madhyamik|हाईस्कूल|इण्टरमीडिएट|results\.upmsp|board_modelpaper|upmsp\.edu\.in/i.test(text);
+}
+
+function isCaItem_(item) {
+  if (!item) return false;
+  if (item.recipientEmail === 'moksh.sharma@pw.live' || item.targetEmail === 'moksh.sharma@pw.live') return true;
+  const text = (
+    String(item.category || '') + ' ' +
+    String(item.exam || '') + ' ' +
+    String(item.jurisdiction || '') + ' ' +
+    String(item.scope || '') + ' ' +
+    String(item.title || '') + ' ' +
+    String(item.url || '') + ' ' +
+    String(item.queryLabel || '')
+  ).toLowerCase();
+
+  return /ca inter|ca foundation|ca final|icai|chartered accountant|caresults\.icai|resource\.cdn\.icai|icai\.org/i.test(text);
+}
+
+function getCmmEmailForCategory_(item) {
+  // 1. Strict Category Isolation: UP Board items ALWAYS route to Anshu Mishra
+  if (isUpBoardItem_(item)) {
+    return 'anshu.mishra@pw.live';
+  }
+
+  // 2. Strict Category Isolation: CA items ALWAYS route to Moksh Sharma
+  if (isCaItem_(item)) {
+    return 'moksh.sharma@pw.live';
+  }
+
+  if (item.targetEmail && item.targetEmail.includes('@') && item.targetEmail !== getEmailTo_()) {
+    return item.targetEmail.trim();
+  }
+  if (item.recipientEmail && item.recipientEmail.includes('@') && item.recipientEmail !== getEmailTo_()) {
+    return item.recipientEmail.trim();
+  }
+
+  // Match dynamic CMM scopes
+  try {
+    const text = (
+      String(item.category || '') + ' ' +
+      String(item.exam || '') + ' ' +
+      String(item.jurisdiction || '') + ' ' +
+      String(item.title || '')
+    ).toLowerCase();
+
+    const activeScopes = getActiveCategoryScopes_().filter(s => s.kind === 'cmm_category');
+    for (const scope of activeScopes) {
+      const scopeName = (scope.name || '').toLowerCase();
+      const tabName = (scope.sheetTab || '').toLowerCase();
+      if (text.includes(scopeName) || text.includes(tabName)) {
+        if (scope.recipientEmail && scope.recipientEmail.includes('@')) {
+          return scope.recipientEmail.trim();
+        }
+      }
+    }
+  } catch (e) {}
+
+  return getEmailTo_();
+}
 
 const EXAM_SCOPES = [
   {
@@ -193,10 +466,10 @@ const JUDICIARY_QUERIES = [
 ];
 
 const EXAM_TERMS =
-  /\b(exam|examination|recruit|recruitment|vacanc(?:y|ies)|commission|public service|civil judge|judicial service|judiciary|administrative service|selection|candidate|application|competitive|prelims|preliminary|mains|interview|personality test|assistant district attorney|ada|prosecution|apo|adpo|app|jlo|public prosecutor|aibe|bar council|advocate|law officer|hjs|dhjs|djs|bjs|rjs|ojs|wbjs|jmfc|cjjd|law clerk|legal assistant|legal researcher|research assistant|aor|advocate on record)\b/i;
+  /\b(exam|examination|recruit|recruitment|vacanc(?:y|ies)|commission|public service|civil judge|judicial service|judiciary|administrative service|selection|candidate|application|competitive|prelims|preliminary|mains|interview|personality test|assistant district attorney|ada|prosecution|apo|adpo|app|jlo|public prosecutor|aibe|bar council|advocate|law officer|hjs|dhjs|djs|bjs|rjs|ojs|wbjs|jmfc|cjjd|law clerk|legal assistant|legal researcher|research assistant|aor|advocate on record|board|madhyamik|upmsp|up board|high school|chartered accountant|icai|ca foundation|ca intermediate|ca inter|cbt)\b/i;
 
 const UPDATE_TERMS =
-  /\b(notification|notifies|notified|advertisement|released|release|announces|announced|schedule|calendar|date|dates|postponed|rescheduled|cancelled|canceled|deferred|admit card|hall ticket|answer key|response sheet|result|results|cut.?off|merit list|selection list|final list|provisional list|document verification|dv schedule|omr sheet|scorecard|marksheet|marks statement|city intimation|call letter|viva-voce|viva voce|application|registration|last date|deadline|extended|extension|corrigendum|correction window|edit window|syllabus|eligibility|age limit|reservation|vacancy|vacancies|interview|court order|judgment|judgement|stay order|revised|objection window|recruitment rules|परिणाम|प्रवेश पत्र|उत्तर कुंजी|विज्ञप्ति|शुद्धिपत्र)\b/i;
+  /\b(notification|notifies|notified|advertisement|released|release|announces|announced|schedule|calendar|date|dates|postponed|rescheduled|cancelled|canceled|deferred|admit card|hall ticket|answer key|response sheet|result|results|cut.?off|merit list|selection list|final list|provisional list|document verification|dv schedule|omr sheet|scorecard|marksheet|marks statement|city intimation|call letter|viva-voce|viva voce|application|registration|last date|deadline|extended|extension|corrigendum|correction window|edit window|syllabus|eligibility|age limit|reservation|vacancy|vacancies|interview|court order|judgment|judgement|stay order|revised|objection window|recruitment rules|datesheet|timetable|scrutiny|model paper|परिणाम|प्रवेश पत्र|उत्तर कुंजी|विज्ञप्ति|शुद्धिपत्र|मॉडल पेपर|परीक्षाफल|समय सारणी)\b/i;
 
 const EXCLUDE_TERMS =
   /\b(railway|railways|ntpc|rrb|coast guard|cgept|navik|yantrik|hygienist|gramin dak sevak|gds|post office|postal assistant|ibps(?!\s*so|\s*specialist|\s*law)|sbi po|sbi clerk|sbi apprentice|rbi grade|ssc cgl|ssc chsl|ssc gd|ssc mts|agniveer|army recruitment|navy recruitment|air force recruitment|nda\b|cds\b|afcat|gate\b|neet\b|jee main|expected cut.?off|safe score|exam analysis|salary|job profile|how to check|preparation tips|bail granted|bail rejected|anticipatory bail|fir\b|murder|accident|quashes constable|quashes dismissal)\b/i;
@@ -207,16 +480,13 @@ const EXCLUDE_TERMS =
    ========================================================================== */
 
 function setupExamNewsMonitor() {
-  const props = PropertiesService.getScriptProperties();
-  const id = props.getProperty('TRACKER_SHEET_ID');
-
-  if (!id) {
+  const ss = getSpreadsheet_();
+  if (!ss) {
     throw new Error(
-      'Required: Add TRACKER_SHEET_ID in Project Settings > Script Properties.'
+      'Required: Add TRACKER_SHEET_ID in Project Settings > Script Properties, or attach this script to a Google Spreadsheet.'
     );
   }
 
-  const ss = SpreadsheetApp.openById(id);
   let sheet = ss.getSheetByName(CFG.SHEET_NAME);
   if (!sheet) sheet = ss.insertSheet(CFG.SHEET_NAME);
 
@@ -300,7 +570,10 @@ function monitorExamNews() {
         jurisdiction: evaluation.jurisdiction,
         category: evaluation.category,
         priority: evaluation.priority,
-        status: evaluation.status
+        status: evaluation.status,
+        recipientEmail: evaluation.recipientEmail,
+        targetEmail: evaluation.targetEmail,
+        kind: evaluation.kind
       });
     });
 
@@ -341,6 +614,13 @@ function monitorExamNews() {
     selected.forEach(item => {
       if (item.isOfficialVerified && item.marketingAction && item.summary) {
         // Keep pristine official scraper-generated hooks
+        return;
+      }
+      if (item.kind === 'cmm_category' || isUpBoardItem_(item) || isCaItem_(item)) {
+        // Preserve category, exam & recipient email for CMM categories
+        const enrichment = enrichWithAIOrRules_(item, geminiKey);
+        item.summary = enrichment.summary || item.summary || item.title;
+        item.marketingAction = enrichment.marketingAction || item.marketingAction || 'Share update on PW channel';
         return;
       }
       const enrichment = enrichWithAIOrRules_(item, geminiKey);
@@ -404,8 +684,12 @@ function dispatchTelegramAlerts_(items) {
     return;
   }
 
-  // Filter urgent items
-  const urgent = items.filter(i => i.priority === 'CRITICAL' || i.priority === 'HIGH');
+  // Filter urgent State PSC & Judiciary items ONLY (strictly exclude UP Board and CA)
+  const urgent = items.filter(i => 
+    (i.priority === 'CRITICAL' || i.priority === 'HIGH') && 
+    !isUpBoardItem_(i) && 
+    !isCaItem_(i)
+  );
 
   if (urgent.length === 0) {
     items.forEach(i => i.telegramStatus = 'SKIPPED_NORMAL');
@@ -583,21 +867,99 @@ function makeSummaryFallback_(title, category) {
 
 
 /* ==========================================================================
-   RICH EXECUTIVE EMAIL DISPATCH
+   RICH EXECUTIVE EMAIL DISPATCH (Multi-Category CMM Routing)
    ========================================================================== */
 
 function sendRichExecutiveEmail_(items, spreadsheetUrl) {
+  sendCategorizedExecutiveEmails_(items, spreadsheetUrl);
+}
+
+/**
+ * Routes email alerts category-wise so each CMM receives ONLY their tags,
+ * and State PSC & Judiciary recipients receive ONLY PSC & Judiciary updates (ZERO Board/CA news).
+ */
+function sendCategorizedExecutiveEmails_(items, spreadsheetUrl) {
+  if (!items || items.length === 0) return;
+
+  const upBoardItems = [];
+  const caItems = [];
+  const pscJudiciaryItems = [];
+  const otherCmmGroups = {};
+  const coreEmail = getEmailTo_();
+
+  items.forEach(item => {
+    // 1. Check UP Board
+    if (isUpBoardItem_(item) || item.targetEmail === 'anshu.mishra@pw.live' || item.recipientEmail === 'anshu.mishra@pw.live') {
+      upBoardItems.push(item);
+      return;
+    }
+
+    // 2. Check CA
+    if (isCaItem_(item) || item.targetEmail === 'moksh.sharma@pw.live' || item.recipientEmail === 'moksh.sharma@pw.live') {
+      caItems.push(item);
+      return;
+    }
+
+    // 3. Dynamic CMM or State PSC routing
+    const email = getCmmEmailForCategory_(item);
+    if (email === 'anshu.mishra@pw.live') {
+      upBoardItems.push(item);
+    } else if (email === 'moksh.sharma@pw.live') {
+      caItems.push(item);
+    } else if (email === coreEmail) {
+      pscJudiciaryItems.push(item);
+    } else {
+      if (!otherCmmGroups[email]) otherCmmGroups[email] = [];
+      otherCmmGroups[email].push(item);
+    }
+  });
+
+  // 1. Dispatch UP State Board strictly to Anshu Mishra ONLY
+  if (upBoardItems.length > 0) {
+    dispatchSingleCategoryEmail_('anshu.mishra@pw.live', upBoardItems, spreadsheetUrl, 'UP State Board');
+  }
+
+  // 2. Dispatch CA strictly to Moksh Sharma ONLY
+  if (caItems.length > 0) {
+    dispatchSingleCategoryEmail_('moksh.sharma@pw.live', caItems, spreadsheetUrl, 'CA (Foundation & Intermediate)');
+  }
+
+  // 3. Dispatch any other dynamic CMM categories to their respective CMM only
+  Object.keys(otherCmmGroups).forEach(email => {
+    dispatchSingleCategoryEmail_(email, otherCmmGroups[email], spreadsheetUrl);
+  });
+
+  // 4. Dispatch State PSC & Judiciary strictly to CFG.EMAIL_TO (ZERO UP Board, ZERO CA)
+  if (pscJudiciaryItems.length > 0) {
+    dispatchSingleCategoryEmail_(coreEmail, pscJudiciaryItems, spreadsheetUrl, 'State PSC & Judiciary');
+  }
+}
+
+function dispatchSingleCategoryEmail_(recipientEmail, items, spreadsheetUrl, titleOverride) {
   if (!items || items.length === 0) return;
 
   const highPriority = items.filter(i => i.priority === 'HIGH' || i.priority === 'CRITICAL');
   const normalCount = items.length - highPriority.length;
 
-  const subject = `⚡ Exam Radar: ${items.length} New Update(s) [${highPriority.length} Urgent]`;
+  // Determine Category Title
+  let categoryTitle = titleOverride;
+  if (!categoryTitle) {
+    if (recipientEmail === 'anshu.mishra@pw.live') {
+      categoryTitle = 'UP State Board';
+    } else if (recipientEmail === 'moksh.sharma@pw.live') {
+      categoryTitle = 'CA (Foundation & Intermediate)';
+    } else if (items.every(i => i.jurisdiction === items[0].jurisdiction)) {
+      categoryTitle = items[0].jurisdiction;
+    } else {
+      categoryTitle = 'PW Exam Intelligence';
+    }
+  }
 
-  // 1. Build Scannable Quick-Pointers List (Every single update gets a crisp pointer)
+  const subject = `⚡ ${categoryTitle} Radar: ${items.length} New Update(s) [${highPriority.length} Urgent]`;
+
+  // 1. Build Scannable Quick-Pointers List (Only for items routed to this recipient!)
   let pointersHtml = '<ul style="margin:10px 0 20px 0;padding-left:18px;font-size:13px;line-height:1.7;color:#202124;">';
   items.forEach(item => {
-    const isUrgent = item.priority === 'CRITICAL' || item.priority === 'HIGH';
     const tagBg = item.priority === 'CRITICAL' ? '#fce8e6' : (item.priority === 'HIGH' ? '#fef7e0' : '#f1f3f4');
     const tagColor = item.priority === 'CRITICAL' ? '#c5221f' : (item.priority === 'HIGH' ? '#b06000' : '#5f6368');
     
@@ -647,8 +1009,8 @@ function sendRichExecutiveEmail_(items, spreadsheetUrl) {
         
         <!-- Header Banner -->
         <div style="background:#1e293b;color:#ffffff;padding:20px 24px;border-radius:8px 8px 0 0;">
-          <h2 style="margin:0;font-size:20px;color:#ffffff;">⚡ PW Exam Intelligence Radar</h2>
-          <div style="font-size:13px;color:#94a3b8;margin-top:4px;">State PSC & Judiciary Marketing Updates</div>
+          <h2 style="margin:0;font-size:20px;color:#ffffff;">⚡ ${escapeHtml_(categoryTitle)} Radar</h2>
+          <div style="font-size:13px;color:#94a3b8;margin-top:4px;">Real-Time Marketing Intelligence Alerts</div>
         </div>
 
         <div style="background:#ffffff;padding:22px 24px;border:1px solid #dadce0;border-top:none;border-radius:0 0 8px 8px;">
@@ -687,19 +1049,24 @@ function sendRichExecutiveEmail_(items, spreadsheetUrl) {
         </div>
 
         <div style="text-align:center;font-size:11px;color:#94a3b8;margin-top:16px;">
-          PW Marketing Internal Tool • Automated Intelligence Alert
+          PW Marketing Internal Tool • Automated Intelligence Alert • Delivered exclusively to ${escapeHtml_(recipientEmail)}
         </div>
       </div>
     </div>
   `;
 
-  MailApp.sendEmail({
-    to: getEmailTo_(),
-    subject: subject,
-    body: `Exam Radar: ${items.length} new updates found (${highPriority.length} urgent).\n\nOpen spreadsheet: ${spreadsheetUrl}`,
-    htmlBody: htmlBody,
-    name: 'PW Exam Radar'
-  });
+  try {
+    MailApp.sendEmail({
+      to: recipientEmail,
+      subject: subject,
+      body: `Exam Radar (${categoryTitle}): ${items.length} new updates found (${highPriority.length} urgent).\n\nOpen spreadsheet: ${spreadsheetUrl}`,
+      htmlBody: htmlBody,
+      name: 'PW Exam Radar'
+    });
+    log_('INFO', `Dispatched category email for ${categoryTitle} to ${recipientEmail}`, `Items: ${items.length}`);
+  } catch (err) {
+    log_('ERROR', `Failed to send email to ${recipientEmail}: ${err.message}`, String(err));
+  }
 }
 
 
@@ -709,14 +1076,20 @@ function sendRichExecutiveEmail_(items, spreadsheetUrl) {
 
 function buildFeedJobs_() {
   const jobs = [];
-  EXAM_SCOPES.forEach(scope => {
-    scope.queries.forEach(query => {
+  const scopes = getActiveCategoryScopes_();
+
+  scopes.forEach(scope => {
+    (scope.queries || []).forEach(query => {
       jobs.push({
         query: query,
         scope: scope.name,
         jurisdiction: scope.jurisdiction,
-        aliases: scope.aliases,
-        kind: 'psc'
+        category: scope.category || scope.name,
+        aliases: scope.aliases || [],
+        includes: scope.includes || [],
+        excludes: scope.excludes || [],
+        recipientEmail: scope.recipientEmail || CFG.EMAIL_TO,
+        kind: scope.kind || 'psc'
       });
     });
   });
@@ -726,7 +1099,11 @@ function buildFeedJobs_() {
       query: query,
       scope: 'Judiciary',
       jurisdiction: 'India — Nationwide',
+      category: 'Judiciary',
       aliases: ['judicial service', 'judiciary', 'civil judge', 'high court', 'supreme court'],
+      includes: [],
+      excludes: [],
+      recipientEmail: CFG.EMAIL_TO,
       kind: 'judiciary'
     });
   });
@@ -780,7 +1157,12 @@ function fetchFeeds_(jobs) {
             queryLabel: job.query,
             scope: job.scope,
             jurisdiction: job.jurisdiction,
+            category: job.category,
+            recipientEmail: job.recipientEmail,
+            targetEmail: job.recipientEmail,
             aliases: job.aliases,
+            includes: job.includes,
+            excludes: job.excludes,
             kind: job.kind
           });
         });
@@ -799,6 +1181,41 @@ function fetchFeeds_(jobs) {
 
 function evaluateItem_(item) {
   const text = (item.title + ' ' + item.description + ' ' + item.publisher).toLowerCase();
+
+  // 1. CMM Category Evaluation (Dynamic from Sheet + Built-in)
+  if (item.kind === 'cmm_category') {
+    // Check category-specific exclude tags (e.g. Mock test for CA)
+    if (item.excludes && item.excludes.length > 0 && hasAny_(text, item.excludes)) {
+      return { keep: false };
+    }
+
+    // Must match at least one include keyword or alias
+    const hasCategoryInclude = item.includes && item.includes.length > 0 && hasAny_(text, item.includes);
+    const hasCategoryAlias = item.aliases && item.aliases.length > 0 && hasAny_(text, item.aliases);
+    if (!hasCategoryInclude && !hasCategoryAlias) {
+      return { keep: false };
+    }
+
+    // National non-target spam gate
+    if (EXCLUDE_TERMS.test(text)) return { keep: false };
+
+    const category = classifyCategory_(text);
+    const priority = classifyPriority_(text, category);
+
+    return {
+      keep: true,
+      exam: item.exam || item.scope,
+      jurisdiction: item.jurisdiction,
+      category: item.category || category,
+      priority: priority,
+      status: 'CMM Alert Discovered',
+      recipientEmail: item.recipientEmail || getCmmEmailForCategory_(item),
+      targetEmail: item.targetEmail || item.recipientEmail || getCmmEmailForCategory_(item),
+      kind: item.kind
+    };
+  }
+
+  // 2. Standard State PSC & Judiciary Evaluation
   if (!EXAM_TERMS.test(text) || !UPDATE_TERMS.test(text)) return { keep: false };
 
   let exam = item.scope;
@@ -827,7 +1244,17 @@ function evaluateItem_(item) {
   if (category === 'Exam Schedule') status = 'Check schedule';
   if (category === 'Court / Policy Update') status = 'Verify official order';
 
-  return { keep: true, exam, jurisdiction: item.jurisdiction, category, priority, status };
+  return {
+    keep: true,
+    exam,
+    jurisdiction: item.jurisdiction,
+    category,
+    priority,
+    status,
+    recipientEmail: item.recipientEmail || getCmmEmailForCategory_(item),
+    targetEmail: item.targetEmail || item.recipientEmail || getCmmEmailForCategory_(item),
+    kind: item.kind
+  };
 }
 
 function clearlyOtherCommission_(text, expected) {
@@ -1058,12 +1485,29 @@ function priorityRank_(p) {
 }
 
 function getSpreadsheet_() {
-  const id = PropertiesService.getScriptProperties().getProperty('TRACKER_SHEET_ID');
-  if (!id) throw new Error('Missing TRACKER_SHEET_ID in Script Properties.');
-  return SpreadsheetApp.openById(id);
+  // 1. Script Properties takes top priority
+  const propId = PropertiesService.getScriptProperties().getProperty('TRACKER_SHEET_ID');
+  if (propId) {
+    try { return SpreadsheetApp.openById(propId); } catch (e) {}
+  }
+
+  // 2. Container-bound active spreadsheet (when opened via Extensions > Apps Script)
+  try {
+    const active = SpreadsheetApp.getActiveSpreadsheet();
+    if (active) return active;
+  } catch (e) {}
+
+  // 3. Fallback to CFG tracker sheet ID or tags sheet ID
+  const fallbackId = CFG.TRACKER_SHEET_ID || CFG.TAGS_SHEET_ID;
+  if (fallbackId) {
+    try { return SpreadsheetApp.openById(fallbackId); } catch (e) {}
+  }
+
+  return null;
 }
 
 function getOrCreateSheet_(ss, name) {
+  if (!ss) return null;
   return ss.getSheetByName(name) || ss.insertSheet(name);
 }
 
@@ -1072,8 +1516,11 @@ function getEmailTo_() {
 }
 
 function log_(level, msg, details) {
+  Logger.log(`[${level}] ${msg} ${details || ''}`);
   try {
     const ss = getSpreadsheet_();
+    if (!ss) return; // Silent return if no tracker sheet configured yet, avoiding false error lines
+
     let sheet = ss.getSheetByName(CFG.LOG_SHEET_NAME);
     if (!sheet) {
       sheet = ss.insertSheet(CFG.LOG_SHEET_NAME);
@@ -1082,7 +1529,7 @@ function log_(level, msg, details) {
     }
     sheet.appendRow([new Date(), level, msg, details || '']);
   } catch (e) {
-    console.error('Log failed: ' + e);
+    Logger.log('Sheet log notice: ' + e.message);
   }
 }
 
@@ -1139,6 +1586,7 @@ function fetchOfficialNoticesFromGitHub_(known) {
         summary: n.title,
         marketingAction: n.marketingAction,
         isOfficialVerified: true,
+        targetEmail: n.targetEmail,
         telegramStatus: 'SENT_VIA_ACTIONS'
       });
     });
@@ -1197,6 +1645,7 @@ function doPost(e) {
         summary: n.title,
         marketingAction: n.marketingAction,
         isOfficialVerified: true,
+        targetEmail: n.targetEmail,
         telegramStatus: 'SENT_VIA_ACTIONS'
       });
     });
@@ -1325,4 +1774,86 @@ function doGet(e) {
     return ContentService.createTextOutput(JSON.stringify({ error: err.toString() }))
       .setMimeType(ContentService.MimeType.JSON);
   }
+}
+
+/**
+ * Utility: Sends confirmation email to all CMMs showing their active category tags.
+ * Run manually in Apps Script to verify communication with CMMs.
+ */
+function sendTagsConfirmationToCMMs() {
+  const scopes = getActiveCategoryScopes_().filter(s => s.kind === 'cmm_category');
+  const results = [];
+
+  scopes.forEach(scope => {
+    const toEmail = scope.recipientEmail;
+    if (!toEmail || !toEmail.includes('@')) return;
+
+    const subject = `✅ [PW Exam Radar] Tags Active: ${scope.name}`;
+
+    let includeList = (scope.includes || []).map(t => `<li style="margin-bottom:4px;"><b>INCLUDE:</b> <code>${escapeHtml_(t)}</code></li>`).join('');
+    let aliasList = (scope.aliases || []).map(t => `<li style="margin-bottom:4px;"><b>ALIAS:</b> <code>${escapeHtml_(t)}</code></li>`).join('');
+    let excludeList = (scope.excludes || []).map(t => `<li style="margin-bottom:4px;color:#c5221f;"><b>EXCLUDE:</b> <code>${escapeHtml_(t)}</code></li>`).join('');
+
+    const htmlBody = `
+      <div style="font-family:Arial,sans-serif;background:#f8f9fa;padding:24px;color:#202124;">
+        <div style="max-width:600px;margin:0 auto;background:#ffffff;border-radius:8px;border:1px solid #dadce0;overflow:hidden;">
+          <div style="background:#1e293b;color:#ffffff;padding:20px 24px;">
+            <h2 style="margin:0;font-size:18px;">⚡ PW Exam Intelligence Radar</h2>
+            <div style="font-size:13px;color:#94a3b8;margin-top:4px;">Category Monitoring Activated: <b>${escapeHtml_(scope.name)}</b></div>
+          </div>
+          <div style="padding:24px;">
+            <p style="font-size:14px;color:#3c4043;">Hello,</p>
+            <p style="font-size:14px;color:#3c4043;line-height:1.6;">
+              Your category tags for <b>${escapeHtml_(scope.name)}</b> are now active on the <b>PW Exam Intelligence Radar</b>.
+              Our automated 24/7 scrapers and news crawlers are monitoring official portals and real-time updates for these tags.
+            </p>
+            <div style="background:#f1f8e9;border-left:4px solid #2e7d32;padding:12px 16px;border-radius:4px;margin:16px 0;">
+              <b>📬 Routing Confirmation:</b> All breaking notices, official circulars, and results for this category will be delivered directly to: <code>${escapeHtml_(toEmail)}</code>.
+            </div>
+            <h4 style="font-size:14px;color:#0f172a;margin:20px 0 8px 0;border-bottom:1px solid #e2e8f0;padding-bottom:4px;">
+              📋 Registered Monitoring Tags:
+            </h4>
+            <ul style="font-size:13px;line-height:1.6;padding-left:20px;">
+              ${includeList}
+              ${aliasList}
+              ${excludeList}
+            </ul>
+            <p style="font-size:12px;color:#5f6368;margin-top:24px;">
+              To add or update tags, update your tab in the shared Google Sheet: <a href="https://docs.google.com/spreadsheets/d/1IIdA-chEZvTRT4xPKmvFp_U-6mCv6t2VdPTXOOhooYQ/edit">Tags Sheet</a>.
+            </p>
+          </div>
+        </div>
+      </div>
+    `;
+
+    try {
+      MailApp.sendEmail({
+        to: toEmail,
+        subject: subject,
+        body: `Your tags for ${scope.name} are active on the PW Exam Intelligence Radar.\nAlerts will be delivered directly to: ${toEmail}`,
+        htmlBody: htmlBody,
+        name: 'PW Exam Intelligence Radar'
+      });
+      results.push({ category: scope.name, email: toEmail, status: 'SENT' });
+    } catch (e) {
+      results.push({ category: scope.name, email: toEmail, status: 'FAILED', error: e.message });
+    }
+  });
+
+  log_('INFO', 'Dispatched tags confirmation to CMMs', JSON.stringify(results));
+  Logger.log('Tags confirmation dispatched: ' + JSON.stringify(results));
+  return results;
+}
+
+/**
+ * Utility: Inspect and verify categories and tags loaded from the Google Sheet
+ */
+function syncTagsFromSheet() {
+  _cachedScopes = null;
+  const scopes = getActiveCategoryScopes_();
+  Logger.log(`Found ${scopes.length} active scopes:`);
+  scopes.forEach(s => {
+    Logger.log(` - [${s.kind || 'psc'}] ${s.name} (${s.sheetTab || ''}) -> Email: ${s.recipientEmail || CFG.EMAIL_TO}`);
+  });
+  return scopes;
 }

@@ -1,7 +1,7 @@
 # 🏛️ Physics Wallah Exam Intelligence Radar
 
-> **Private Real-Time Exam Monitoring Pipeline for PW Marketing Leadership**  
-> Covers **6 State PSCs** (UPPSC, BPSC, MPSC, MPPSC, OPSC, RPSC) & **Judiciary** (Allahabad High Court, Delhi High Court, MP HC, etc.) with instant Telegram alerts, pre-written marketing plays, clean Google Sheet tracking, and rich email digests.
+> **Private Real-Time Exam & Multi-Category Intelligence Pipeline for PW Marketing Leadership**  
+> Covers **State PSCs** (UPPSC, BPSC, MPSC, MPPSC, OPSC, RPSC), **Judiciary & Law** (Pan-India High Courts, SCI, ADA, AIBE), **UP State Board** (UPMSP Class 10/12), and **Commerce / Professional** (ICAI CA Foundation & Intermediate) with category-targeted email routing, instant Telegram alerts, pre-written marketing plays, clean Google Sheet tracking, and rich executive digests.
 
 ---
 
@@ -9,14 +9,26 @@
 
 This repository operates on a **₹0 recurring cost stack** with zero server maintenance:
 
-1. **Commission Scrapers (`scraper/official_scrapers.js`):**
+1. **Official Commission & Board Scrapers (`scraper/official_scrapers.js`):**
    - **BPSC (Bihar):** Direct notice parsing via `bpsc.bihar.gov.in`.
    - **UPPSC (Uttar Pradesh):** Live marquee & circular notice extractor with 20s network resilience.
    - **MPPSC (Madhya Pradesh):** Direct PDF circular crawler via `mppsc.mp.gov.in`.
    - **RPSC (Rajasthan):** Live news list parser via `rpsc.rajasthan.gov.in`.
    - **OPSC (Odisha):** ASP.NET circular table scraper via `opsc.gov.in`.
    - **MPSC (Maharashtra):** Native AES-128-CBC + CRC32 encrypted API client via `mpsc.gov.in`.
-   - **Allahabad High Court (Judiciary):** Direct judicial event circular parser via `allahabadhighcourt.in`.
+   - **Pan-India Judiciary:** Direct judicial circulars across High Courts & Supreme Court of India.
+   - **ADA & State Prosecution:** Prosecution officer & assistant district attorney updates.
+   - **Bar Advocacy & AIBE:** All India Bar Examination and Bar Council of India notifications.
+   - **UP State Board (UPMSP):** Class 10 & 12 Board model papers, exam datesheets, results, and scrutiny notices via `upmsp.edu.in`.
+   - **ICAI (Chartered Accountants):** CA Foundation & Intermediate announcements, results, and examination circulars via `icai.org`.
+
+2. **Multi-Category CMM Routing & Central Tags Sheet:**
+   - **Dynamic CMM Ingestion:** Reads categories, tags (`INCLUDE`, `ALIAS`, `EXCLUDE`), and emails directly from the central Google Sheet (`1IIdA-chEZvTRT4xPKmvFp_U-6mCv6t2VdPTXOOhooYQ`).
+   - **Strict Category Isolation:** Each Category Marketing Manager receives alerts **only** for their respective tags:
+     - **UP State Board:** Delivered exclusively to `anshu.mishra@pw.live`
+     - **CA Inter & Foundation:** Delivered exclusively to `moksh.sharma@pw.live`
+     - **State PSC & Judiciary:** Delivered to Marketing Leadership (`CFG.EMAIL_TO`)
+   - **Tag Honor Rules:** Custom exclusion tags (such as `Mock test` for CA) are enforced at ingestion time.
 
 2. **24/7 GitHub Actions Automation (`.github/workflows/scrape.yml`):**
    - Runs on cron every 20 minutes automatically.

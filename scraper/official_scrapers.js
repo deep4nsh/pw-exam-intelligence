@@ -66,6 +66,12 @@ function isClickbaitOrIrrelevantNews(title) {
   const lower = title.toLowerCase();
 
   // 1. Exclude clickbait SEO coaching filler, YouTube classes, Daily Current Affairs, and human interest stories
+  // Preserve official UPMSP Board circulars & ICAI announcements
+  if (/\b(upmsp|up board|icai|chartered accountant)\b/i.test(lower)) {
+    // Honor CMM exclusion: filter out mock tests for CA
+    if (/mock test/i.test(lower)) return true;
+    return false;
+  }
   const isClickbait = /\b(expected cut.?off|safe score|exam analysis|paper analysis|analysis of|how to (?:check|download|apply|prepare)|preparation (?:tips|strategy|guide)|salary|in hand salary|pay scale|job profile|mock test|sample paper|model paper|best books|books for|syllabus breakdown|unofficial answer key|rank predictor|difficulty level|review petitions?|challenging (?:three|3)-year practice|cut off 20\d\d: expected|daughter tops|son of|overcame hardships|paan seller|hardships to become|current affairs|daily.*current affairs|special class|live class|marathon class|reshu jain|institute|smj institute|coaching|target batch|crash course|success story|motivation|motivational|against all odds|overcame adversity|jailed|handcuffs|home burnt|topper|topper story|meet the topper|secured.*rank|tribal youths|twice a year|2 lakh jobs)\b/i.test(lower);
   if (isClickbait) return true;
 
@@ -216,6 +222,23 @@ function generateMarketingHook(category, exam = '') {
     if (category === 'Admit Card') return 'Release last-minute commercial bare acts revision notes; promote mock test series.';
     if (category === 'Result') return 'Broadcast PW Law selections; open Mains/Interview mentorship with former banking legal managers.';
     return 'Share legal officer exam pattern breakdown & previous year cutoff analysis on PW Law Wallah.';
+  }
+
+  // 6. UP State Board (UPMSP Class 10 & 12)
+  if (/upmsp|up board|up state board/i.test(ex)) {
+    if (category === 'Result') return 'Host UP Board Class 10/12 Results Live stream; launch Class 11/12 & CUET early-bird batch enrollment.';
+    if (category === 'Exam Schedule' || /datesheet|timetable/i.test(ex)) return 'Publish UP Board countdown timetable, time management guide, and 45-day revision crash course.';
+    if (/model|मॉडल/i.test(ex)) return 'Stream YouTube Live Model Paper solutions with top educators; upload chapter-wise PDFs to PW App.';
+    if (/scrutiny/i.test(ex)) return 'Publish step-by-step scrutiny / copy recheck application guide video for students.';
+    return 'Broadcast urgent UP Board update on PW UP Board channel & student app push notification.';
+  }
+
+  // 7. ICAI / Chartered Accountants (CA Foundation & Inter)
+  if (/ca |icai|chartered accountant/i.test(ex)) {
+    if (category === 'Result') return 'Broadcast PW student AIR ranks & pass percentages; launch next-level CA Inter/Final early-bird batches.';
+    if (category === 'Exam Schedule' || /schedule|date/i.test(ex)) return 'Push CA Exam countdown calendar; offer 20% off on CA Test Series & Fastrack revision courses.';
+    if (/observation|admit card/i.test(ex)) return 'Host YouTube Live student reaction and paper analysis stream.';
+    return 'Notify CA Community channel; launch revision webinar and batch push.';
   }
 
   switch (category) {
@@ -1361,6 +1384,118 @@ function applySmartLegalRouting(item) {
   return item;
 }
 
+// 10. Scrape UP State Board (UPMSP - https://upmsp.edu.in/)
+async function scrapeUPMSP() {
+  const url = 'https://upmsp.edu.in/';
+  const html = await fetchHtml(url);
+  const items = [];
+  const seenUrls = new Set();
+
+  const regex = /<a[^>]+href=["']([^"']+)["'][^>]*>([\s\S]*?)<\/a>/gi;
+  let match;
+  while ((match = regex.exec(html)) !== null && items.length < 50) {
+    const rawHref = match[1].trim();
+    let rawTitle = cleanText(match[2]);
+    if (!rawTitle || rawTitle.length < 6) continue;
+    if (!/vigyapti|notice|result|pariksha|model|scrutiny|datesheet|timetable|आदेश|विज्ञप्ति|परीक्षाफल|मॉडल/i.test(rawTitle + rawHref)) continue;
+
+    const fullUrl = rawHref.startsWith('http') ? rawHref : `https://upmsp.edu.in${rawHref.startsWith('/') ? '' : '/'}${rawHref}`;
+    if (seenUrls.has(fullUrl)) continue;
+    seenUrls.add(fullUrl);
+
+    let category = 'Important Notice';
+    let priority = 'HIGH';
+    if (/परीक्षाफल|परिणाम|result/i.test(rawTitle)) {
+      category = 'Result';
+      priority = 'CRITICAL';
+    } else if (/datesheet|timetable|समय सारणी/i.test(rawTitle)) {
+      category = 'Exam Schedule';
+      priority = 'CRITICAL';
+    } else if (/model|मॉडल/i.test(rawTitle)) {
+      category = 'Important Notice';
+      priority = 'HIGH';
+    } else if (/scrutiny/i.test(rawTitle)) {
+      category = 'Important Notice';
+      priority = 'HIGH';
+    } else if (/विज्ञप्ति|notice|आदेश/i.test(rawTitle)) {
+      category = 'Notification / Recruitment';
+      priority = 'HIGH';
+    }
+
+    const marketingAction = generateMarketingHook(category, 'UP Board ' + rawTitle);
+
+    items.push({
+      jurisdiction: 'UP State Board',
+      state: 'Uttar Pradesh',
+      exam: 'UP Board (Class 10 / 12)',
+      title: rawTitle,
+      url: fullUrl,
+      category: 'UP State Board',
+      priority: priority,
+      marketingAction: marketingAction,
+      targetEmail: 'anshu.mishra@pw.live',
+      cmm: 'Anshu Mishra',
+      hash: generateHash(rawTitle, fullUrl)
+    });
+  }
+  return items;
+}
+
+// 11. Scrape ICAI (Chartered Accountants - https://www.icai.org/category/announcements)
+async function scrapeICAI() {
+  const url = 'https://www.icai.org/category/announcements';
+  const html = await fetchHtml(url);
+  const items = [];
+  const seenUrls = new Set();
+
+  const regex = /<li[^>]*class=["']list-group-item["'][^>]*>\s*<a[^>]+href\s*=\s*["']([^"']+)["'][^>]*>([\s\S]*?)<\/a>/gi;
+  let match;
+  while ((match = regex.exec(html)) !== null && items.length < 50) {
+    const rawHref = match[1].trim();
+    let rawTitle = cleanText(match[2]);
+    if (!rawTitle || rawTitle.length < 8) continue;
+
+    // Apply CMM Moksh Sharma's EXCLUDE tag: Mock test
+    if (/mock test/i.test(rawTitle)) continue;
+
+    const fullUrl = rawHref.startsWith('http') ? rawHref : `https://www.icai.org${rawHref.startsWith('/') ? '' : '/'}${rawHref}`;
+    if (seenUrls.has(fullUrl)) continue;
+    seenUrls.add(fullUrl);
+
+    let exam = 'Chartered Accountants (ICAI)';
+    if (/foundation/i.test(rawTitle)) exam = 'CA Foundation';
+    else if (/intermediate|inter\b/i.test(rawTitle)) exam = 'CA Intermediate';
+    else if (/final/i.test(rawTitle)) exam = 'CA Final';
+
+    let category = classifyCategory(rawTitle);
+    let priority = 'NORMAL';
+    if (/result|declared|likely to be declared/i.test(rawTitle)) {
+      category = 'Result';
+      priority = 'CRITICAL';
+    } else if (/schedule|examination|admit card|dates/i.test(rawTitle)) {
+      category = 'Exam Schedule';
+      priority = 'HIGH';
+    }
+
+    const marketingAction = generateMarketingHook(category, exam + ' ' + rawTitle);
+
+    items.push({
+      jurisdiction: 'ICAI / National',
+      state: 'Pan-India',
+      exam: exam,
+      title: rawTitle,
+      url: fullUrl,
+      category: 'CA Inter & Fond Online',
+      priority: priority,
+      marketingAction: marketingAction,
+      targetEmail: 'moksh.sharma@pw.live',
+      cmm: 'Moksh Sharma',
+      hash: generateHash(rawTitle, fullUrl)
+    });
+  }
+  return items;
+}
+
 // Master Runner
 async function runAllOfficialScrapers() {
   console.log('===============================================================');
@@ -1430,6 +1565,20 @@ async function runAllOfficialScrapers() {
     const bar = await scrapeBarAdvocacyAndAIBE();
     console.log(`✅ Discovered ${bar.length} notices`);
     allUpdates.push(...bar);
+  } catch (e) { console.log(`❌ Failed: ${e.message || e.code || e}`); }
+
+  try {
+    process.stdout.write('10. Scraping UP State Board (UPMSP Class 10/12)... ');
+    const upmsp = await scrapeUPMSP();
+    console.log(`✅ Discovered ${upmsp.length} notices`);
+    allUpdates.push(...upmsp);
+  } catch (e) { console.log(`❌ Failed: ${e.message || e.code || e}`); }
+
+  try {
+    process.stdout.write('11. Scraping ICAI (Chartered Accountants Foundation & Inter)... ');
+    const icai = await scrapeICAI();
+    console.log(`✅ Discovered ${icai.length} notices`);
+    allUpdates.push(...icai);
   } catch (e) { console.log(`❌ Failed: ${e.message || e.code || e}`); }
 
   console.log('\n===============================================================');
@@ -1506,12 +1655,14 @@ async function runAllOfficialScrapers() {
         "MPSC (Maharashtra)",
         "Pan-India Judiciary (High Courts & SCI)",
         "ADA & State Prosecution (HPSC, PPSC, APO, ADPO)",
-        "Bar Advocacy & Regulatory Law (AIBE, SEBI Legal, IBPS SO Law)"
+        "Bar Advocacy & Regulatory Law (AIBE, SEBI Legal, IBPS SO Law)",
+        "UP State Board (UPMSP Class 10 & 12)",
+        "ICAI (CA Foundation & Intermediate)"
       ],
       notices: finalNotices
     };
     fs.writeFileSync(fullNoticesFile, JSON.stringify(formattedData, null, 2));
-    console.log(`📁 Complete notices database (${finalNotices.length} notices across all 9 portals & legal tracks) written to: ${fullNoticesFile}`);
+    console.log(`📁 Complete notices database (${finalNotices.length} notices across all 11 portals & multi-category tracks) written to: ${fullNoticesFile}`);
   } catch (e) {}
 
   if (isFirstRun) {
@@ -1727,6 +1878,8 @@ module.exports = {
   scrapePanIndiaJudiciary,
   scrapeADAAndProsecution,
   scrapeBarAdvocacyAndAIBE,
+  scrapeUPMSP,
+  scrapeICAI,
   applySmartLegalRouting,
   isClickbaitOrIrrelevantNews,
   sendTelegramNotice,

@@ -65,6 +65,10 @@ function getMenuMarkup() {
         { text: "🏛️ ADA & Prosecution", callback_data: "sync_ada" }
       ],
       [
+        { text: "🏫 UP State Board", callback_data: "sync_upmsp" },
+        { text: "💼 CA Foundation & Inter", callback_data: "sync_ca" }
+      ],
+      [
         { text: "📜 Bar Advocacy & AIBE", callback_data: "sync_bar" },
         { text: "⚡ Sync All (Full Radar)", callback_data: "sync_all" }
       ]
@@ -226,7 +230,9 @@ export default {
               "sync_judiciary": { name: "Pan-India Judiciary", state: "High Courts & SCI", key: "Judiciary", icon: "⚖️" },
               "sync_ahc": { name: "Pan-India Judiciary", state: "High Courts & SCI", key: "Judiciary", icon: "⚖️" },
               "sync_ada": { name: "ADA & Prosecution", state: "HPSC, PPSC, APO & ADPO", key: "ADA", icon: "🏛️" },
-              "sync_bar": { name: "Bar Advocacy & Law", state: "AIBE / Bar Council of India", key: "Bar", icon: "📜" }
+              "sync_bar": { name: "Bar Advocacy & Law", state: "AIBE / Bar Council of India", key: "Bar", icon: "📜" },
+              "sync_upmsp": { name: "UP State Board (UPMSP)", state: "Uttar Pradesh", key: "UP State Board", icon: "🏫" },
+              "sync_ca": { name: "ICAI (Chartered Accountants)", state: "Pan-India", key: "ICAI", icon: "💼" }
             };
 
             // Option: Full Radar Sync
