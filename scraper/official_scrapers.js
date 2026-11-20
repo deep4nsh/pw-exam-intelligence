@@ -17,7 +17,28 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
  */
 
 const https = require('https');
+const http = require('http');
 const crypto = require('crypto');
+const fs = require('fs');
+const path = require('path');
+
+// Auto-load local .env file if process.env keys are missing
+try {
+  const envPath = path.resolve(__dirname, '../.env');
+  if (fs.existsSync(envPath)) {
+    const envLines = fs.readFileSync(envPath, 'utf8').split('\n');
+    for (const line of envLines) {
+      const match = line.match(/^\s*([\w.-]+)\s*=\s*(.*)?\s*$/);
+      if (match) {
+        const key = match[1];
+        let value = (match[2] || '').trim().replace(/^['"]|['"]$/g, '');
+        if (!process.env[key]) {
+          process.env[key] = value;
+        }
+      }
+    }
+  }
+} catch (e) {}
 
 const FALLBACK_TOKEN = '8962093670:AAEFDh6xdxBqVNUBIf3IybLRufbJYbjvNxI';
 const REVOKED_TOKEN = '8962093670:AAGoDyQX553VbSAOh_35ntPQN96QtflWhOg';
@@ -36,6 +57,32 @@ const GOOGLE_WEBAPP_CONFIG = {
   deploymentId: 'AKfycbyRZAvIjfSSTzmQgB1-WVjoSsXmBv80Tu0zeEuofNJ3gbFvFbPmCVlvbPbExKwE3_e6',
   url: process.env.GOOGLE_WEBAPP_URL || 'https://script.google.com/macros/s/AKfycbyRZAvIjfSSTzmQgB1-WVjoSsXmBv80Tu0zeEuofNJ3gbFvFbPmCVlvbPbExKwE3_e6/exec'
 };
+
+/**
+ * Strict Noise Gate: Filter out clickbait SEO blogs, foreign stories, and irrelevant court cases
+ */
+function isClickbaitOrIrrelevantNews(title) {
+  if (!title || typeof title !== 'string') return true;
+  const lower = title.toLowerCase();
+
+  // 1. Exclude clickbait SEO coaching institute filler articles & human interest gossip
+  const isClickbait = /\b(expected cut.?off|safe score|exam analysis|paper analysis|analysis of|how to (?:check|download|apply|prepare)|preparation (?:tips|strategy|guide)|salary|in hand salary|pay scale|job profile|mock test|sample paper|model paper|best books|books for|syllabus breakdown|unofficial answer key|rank predictor|difficulty level|review petitions?|challenging (?:three|3)-year practice|cut off 20\d\d: expected|daughter tops|son of|overcame hardships|paan seller|hardships to become)\b/i.test(lower);
+  if (isClickbait) return true;
+
+  // 2. Exclude general court crime / bail / non-exam litigation / disciplinary drama
+  const isNonExamLegal = /\b(bail granted|bail rejected|anticipatory bail|fir\b|murder|rape|arrest|accident|quashes constable|plea (?:filed|dismissed|rejected|challenging)|lawyer protest|advocate protest|strike|boycott|scuffle|dispute|contempt of court|custody|potholes|encroachment|demolition|misconduct|stays.*reinstatement|dismissal of|acquitted 3 without|cannot intimidate|visits.*police)\b/i.test(lower);
+  if (isNonExamLegal) return true;
+
+  // 3. Exclude foreign jurisdictions (US, Europe, South America, etc.)
+  const isForeign = /\b(orange county|luxembourg|brazil|warwick|california|new york|vinicius|white house|senate|united states|uk judiciary)\b/i.test(lower);
+  if (isForeign) return true;
+
+  // 4. Exclude unrelated national mass recruitment (Railways, Coast Guard, etc.)
+  const isNonTargetExam = /\b(railway|rrb\b|coast guard|cgept|post office|postal assistant|ssc gd|ssc mts|agniveer)\b/i.test(lower);
+  if (isNonTargetExam) return true;
+
+  return false;
+}
 
 
 
@@ -69,13 +116,44 @@ function cleanText(text) {
 }
 
 function classifyCategory(title) {
+  if (!title || typeof title !== 'string') return 'Important Notice';
   const lower = title.toLowerCase();
-  if (/result|merit list|selection list|cut.?off/i.test(lower)) return 'Result';
-  if (/admit card|hall ticket|call letter/i.test(lower)) return 'Admit Card';
-  if (/answer key|objection/i.test(lower)) return 'Answer Key';
-  if (/exam date|schedule|calendar|postpone|reschedule/i.test(lower)) return 'Exam Schedule';
-  if (/corrigendum|amendment|शुद्धिपत्र/i.test(lower)) return 'Corrigendum / Revision';
-  if (/recruitment|advertisement|notification|vigyapti|विज्ञप्ति|registration|apply online/i.test(lower)) return 'Notification / Recruitment';
+
+  // 1. Result & Merit Lists (including Marks, Scorecards, Selection Lists, Recommendations, OMRs)
+  if (/\b(result|results|merit list|selection list|select list|final list|shortlist|shortlisted|cut.?off|score.?card|scorecard|marks|marksheet|marks statement|omr sheet|omr download|roll numbers? of|qualified candidates?|recommendation list|candidature list|interview result|dv list|document verification list|final recommendation|परिणाम|मेधा सूची|चयन सूची|प्राप्तांक|अनुशंसित|उत्तीर्ण)\b/i.test(lower)) {
+    return 'Result';
+  }
+
+  // 2. Admit Card & Hall Tickets (including Call Letters, Exam City Slips, Interview Letters)
+  if (/\b(admit card|hall ticket|hall-ticket|call letter|interview letter|e-admit|city intimation|exam city slip|download admit|admit-card|प्रवेश पत्र|बुलावा पत्र)\b/i.test(lower)) {
+    return 'Admit Card';
+  }
+
+  // 3. Answer Key & Objections
+  if (/\b(answer key|response sheet|objection window|model answer|provisional answer key|final answer key|master question paper|inviting objections|representation on answer|answer-key|उत्तर कुंजी|आपत्ति)\b/i.test(lower)) {
+    return 'Answer Key';
+  }
+
+  // 4. Exam Schedule & Dates (including Timetable, Postponement, Reschedule, Interview Dates)
+  if (/\b(exam date|schedule|calendar|timetable|time-table|postpone|postponed|postponement|reschedule|rescheduled|deferred|exam program|programme of examination|dates of exam|date sheet|tentative schedule|interview date|interview schedule|viva-voce|viva voce|personal hearing|परीक्षा कार्यक्रम|समय सारणी|स्थगित|परीक्षा तिथि)\b/i.test(lower)) {
+    return 'Exam Schedule';
+  }
+
+  // 5. Corrigendum, Revision & Vacancy Updates
+  if (/\b(corrigendum|amendment|addendum|errata|cancellation|cancelled|canceled|modification|revised vacancy|vacancy increase|correction notice|edit window|शुद्धिपत्र|संशोधन|निरस्त)\b/i.test(lower)) {
+    return 'Corrigendum / Revision';
+  }
+
+  // 6. Recruitment Notifications, Advertisements & Application Deadlines
+  if (/\b(recruitment|advertisement|advt\.?\s*no|notification|vigyapti|registration|apply online|online application|invite applications|application deadline|last date extended|vacanc(?:y|ies)|direct recruitment|special recruitment|portal open|विज्ञप्ति|भर्ती|आवेदन|अधिसूचना)\b/i.test(lower)) {
+    return 'Notification / Recruitment';
+  }
+
+  // 7. Syllabus & Exam Pattern
+  if (/\b(syllabus|exam pattern|scheme of examination|curriculum|marking scheme|पाठ्यक्रम|परीक्षा योजना)\b/i.test(lower)) {
+    return 'Important Notice';
+  }
+
   return 'Important Notice';
 }
 
@@ -137,56 +215,152 @@ function generateMarketingHook(category, exam = '') {
   }
 }
 
-// 1. Scrape BPSC (Bihar)
+// 1. Scrape BPSC (Bihar) - Live Direct Official Dynamic API
 async function scrapeBPSC() {
-  const html = await fetchHtml('https://bpsc.bihar.gov.in/');
   const items = [];
-  // Match any link pointing to a PDF with its associated anchor or text
-  const regex = /href="([^"]+\.pdf)"[^>]*>([\s\S]*?)<\/a>/gi;
-  let match;
-  while ((match = regex.exec(html)) !== null && items.length < 8) {
-    const rawPdf = match[1];
-    const pdfUrl = rawPdf.startsWith('http') ? rawPdf : `https://bpsc.bihar.gov.in${rawPdf}`;
-    let title = cleanText(match[2]);
-    if (!title || title.length < 5) {
-      // Use filename as title if anchor text is short (e.g. "PDF" or icon)
-      title = rawPdf.split('/').pop().replace(/\.pdf$/i, '').replace(/[_-]/g, ' ');
-    }
-    if (title.length > 5 && !items.some(i => i.url === pdfUrl)) {
-      const category = classifyCategory(title);
+  try {
+    const postData = 'action=fetch_category_data&category=all&subcategory=&page_group=home&page=1&post_per_page=60';
+    const rawRes = await new Promise((resolve, reject) => {
+      const req = https.request('https://bpsc.bihar.gov.in/wp-admin/admin-ajax.php', {
+        method: 'POST',
+        rejectUnauthorized: false,
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'Content-Length': Buffer.byteLength(postData),
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36'
+        },
+        timeout: 20000
+      }, res => {
+        let body = '';
+        res.on('data', chunk => body += chunk);
+        res.on('end', () => resolve(body));
+      });
+      req.on('timeout', () => { req.destroy(); reject(new Error('BPSC AJAX timeout')); });
+      req.on('error', reject);
+      req.write(postData);
+      req.end();
+    });
+
+    const json = JSON.parse(rawRes);
+    const posts = json?.data?.posts || [];
+
+    for (const p of posts) {
+      if (items.length >= 60) break;
+
+      const advt = cleanText(p.fields?.home_advertisement_no || '');
+      const subject = cleanText(p.fields?.home_subject_details || '');
+      const subcat = cleanText(p.subcategory || '');
+      const dateStr = cleanText(p.date || p.fields?.home_date || '');
+
+      if (!subject || subject.length < 5) continue;
+
+      const title = advt ? `${advt}: ${subject}` : subject;
+
+      // Extract direct PDF link from download column HTML
+      const dlHtml = p.fields?.home_view_download || '';
+      const pdfMatches = [...dlHtml.matchAll(/href=["']([^"']+\.pdf)["']/gi)];
+      const pdfUrl = pdfMatches.length > 0 ? pdfMatches[0][1] : 'https://bpsc.bihar.gov.in/';
+
+      if (items.some(i => i.url === pdfUrl && i.title === title)) continue;
+
+      let category = classifyCategory(subject + ' ' + subcat);
+      if (/result/i.test(subcat) || /result/i.test(subject)) category = 'Result';
+
+      let exam = 'BPSC State Recruitment';
+      let isJudiciaryTrack = false;
+
+      if (/prosecution officer|\bapo\b/i.test(title)) {
+        exam = 'Bihar Assistant Prosecution Officer (APO)';
+        isJudiciaryTrack = true;
+      } else if (/judicial service|\bjudicial\b|civil judge|\bbjs\b/i.test(title)) {
+        exam = 'Bihar Judicial Service (PCS-J)';
+        isJudiciaryTrack = true;
+      } else if (/cce|combined competitive/i.test(title)) {
+        exam = 'BPSC Combined Competitive Exam (CCE)';
+      } else if (/tre|school teacher/i.test(title)) {
+        exam = 'BPSC TRE (School Teacher)';
+      }
+
+      const priority = (category === 'Result' || category === 'Admit Card' || category === 'Notification / Recruitment')
+        ? 'CRITICAL'
+        : 'HIGH';
+
       items.push({
         jurisdiction: 'BPSC',
         state: 'Bihar',
-        exam: title.includes('CCE') || title.includes('70th') || title.includes('71st') || title.includes('72nd') ? 'BPSC Combined Competitive Exam' : (title.includes('TRE') ? 'BPSC TRE' : 'BPSC State Recruitment'),
+        exam: exam,
         title: title,
         url: pdfUrl,
+        date: dateStr,
         category: category,
-        priority: category === 'Result' || category === 'Admit Card' || category === 'Notification / Recruitment' ? 'CRITICAL' : 'HIGH',
-        marketingAction: generateMarketingHook(category, 'BPSC'),
-        hash: generateHash(title, pdfUrl)
+        priority: priority,
+        marketingAction: generateMarketingHook(category, isJudiciaryTrack ? 'Prosecution' : 'BPSC'),
+        hash: generateHash(title, pdfUrl),
+        isLegalTrack: isJudiciaryTrack,
+        routedTo: isJudiciaryTrack ? 'PW Judiciary Wallah' : 'PW State PSC'
       });
     }
+  } catch (err) {
+    console.warn('⚠️ Direct BPSC AJAX failed, attempting HTML fallback:', err.message);
+    try {
+      const html = await fetchHtml('https://bpsc.bihar.gov.in/');
+      const regex = /href="([^"]+\.pdf)"[^>]*>([\s\S]*?)<\/a>/gi;
+      let match;
+      while ((match = regex.exec(html)) !== null && items.length < 60) {
+        const rawPdf = match[1];
+        const pdfUrl = rawPdf.startsWith('http') ? rawPdf : `https://bpsc.bihar.gov.in${rawPdf}`;
+        let title = cleanText(match[2]);
+        if (!title || title.length < 5) {
+          title = rawPdf.split('/').pop().replace(/\.pdf$/i, '').replace(/[_-]/g, ' ');
+        }
+        if (title.length > 5 && !items.some(i => i.url === pdfUrl)) {
+          const category = classifyCategory(title);
+          items.push({
+            jurisdiction: 'BPSC',
+            state: 'Bihar',
+            exam: /prosecution|apo/i.test(title) ? 'Bihar Assistant Prosecution Officer (APO)' : (title.includes('CCE') ? 'BPSC Combined Competitive Exam' : 'BPSC State Recruitment'),
+            title: title,
+            url: pdfUrl,
+            category: category,
+            priority: category === 'Result' || category === 'Admit Card' || category === 'Notification / Recruitment' ? 'CRITICAL' : 'HIGH',
+            marketingAction: generateMarketingHook(category, 'BPSC'),
+            hash: generateHash(title, pdfUrl)
+          });
+        }
+      }
+    } catch (e2) {}
   }
   return items;
 }
 
-// 2. Scrape UPPSC (Uttar Pradesh)
+// 2. Scrape UPPSC (Uttar Pradesh) - Uncapped Direct Extractor
 async function scrapeUPPSC() {
   const html = await fetchHtml('https://uppsc.up.nic.in/');
   const items = [];
   // Match: <a title='...' href=Open_PDF_DB.aspx?...>
   const regex = /<a\s+title='([^']+)'\s+href=([^>\s]+)\s+target=_Blank>/gi;
   let match;
-  while ((match = regex.exec(html)) !== null && items.length < 8) {
+  while ((match = regex.exec(html)) !== null && items.length < 50) {
     const title = cleanText(match[1]);
     let linkPath = match[2].trim();
     const pdfUrl = linkPath.startsWith('http') ? linkPath : `https://uppsc.up.nic.in/${linkPath}`;
     if (title.length > 5 && !items.some(i => i.url === pdfUrl)) {
       const category = classifyCategory(title);
+      let exam = 'UPPSC Recruitment';
+      if (title.includes('COMBINED STATE') || title.includes('UPPER SUBORDINATE') || title.includes('PCS')) {
+        exam = 'UPPSC Combined State / PCS';
+      } else if (/prosecution|apo\b/i.test(title)) {
+        exam = 'UP Assistant Prosecution Officer (APO)';
+      } else if (/judicial|civil judge|pcs-j/i.test(title)) {
+        exam = 'UP Civil Judge (PCS-J)';
+      } else if (title.includes('AYUSH')) {
+        exam = 'UPPSC Ayush Services';
+      }
+
       items.push({
         jurisdiction: 'UPPSC',
         state: 'Uttar Pradesh',
-        exam: title.includes('COMBINED STATE') || title.includes('UPPER SUBORDINATE') ? 'UPPSC Combined State / PCS' : (title.includes('AYUSH') ? 'UPPSC Ayush Services' : 'UPPSC Recruitment'),
+        exam: exam,
         title: title,
         url: pdfUrl,
         category: category,
@@ -206,7 +380,7 @@ async function scrapeMPPSC() {
     const html = await fetchHtml("https://mppsc.mp.gov.in/", 12000);
     const regex = /href="(https:\/\/mppsc\.mp\.gov\.in\/uploads\/[^"]+\.pdf)"[^>]*>([^<]*)<\/a>/gi;
     let match;
-    while ((match = regex.exec(html)) !== null && items.length < 8) {
+    while ((match = regex.exec(html)) !== null && items.length < 50) {
       const pdfUrl = match[1];
       let anchorText = cleanText(match[2]);
       const fileName = pdfUrl.split("/").pop().replace(/\.pdf$/i, "").replace(/_/g, " ");
@@ -214,10 +388,15 @@ async function scrapeMPPSC() {
 
       if (!items.some(i => i.url === pdfUrl)) {
         const category = classifyCategory(title);
+        let exam = "MPPSC State Recruitment";
+        if (title.includes("State Service")) exam = "MPPSC State Service Exam";
+        else if (/adpo|prosecution/i.test(title)) exam = "MP Assistant District Public Prosecution Officer (ADPO)";
+        else if (/civil judge|judicial/i.test(title)) exam = "MP Civil Judge";
+
         items.push({
           jurisdiction: "MPPSC",
           state: "Madhya Pradesh",
-          exam: title.includes("State Service") ? "MPPSC State Service Exam" : "MPPSC State Recruitment",
+          exam: exam,
           title: title,
           url: pdfUrl,
           category: category,
@@ -229,23 +408,31 @@ async function scrapeMPPSC() {
     }
   } catch (e) {}
 
-  // Ensure full 8 items via real-time feed if direct geofence limits extraction
-  if (items.length < 8) {
+  // Ensure full notices via real-time feed if geofence limits direct extraction
+  if (items.length < 10) {
     try {
       const feedUrl = "https://news.google.com/rss/search?q=MPPSC+when:30d&hl=en-IN&gl=IN&ceid=IN:en";
       const feedRes = await fetchHtml(feedUrl, 15000);
       const itemRegex = /<item>[\s\S]*?<title>([\s\S]*?)<\/title>[\s\S]*?<link>([\s\S]*?)<\/link>[\s\S]*?<pubDate>([\s\S]*?)<\/pubDate>[\s\S]*?<\/item>/gi;
       let fMatch;
-      while ((fMatch = itemRegex.exec(feedRes)) !== null && items.length < 8) {
+      while ((fMatch = itemRegex.exec(feedRes)) !== null && items.length < 50) {
         let title = cleanText(fMatch[1]).replace(/ - [^-]+$/g, "").replace(/ - MPPSC/gi, "").trim();
         const link = fMatch[2].trim();
         const pubDate = fMatch[3].trim();
+
+        if (isClickbaitOrIrrelevantNews(title)) continue;
+
         if (title.length > 5 && !items.some(i => i.title === title || i.url === link)) {
           const category = classifyCategory(title);
+          let exam = "MPPSC State Recruitment";
+          if (title.includes("State Service")) exam = "MPPSC State Service Exam";
+          else if (/adpo|prosecution/i.test(title)) exam = "MP Assistant District Public Prosecution Officer (ADPO)";
+          else if (/civil judge|judicial/i.test(title)) exam = "MP Civil Judge";
+
           items.push({
             jurisdiction: "MPPSC",
             state: "Madhya Pradesh",
-            exam: title.includes("State Service") ? "MPPSC State Service Exam" : "MPPSC State Recruitment",
+            exam: exam,
             title: title,
             url: link,
             date: pubDate ? pubDate.split(" ").slice(1, 4).join(" ") : "",
@@ -280,7 +467,7 @@ async function scrapeRPSC() {
   if (html && html.length > 500) {
     const regex = /<a\s+href=['"](Static\/News\/[^'"]+\.pdf)['"][^>]*>([\s\S]*?)<\/a>/gi;
     let match;
-    while ((match = regex.exec(html)) !== null && items.length < 8) {
+    while ((match = regex.exec(html)) !== null && items.length < 50) {
       const pdfPath = match[1];
       const rawContent = match[2];
       const title = cleanText(rawContent);
@@ -288,10 +475,15 @@ async function scrapeRPSC() {
 
       if (title.length > 5 && !items.some(i => i.url === pdfUrl)) {
         const category = classifyCategory(title);
+        let exam = "RPSC State Recruitment";
+        if (title.includes("RAS")) exam = "RPSC RAS / RTS Exam";
+        else if (/jlo|junior legal/i.test(title)) exam = "Rajasthan Junior Legal Officer (JLO)";
+        else if (/app|prosecut/i.test(title)) exam = "Rajasthan Assistant Public Prosecutor (APP)";
+
         items.push({
           jurisdiction: "RPSC",
           state: "Rajasthan",
-          exam: title.includes("RAS") ? "RPSC RAS / RTS Exam" : "RPSC State Recruitment",
+          exam: exam,
           title: title,
           url: pdfUrl,
           category: category,
@@ -304,22 +496,30 @@ async function scrapeRPSC() {
   }
 
   // Tier 3: Official Google News Feed Fallback
-  if (items.length === 0) {
+  if (items.length < 10) {
     try {
       const feedUrl = "https://news.google.com/rss/search?q=site:rpsc.rajasthan.gov.in+OR+(RPSC+RAS+admit+card+OR+result+OR+exam)+when:14d&hl=en-IN&gl=IN&ceid=IN:en";
       const feedRes = await fetchHtml(feedUrl, 15000);
       const itemRegex = /<item>[\s\S]*?<title>([\s\S]*?)<\/title>[\s\S]*?<link>([\s\S]*?)<\/link>[\s\S]*?<pubDate>([\s\S]*?)<\/pubDate>[\s\S]*?<\/item>/gi;
       let fMatch;
-      while ((fMatch = itemRegex.exec(feedRes)) !== null && items.length < 8) {
+      while ((fMatch = itemRegex.exec(feedRes)) !== null && items.length < 50) {
         let title = cleanText(fMatch[1]).replace(/ - [^-]+$/g, "").replace(/ - RPSC/gi, "").trim();
         const link = fMatch[2].trim();
         const pubDate = fMatch[3].trim();
+
+        if (isClickbaitOrIrrelevantNews(title)) continue;
+
         if (title.length > 5 && !items.some(i => i.title === title)) {
           const category = classifyCategory(title);
+          let exam = "RPSC State Recruitment";
+          if (title.includes("RAS")) exam = "RPSC RAS / RTS Exam";
+          else if (/jlo|junior legal/i.test(title)) exam = "Rajasthan Junior Legal Officer (JLO)";
+          else if (/app|prosecut/i.test(title)) exam = "Rajasthan Assistant Public Prosecutor (APP)";
+
           items.push({
             jurisdiction: "RPSC",
             state: "Rajasthan",
-            exam: title.includes("RAS") ? "RPSC RAS / RTS Exam" : "RPSC State Recruitment",
+            exam: exam,
             title: title,
             url: link,
             date: pubDate ? pubDate.split(" ").slice(1, 4).join(" ") : "",
@@ -336,18 +536,19 @@ async function scrapeRPSC() {
   return items;
 }
 
-// 5. Scrape Pan-India Judiciary (High Courts & Judicial Services)
+// 5. Scrape Pan-India Judiciary (Direct Official High Court Circulars + Clean Feeds)
 async function scrapePanIndiaJudiciary() {
   const items = [];
 
-  // Tier 1: Direct Allahabad High Court official notices (UP HJS, District Judge, Law Clerks)
+  // Tier 1A: Direct Allahabad High Court official notices (UP HJS, District Judge, Law Clerks, Staff)
   try {
     const html = await fetchHtml("https://www.allahabadhighcourt.in/calendar/itemWiseList.jsp?group=7", 15000);
-    const regex = /<A\s+HREF=['"](\/event\/[^'"]+\.pdf)['"][^>]*>[\s\S]*?<\/TD>\s*<TD[^>]*ALIGN=['"]left['"][^>]*>([\s\S]*?)<\/TD>/gi;
+    const rowRegex = /<TD[^>]*WIDTH=['"]74%['"][^>]*>([\s\S]*?)<A\s+HREF=['"](\/event\/[^'"]+\.pdf)['"][\s\S]*?<TD[^>]*WIDTH=['"]20%['"][^>]*>([\s\S]*?)<\/TD>/gi;
     let match;
-    while ((match = regex.exec(html)) !== null && items.length < 4) {
-      const pdfPath = match[1];
-      const rawTitle = cleanText(match[2]);
+    while ((match = rowRegex.exec(html)) !== null && items.length < 30) {
+      const rawTitle = cleanText(match[1]).replace(/&nbsp;/g, ' ').replace(/\s+/g, ' ').trim();
+      const pdfPath = match[2].trim();
+      const dateText = cleanText(match[3]).replace(/Last Date:.*$/i, '').trim();
       const pdfUrl = "https://www.allahabadhighcourt.in" + pdfPath;
 
       if (rawTitle.length > 5 && !items.some(i => i.url === pdfUrl)) {
@@ -356,6 +557,7 @@ async function scrapePanIndiaJudiciary() {
         if (/hjs|higher judicial/i.test(rawTitle)) exam = "UP Higher Judicial Service (HJS)";
         else if (/civil judge|pcs-j/i.test(rawTitle)) exam = "UP Civil Judge (PCS-J)";
         else if (/law clerk/i.test(rawTitle)) exam = "High Court Law Clerk (Trainee)";
+        else if (/private secretar/i.test(rawTitle)) exam = "High Court Private Secretary";
 
         items.push({
           jurisdiction: "Pan-India Judiciary",
@@ -363,27 +565,176 @@ async function scrapePanIndiaJudiciary() {
           exam: exam,
           title: rawTitle,
           url: pdfUrl,
+          date: dateText,
           category: category,
-          priority: category === "Result" || category === "Admit Card" ? "CRITICAL" : "HIGH",
+          priority: category === "Result" || category === "Admit Card" || category === "Notification / Recruitment" ? "CRITICAL" : "HIGH",
           marketingAction: generateMarketingHook(category, "Judiciary"),
-          hash: generateHash(rawTitle, pdfUrl)
+          hash: generateHash(rawTitle, pdfUrl),
+          isLegalTrack: true,
+          routedTo: "PW Judiciary Wallah"
+        });
+      }
+    }
+  } catch (e) {
+    console.warn("Allahabad HC scraper warning:", e.message);
+  }
+
+  // Tier 1B: Direct Delhi High Court Official Recruitment Portal (DJS, DHJS, Judicial Assistants)
+  try {
+    const dhcUrls = [
+      "https://delhihighcourt.nic.in/web/recruitment-results-current",
+      "https://delhihighcourt.nic.in/web/job-openings"
+    ];
+    for (const dUrl of dhcUrls) {
+      try {
+        const html = await fetchHtml(dUrl, 15000);
+        const matches = [...html.matchAll(/href=["'](\/files\/[^\s"']+\.pdf)["'][^>]*>[\s\S]*?alt=["']([^"']+)["']/gi)];
+        for (const m of matches) {
+          if (items.filter(i => i.state?.includes("Delhi")).length >= 25) break;
+          const pdfPath = m[1].trim();
+          const title = cleanText(m[2]);
+          const pdfUrl = `https://delhihighcourt.nic.in${pdfPath}`;
+
+          if (title.length > 8 && !items.some(i => i.url === pdfUrl || i.title === title)) {
+            const category = classifyCategory(title);
+            let exam = "Delhi High Court Recruitment";
+            if (/higher judicial|dhjs/i.test(title)) exam = "Delhi Higher Judicial Service (DHJS)";
+            else if (/judicial service|djs\b/i.test(title)) exam = "Delhi Judicial Service (DJS)";
+            else if (/judicial assistant|restorer/i.test(title)) exam = "Delhi HC Junior Judicial Assistant (JJA)";
+
+            items.push({
+              jurisdiction: "Pan-India Judiciary",
+              state: "Delhi High Court (DHC)",
+              exam: exam,
+              title: title,
+              url: pdfUrl,
+              category: category,
+              priority: category === "Result" || category === "Admit Card" || category === "Notification / Recruitment" ? "CRITICAL" : "HIGH",
+              marketingAction: generateMarketingHook(category, "Judiciary"),
+              hash: generateHash(title, pdfUrl),
+              isLegalTrack: true,
+              routedTo: "PW Judiciary Wallah"
+            });
+          }
+        }
+      } catch (err) {}
+    }
+  } catch (e) {}
+
+  // Tier 1C: Direct Patna High Court (Bihar Judicial Service & District Judge)
+  try {
+    const html = await fetchHtml("https://patnahighcourt.gov.in/notices/recruitments", 15000);
+    const pMatches = [...html.matchAll(/<span[^>]+class=["']new-item["'][^>]*>([\s\S]*?)<\/span>[\s\S]*?<a[^>]+href=["'](\.\.\/getfile\/[^"']+)["']/gi)];
+    for (const m of pMatches) {
+      if (items.filter(i => i.state?.includes("Patna")).length >= 25) break;
+      const title = cleanText(m[1]);
+      const pdfPath = m[2].replace('../', '');
+      const pdfUrl = `https://patnahighcourt.gov.in/${pdfPath}`;
+
+      if (title.length > 8 && !items.some(i => i.url === pdfUrl || i.title === title)) {
+        const category = classifyCategory(title);
+        let exam = "Patna High Court Recruitment";
+        if (/district judge|entry level/i.test(title)) exam = "Bihar Higher Judicial Service (District Judge)";
+        else if (/civil judge|judicial service|bjs/i.test(title)) exam = "Bihar Judicial Service (PCS-J)";
+        else if (/research assistant|law/i.test(title)) exam = "Patna High Court Research Assistant (Law)";
+
+        items.push({
+          jurisdiction: "Pan-India Judiciary",
+          state: "Patna High Court (Bihar)",
+          exam: exam,
+          title: title,
+          url: pdfUrl,
+          category: category,
+          priority: category === "Result" || category === "Admit Card" || category === "Notification / Recruitment" ? "CRITICAL" : "HIGH",
+          marketingAction: generateMarketingHook(category, "Judiciary"),
+          hash: generateHash(title, pdfUrl),
+          isLegalTrack: true,
+          routedTo: "PW Judiciary Wallah"
         });
       }
     }
   } catch (e) {}
 
-  // Tier 2: Pan-India High Courts (Delhi HC, Rajasthan HC, MP HC, Punjab & Haryana HC, SCI)
+  // Tier 1D: Direct Madhya Pradesh High Court (MP Civil Judge & Higher Judicial Service)
   try {
-    const feedUrl = "https://news.google.com/rss/search?q=(%22Judicial+Service%22+OR+%22Civil+Judge%22+OR+%22High+Court+Recruitment%22+OR+%22Higher+Judicial%22+OR+%22Rajasthan+High+Court%22+OR+%22Delhi+High+Court%22+OR+%22MP+High+Court%22)+AND+(Exam+OR+Recruitment+OR+Result+OR+Admit+Card+OR+Notice)+when:30d&hl=en-IN&gl=IN&ceid=IN:en";
+    const html = await fetchHtml("https://mphc.gov.in", 15000);
+    const mpMatches = [...html.matchAll(/<a[^>]+href=["'](https:\/\/mphc\.gov\.in\/storage\/PDF\/[^\s"']+\.pdf)["'][^>]*>[\s\S]*?<span[^>]*style=["'][^"']*text-align:\s*justify;?[^"']*["'][^>]*>([\s\S]*?)<\/span>/gi)];
+    for (const m of mpMatches) {
+      if (items.filter(i => i.state?.includes("Madhya Pradesh")).length >= 25) break;
+      const pdfUrl = m[1].trim();
+      const title = cleanText(m[2]);
+
+      if (title.length > 8 && !items.some(i => i.url === pdfUrl || i.title === title)) {
+        const category = classifyCategory(title);
+        let exam = "MP High Court Recruitment";
+        if (/higher judicial|district judge|suitability/i.test(title)) exam = "MP Higher Judicial Service (HJS)";
+        else if (/civil judge/i.test(title)) exam = "MP Civil Judge Cadre";
+        else if (/assistant grade/i.test(title)) exam = "MP District Court Assistant Grade-III";
+
+        items.push({
+          jurisdiction: "Pan-India Judiciary",
+          state: "Madhya Pradesh High Court (MPHC)",
+          exam: exam,
+          title: title,
+          url: pdfUrl,
+          category: category,
+          priority: category === "Result" || category === "Admit Card" || category === "Notification / Recruitment" ? "CRITICAL" : "HIGH",
+          marketingAction: generateMarketingHook(category, "Judiciary"),
+          hash: generateHash(title, pdfUrl),
+          isLegalTrack: true,
+          routedTo: "PW Judiciary Wallah"
+        });
+      }
+    }
+  } catch (e) {}
+
+  // Tier 1E: Direct Rajasthan High Court (RJS & Legal Research)
+  try {
+    const html = await fetchHtml("https://hcraj.nic.in/hcraj/recruitment.php", 15000);
+    const rMatches = [...html.matchAll(/<li[^>]+class=["']my-page-li["'][^>]*>[\s\S]*?<a[^>]+href=["'](recruitment_detail\.php\?id=[^"']+)["'][^>]*>([\s\S]*?)<\/a>/gi)];
+    for (const m of rMatches) {
+      if (items.filter(i => i.state?.includes("Rajasthan High Court")).length >= 25) break;
+      const relPath = m[1].trim();
+      const title = cleanText(m[2]);
+      const detailUrl = `https://hcraj.nic.in/hcraj/${relPath}`;
+
+      if (title.length > 5 && !items.some(i => i.url === detailUrl || i.title === title)) {
+        const category = classifyCategory(title);
+        let exam = "Rajasthan High Court Recruitment";
+        if (/civil judge|rjs/i.test(title)) exam = "Rajasthan Judicial Service (RJS)";
+        else if (/district judge|dj/i.test(title)) exam = "Rajasthan District Judge Cadre";
+        else if (/legal research/i.test(title)) exam = "Rajasthan HC Legal Researcher";
+
+        items.push({
+          jurisdiction: "Pan-India Judiciary",
+          state: "Rajasthan High Court (HCRAJ)",
+          exam: exam,
+          title: `Rajasthan High Court: ${title}`,
+          url: detailUrl,
+          category: category,
+          priority: category === "Result" || category === "Admit Card" || category === "Notification / Recruitment" ? "CRITICAL" : "HIGH",
+          marketingAction: generateMarketingHook(category, "Judiciary"),
+          hash: generateHash(title, detailUrl),
+          isLegalTrack: true,
+          routedTo: "PW Judiciary Wallah"
+        });
+      }
+    }
+  } catch (e) {}
+
+  // Tier 2: Filtered High Courts & Supreme Court Real-Time Feed (Cleaned of court crime & clickbait)
+  try {
+    const feedUrl = "https://news.google.com/rss/search?q=(%22Delhi+Judicial+Service%22+OR+%22DJS%22+OR+%22DHJS%22+OR+%22Bihar+Judicial+Service%22+OR+%22BJS%22+OR+%22Rajasthan+Judicial+Service%22+OR+%22RJS%22+OR+%22MP+Civil+Judge%22+OR+%22UP+PCS-J%22+OR+%22UP+HJS%22+OR+%22Civil+Judge+Recruitment%22+OR+%22High+Court+Recruitment%22+OR+%22Bombay+High+Court%22+OR+%22Gujarat+High+Court%22+OR+%22Calcutta+High+Court%22+OR+%22Punjab+and+Haryana+High+Court%22+OR+%22Supreme+Court+of+India+Recruitment%22)+AND+(Exam+OR+Result+OR+%22Admit+Card%22+OR+Notification+OR+Recruitment+OR+Interview)+when:30d&hl=en-IN&gl=IN&ceid=IN:en";
     const feedRes = await fetchHtml(feedUrl, 15000);
     const itemRegex = /<item>[\s\S]*?<title>([\s\S]*?)<\/title>[\s\S]*?<link>([\s\S]*?)<\/link>[\s\S]*?<pubDate>([\s\S]*?)<\/pubDate>[\s\S]*?<\/item>/gi;
     let fMatch;
-    while ((fMatch = itemRegex.exec(feedRes)) !== null && items.length < 8) {
+    while ((fMatch = itemRegex.exec(feedRes)) !== null && items.length < 60) {
       let title = cleanText(fMatch[1]).replace(/ - [^-]+$/g, "").trim();
       const link = fMatch[2].trim();
       const pubDate = fMatch[3].trim();
 
-      if (/dj mag|durga puja|gta 6|celebrity dj/i.test(title)) continue;
+      // Strict noise gate: Exclude court judgments, bail, crime, and clickbait SEO
+      if (isClickbaitOrIrrelevantNews(title)) continue;
 
       if (title.length > 5 && !items.some(i => i.title === title || i.url === link)) {
         const category = classifyCategory(title);
@@ -393,6 +744,9 @@ async function scrapePanIndiaJudiciary() {
         if (/delhi/i.test(title)) {
           state = "Delhi High Court (DHC)";
           exam = /higher/i.test(title) ? "Delhi Higher Judicial Service (DHJS)" : "Delhi Judicial Service (DJS)";
+        } else if (/bihar|patna/i.test(title)) {
+          state = "Patna High Court (Bihar)";
+          exam = "Bihar Judicial Service (PCS-J)";
         } else if (/rajasthan|hcraj/i.test(title)) {
           state = "Rajasthan High Court (HCRAJ)";
           exam = /civil judge|rjs/i.test(title) ? "Rajasthan Judicial Service (RJS)" : "Rajasthan High Court Recruitment";
@@ -402,7 +756,19 @@ async function scrapePanIndiaJudiciary() {
         } else if (/mp|madhya pradesh|mphc/i.test(title)) {
           state = "Madhya Pradesh High Court (MPHC)";
           exam = /civil judge/i.test(title) ? "MP Civil Judge Cadre" : "MP High Court Judicial Recruitment";
-        } else if (/supreme court|sci/i.test(title)) {
+        } else if (/bombay/i.test(title)) {
+          state = "Bombay High Court";
+          exam = /civil judge|cjjd|jmfc/i.test(title) ? "Maharashtra Judicial Service (CJJD)" : "Bombay High Court Recruitment";
+        } else if (/gujarat/i.test(title)) {
+          state = "Gujarat High Court";
+          exam = /civil judge/i.test(title) ? "Gujarat Judicial Service (Civil Judge)" : "Gujarat High Court Recruitment";
+        } else if (/calcutta|bengal/i.test(title)) {
+          state = "Calcutta High Court";
+          exam = /judicial service|wbjs/i.test(title) ? "West Bengal Judicial Service (WBJS)" : "Calcutta High Court Recruitment";
+        } else if (/allahabad|uttar pradesh/i.test(title)) {
+          state = "Allahabad High Court (UP)";
+          exam = /hjs/i.test(title) ? "UP Higher Judicial Service (HJS)" : "UP Civil Judge (PCS-J)";
+        } else if (/supreme court|sci\b/i.test(title)) {
           state = "Supreme Court of India (SCI)";
           exam = "Supreme Court Judicial Registry / Law Clerk";
         }
@@ -415,9 +781,11 @@ async function scrapePanIndiaJudiciary() {
           url: link,
           date: pubDate ? pubDate.split(" ").slice(1, 4).join(" ") : "",
           category: category,
-          priority: category === "Result" || category === "Admit Card" ? "CRITICAL" : "HIGH",
+          priority: category === "Result" || category === "Admit Card" || category === "Notification / Recruitment" ? "CRITICAL" : "HIGH",
           marketingAction: generateMarketingHook(category, "Judiciary"),
-          hash: generateHash(title, link)
+          hash: generateHash(title, link),
+          isLegalTrack: true,
+          routedTo: "PW Judiciary Wallah"
         });
       }
     }
@@ -442,7 +810,7 @@ async function scrapeADAAndProsecution() {
         const html = await fetchHtml(pageUrl, 15000);
         const linkRegex = /<a[^>]+href=["\x27]([^"\x27]+\.pdf)["\x27][^>]*>([\s\S]*?)<\/a>/gi;
         let match;
-        while ((match = linkRegex.exec(html)) !== null && items.length < 6) {
+        while ((match = linkRegex.exec(html)) !== null && items.length < 30) {
           const rawPdf = match[1].trim();
           const pdfUrl = rawPdf.startsWith("http") ? rawPdf : `https://hpsc.gov.in${rawPdf}`;
           const rawTitle = cleanText(match[2]).replace(/&#39;/g, "'").replace(/&quot;/g, '"');
@@ -464,7 +832,7 @@ async function scrapeADAAndProsecution() {
                 exam: exam,
                 title: rawTitle,
                 url: pdfUrl,
-                date: "19 Oct 2026",
+                date: "Recent",
                 category: category,
                 priority: category === "Result" || category === "Admit Card" || category === "Notification / Recruitment" ? "CRITICAL" : "HIGH",
                 marketingAction: generateMarketingHook(category, exam),
@@ -479,18 +847,19 @@ async function scrapeADAAndProsecution() {
     }
   } catch (e) {}
 
-  // Tier 2: Pan-India ADA, Prosecution & State Legal Feeds (Punjab ADA, UP APO, MP ADPO, Bihar APO)
+  // Tier 2: Pan-India ADA, Prosecution & State Legal Feeds (Punjab ADA, UP APO, MP ADPO, Bihar APO, HPSC ADA, RPSC JLO)
   try {
-    const feedUrl = "https://news.google.com/rss/search?q=(%22Assistant+District+Attorney%22+OR+%22HPSC+ADA%22+OR+%22Punjab+ADA%22+OR+%22Assistant+Prosecution+Officer%22+OR+%22UP+APO%22+OR+%22MP+ADPO%22+OR+%22Public+Prosecutor%22+OR+%22Junior+Legal+Officer%22)+AND+(Recruitment+OR+Exam+OR+Result+OR+Admit+Card+OR+Notice+OR+Notification+OR+Marks+OR+Score)+when:45d&hl=en-IN&gl=IN&ceid=IN:en";
+    const feedUrl = "https://news.google.com/rss/search?q=(%22BPSC+APO%22+OR+%22Bihar+APO%22+OR+%22UP+APO%22+OR+%22UPPSC+APO%22+OR+%22HPSC+ADA%22+OR+%22Punjab+ADA%22+OR+%22PPSC+ADA%22+OR+%22Haryana+ADA%22+OR+%22MP+ADPO%22+OR+%22RPSC+JLO%22+OR+%22Assistant+Prosecution+Officer+India%22)+AND+(Recruitment+OR+Exam+OR+Result+OR+%22Admit+Card%22+OR+Notification)+when:60d&hl=en-IN&gl=IN&ceid=IN:en";
     const feedRes = await fetchHtml(feedUrl, 15000);
     const itemRegex = /<item>[\s\S]*?<title>([\s\S]*?)<\/title>[\s\S]*?<link>([\s\S]*?)<\/link>[\s\S]*?<pubDate>([\s\S]*?)<\/pubDate>[\s\S]*?<\/item>/gi;
     let match;
-    while ((match = itemRegex.exec(feedRes)) !== null && items.length < 12) {
+    while ((match = itemRegex.exec(feedRes)) !== null && items.length < 50) {
       let title = cleanText(match[1]).replace(/ - [^-]+$/g, "").trim();
       const link = match[2].trim();
       const pubDate = match[3].trim();
 
-      if (/celebrity|gta|party|dj mag|trailer/i.test(title)) continue;
+      // Strict noise gate
+      if (isClickbaitOrIrrelevantNews(title)) continue;
 
       if (title.length > 5 && !items.some(i => i.title === title || i.url === link)) {
         let category = classifyCategory(title);
@@ -498,27 +867,31 @@ async function scrapeADAAndProsecution() {
         let state = "State Prosecution Department";
         let exam = "Assistant District Attorney (ADA)";
 
-        if (/hpsc|haryana/i.test(title)) {
-          state = "Haryana (HPSC)";
-          exam = "Haryana Assistant District Attorney (ADA)";
-        } else if (/punjab|psssb|ppsc/i.test(title)) {
-          state = "Punjab (PPSC / PSSSB)";
-          exam = "Punjab Assistant District Attorney (ADA)";
-        } else if (/up|uttar pradesh|uppsc|apo/i.test(title)) {
+        // Precise state mapping (checked before generic terms)
+        if (/bihar|bpsc/i.test(title)) {
+          state = "Bihar (BPSC)";
+          exam = "Bihar Assistant Prosecution Officer (APO)";
+        } else if (/up|uttar pradesh|uppsc/i.test(title)) {
           state = "Uttar Pradesh (UPPSC)";
           exam = "UP Assistant Prosecution Officer (APO)";
         } else if (/mp|madhya pradesh|mppsc|adpo/i.test(title)) {
           state = "Madhya Pradesh (MPPSC)";
           exam = "MP Assistant District Public Prosecution Officer (ADPO)";
+        } else if (/hpsc|haryana/i.test(title)) {
+          state = "Haryana (HPSC)";
+          exam = "Haryana Assistant District Attorney (ADA)";
+        } else if (/punjab|psssb|ppsc/i.test(title)) {
+          state = "Punjab (PPSC / PSSSB)";
+          exam = "Punjab Assistant District Attorney (ADA)";
         } else if (/odisha|opsc|app/i.test(title)) {
           state = "Odisha (OPSC)";
           exam = "Assistant Public Prosecutor (APP)";
         } else if (/jlo|junior legal/i.test(title)) {
           state = "Rajasthan (RPSC)";
           exam = "Junior Legal Officer (JLO)";
-        } else if (/bihar|bpsc/i.test(title)) {
-          state = "Bihar (BPSC)";
-          exam = "Bihar Assistant Prosecution Officer (APO)";
+        } else if (/prosecution officer|\bapo\b/i.test(title)) {
+          state = "State Prosecution Department";
+          exam = "Assistant Prosecution Officer (APO)";
         } else if (/public prosecutor|cbi|nia/i.test(title)) {
           state = "Central / State Prosecution";
           exam = "Public Prosecutor Recruitment";
@@ -534,7 +907,9 @@ async function scrapeADAAndProsecution() {
           category: category,
           priority: category === "Result" || category === "Admit Card" || category === "Notification / Recruitment" ? "CRITICAL" : "HIGH",
           marketingAction: generateMarketingHook(category, exam),
-          hash: generateHash(title, link)
+          hash: generateHash(title, link),
+          isLegalTrack: true,
+          routedTo: "PW Judiciary Wallah"
         });
       }
     }
@@ -554,7 +929,7 @@ async function scrapeBarAdvocacyAndAIBE() {
     const aibeHtml = await fetchHtml("https://www.allindiabarexamination.com/", 15000);
     const pRegex = /<a[^>]+href=["\x27]([^"\x27]+\.pdf)["\x27][^>]*>([\s\S]*?)<\/a>/gi;
     let match;
-    while ((match = pRegex.exec(aibeHtml)) !== null && items.length < 5) {
+    while ((match = pRegex.exec(aibeHtml)) !== null && items.length < 20) {
       const pdfPath = match[1].trim();
       const pdfUrl = pdfPath.startsWith("http") ? pdfPath : `https://www.allindiabarexamination.com/${pdfPath}`;
       let rawTitle = cleanText(match[2]).replace(/&#39;/g, "'").replace(/&quot;/g, '"');
@@ -578,7 +953,7 @@ async function scrapeBarAdvocacyAndAIBE() {
             exam: exam,
             title: cleanName,
             url: pdfUrl,
-            date: "19 Oct 2026",
+            date: "Recent",
             category: category,
             priority: category === "Result" || category === "Admit Card" || category === "Notification / Recruitment" ? "CRITICAL" : "HIGH",
             marketingAction: generateMarketingHook(category, exam),
@@ -598,7 +973,7 @@ async function scrapeBarAdvocacyAndAIBE() {
     const ibpsHtml = await fetchHtml("https://www.ibps.in/index.php/specialist-officers-xvi/", 15000);
     const linkMatches = ibpsHtml.match(/<a[^>]+href=[\'\"][^\'\"]*[\'\"][^>]*>[\s\S]*?<\/a>/gi) || [];
     for (const raw of linkMatches) {
-      if (items.filter(i => i.exam && i.exam.includes("IBPS")).length >= 3) break;
+      if (items.filter(i => i.exam && i.exam.includes("IBPS")).length >= 15) break;
       const title = cleanText(raw);
       const href = (raw.match(/href=[\'\"]([^\'\"]*)[\'\"]/) || [])[1];
       if (!title || !href || title.length < 10) continue;
@@ -612,7 +987,7 @@ async function scrapeBarAdvocacyAndAIBE() {
             exam: exam,
             title: title,
             url: href,
-            date: "19 Oct 2026",
+            date: "Recent",
             category: category,
             priority: category === "Result" || category === "Admit Card" || category === "Notification / Recruitment" ? "CRITICAL" : "HIGH",
             marketingAction: generateMarketingHook(category, exam),
@@ -632,7 +1007,7 @@ async function scrapeBarAdvocacyAndAIBE() {
     const sebiHtml = await fetchHtml("https://www.sebi.gov.in/sebiweb/about/AboutAction.do?doVacancies=yes", 15000);
     const linkMatches = sebiHtml.match(/<a[^>]+href=[\'\"][^\'\"]*[\'\"][^>]*>[\s\S]*?<\/a>/gi) || [];
     for (const raw of linkMatches) {
-      if (items.filter(i => i.exam && i.exam.includes("SEBI")).length >= 3) break;
+      if (items.filter(i => i.exam && i.exam.includes("SEBI")).length >= 15) break;
       const title = cleanText(raw);
       let href = (raw.match(/href=[\'\"]([^\'\"]*)[\'\"]/) || [])[1];
       if (!title || !href || title.length < 15) continue;
@@ -647,7 +1022,7 @@ async function scrapeBarAdvocacyAndAIBE() {
             exam: exam,
             title: title,
             url: href,
-            date: "19 Oct 2026",
+            date: "Recent",
             category: category,
             priority: category === "Result" || category === "Admit Card" || category === "Notification / Recruitment" ? "CRITICAL" : "HIGH",
             marketingAction: generateMarketingHook(category, exam),
@@ -668,7 +1043,7 @@ async function scrapeBarAdvocacyAndAIBE() {
     const regRes = await fetchHtml(regQuery, 15000);
     const itemRegex = /<item>[\s\S]*?<title>([\s\S]*?)<\/title>[\s\S]*?<link>([\s\S]*?)<\/link>[\s\S]*?<pubDate>([\s\S]*?)<\/pubDate>[\s\S]*?<\/item>/gi;
     let match;
-    while ((match = itemRegex.exec(regRes)) !== null && items.length < 15) {
+    while ((match = itemRegex.exec(regRes)) !== null && items.length < 30) {
       let title = cleanText(match[1]).replace(/ - [^-]+$/g, "").trim();
       const link = match[2].trim();
       const pubDate = match[3].trim();
@@ -711,12 +1086,12 @@ async function scrapeBarAdvocacyAndAIBE() {
     const barRes = await fetchHtml(barQuery, 15000);
     const itemRegex = /<item>[\s\S]*?<title>([\s\S]*?)<\/title>[\s\S]*?<link>([\s\S]*?)<\/link>[\s\S]*?<pubDate>([\s\S]*?)<\/pubDate>[\s\S]*?<\/item>/gi;
     let match;
-    while ((match = itemRegex.exec(barRes)) !== null && items.length < 18) {
+    while ((match = itemRegex.exec(barRes)) !== null && items.length < 50) {
       let title = cleanText(match[1]).replace(/ - [^-]+$/g, "").trim();
       const link = match[2].trim();
       const pubDate = match[3].trim();
 
-      if (/celebrity|gta|trailer|party/i.test(title)) continue;
+      if (isClickbaitOrIrrelevantNews(title)) continue;
 
       if (title.length > 5 && !items.some(i => i.title === title || i.url === link)) {
         const category = classifyCategory(title);
@@ -758,7 +1133,7 @@ async function scrapeOPSC() {
   const liMatches = html.match(/<li>\s*<div class=['"]listing_date[\s\S]*?<\/li>/gi) || [];
 
   for (const raw of liMatches) {
-    if (items.length >= 8) break;
+    if (items.length >= 50) break;
     let dateStr = '';
     const dateMatch = raw.match(/<div class=['"]datebox['"]>[\s\S]*?<span class=['"]month['"]>(\d+)<\/span>[\s\S]*?<span class=['"]Date['"]>([a-zA-Z]+)<\/span>/i);
     if (dateMatch) {
@@ -788,7 +1163,7 @@ async function scrapeOPSC() {
         url: noticeUrl,
         date: dateStr,
         category: category,
-        priority: category === 'Result' || category === 'Admit Card' ? 'CRITICAL' : 'HIGH',
+        priority: category === 'Result' || category === 'Admit Card' || category === 'Notification / Recruitment' ? 'CRITICAL' : 'HIGH',
         marketingAction: generateMarketingHook(category, 'OPSC'),
         hash: generateHash(title, noticeUrl)
       });
@@ -820,7 +1195,7 @@ function mpscDecryptAes(cipherText) {
 }
 
 function fetchMpscContent(mid) {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     const crcVal = mpscCalculateCrc32(MPSC_SECRET_KEY);
     const headers = {
       'Accept': 'application/json, text/plain, */*',
@@ -829,7 +1204,7 @@ function fetchMpscContent(mid) {
       'CRC': crcVal
     };
 
-    https.get(`https://mpsc.gov.in/web/api/v1/getcontentdata/${mid}`, { headers, rejectUnauthorized: false, timeout: 15000 }, (res) => {
+    const req = https.get(`https://mpsc.gov.in/web/api/v1/getcontentdata/${mid}`, { headers, rejectUnauthorized: false, timeout: 12000 }, (res) => {
       let data = '';
       res.on('data', c => data += c);
       res.on('end', () => {
@@ -839,10 +1214,12 @@ function fetchMpscContent(mid) {
           const decrypted = JSON.parse(mpscDecryptAes(text));
           resolve(decrypted[mid]?.webContentList || []);
         } catch (e) {
-          reject(e);
+          resolve([]);
         }
       });
-    }).on('error', reject);
+    });
+    req.on('timeout', () => { req.destroy(); resolve([]); });
+    req.on('error', () => resolve([]));
   });
 }
 
@@ -853,10 +1230,10 @@ async function scrapeMPSC() {
     fetchMpscContent(8).catch(() => [])
   ]);
 
-  const rawList = [...announcements.slice(0, 5), ...advertisements.slice(0, 5)];
+  const rawList = [...announcements, ...advertisements];
 
   for (const raw of rawList) {
-    if (items.length >= 8) break;
+    if (items.length >= 50) break;
     const title = cleanText(raw.descInEnglish || raw.descMr || raw.name);
     if (!title || title.length < 5) continue;
 
@@ -885,7 +1262,7 @@ async function scrapeMPSC() {
         url: noticeUrl,
         date: raw.publicationDate ? raw.publicationDate.split(' ')[0] : (raw.issueDate || ''),
         category: category,
-        priority: category === 'Result' || category === 'Admit Card' ? 'CRITICAL' : 'HIGH',
+        priority: category === 'Result' || category === 'Admit Card' || category === 'Notification / Recruitment' ? 'CRITICAL' : 'HIGH',
         marketingAction: generateMarketingHook(category, 'MPSC'),
         hash: generateHash(title, noticeUrl)
       });
@@ -906,9 +1283,9 @@ function applySmartLegalRouting(item) {
   const fullText = `${jur} ${rawExam} ${title}`;
 
   // Broad legal keywords detection
-  const isJudicial = /judicial service|civil judge|\bpcs-j\b|\bpcs\s*\(j\)\b|\bmjs\b|\bbjs\b|\bojs\b|\bupjs\b|hcs\s*\(jb\)|hcs\s*judicial|district judge|higher judicial|\bhjs\b|\bcjjd\b|\bjmfc\b/i.test(fullText);
+  const isJudicial = /judicial service|civil judge|\bpcs-j\b|\bpcs\s*\(j\)\b|\bmjs\b|\bbjs\b|\bojs\b|\bupjs\b|hcs\s*\(jb\)|hcs\s*judicial|district judge|higher judicial|\bhjs\b|\bcjjd\b|\bjmfc\b|judicial officer|law clerk|legal assistant|research assistant|research scholar/i.test(fullText);
   const isAda = /\bada\b|assistant district attorney|superintendent\s*\(legal\)/i.test(fullText);
-  const isApo = /\bapo\b|assistant prosecution officer/i.test(fullText);
+  const isApo = /prosecution officer|\bapo\b|assistant prosecution officer/i.test(fullText);
   const isAdpo = /\badpo\b|assistant district public prosecution/i.test(fullText);
   const isApp = /\bapp\b|assistant public prosecutor|public prosecutor/i.test(fullText);
   const isJlo = /\bjlo\b|junior legal officer/i.test(fullText);
@@ -1077,7 +1454,7 @@ async function runAllOfficialScrapers() {
   try {
     let finalNotices = [...allUpdates];
 
-    // If any portal temporarily failed or timed out, retain its notices from previous cache
+    // If any portal temporarily failed or timed out, retain its valid notices from previous cache
     if (fs.existsSync(fullNoticesFile)) {
       try {
         const previousData = JSON.parse(fs.readFileSync(fullNoticesFile, "utf8"));
@@ -1085,12 +1462,18 @@ async function runAllOfficialScrapers() {
         const currentJurisdictions = new Set(allUpdates.map(n => (n.jurisdiction || '').toLowerCase()));
 
         for (const prev of previousNotices) {
+          // Ignore buggy legacy entries with date column as title
+          if (/\d\d\/\d\d\/\d{4}\s*Last Date/i.test(prev.title || '')) continue;
+          if ((prev.jurisdiction || '').toLowerCase() === 'allahabad high court') continue; // Subsumed into Pan-India Judiciary
           if (!currentJurisdictions.has((prev.jurisdiction || '').toLowerCase())) {
             finalNotices.push(prev);
           }
         }
       } catch (err) {}
     }
+
+    // Filter any clickbait or malformed items that may have lingered in cache
+    finalNotices = finalNotices.filter(n => !isClickbaitOrIrrelevantNews(n.title));
 
     const formattedData = {
       lastUpdated: new Date().toISOString(),
@@ -1118,31 +1501,45 @@ async function runAllOfficialScrapers() {
       fs.writeFileSync(cacheFile, JSON.stringify(Array.from(seen), null, 2));
     } catch (e) {}
   } else if (brandNewItems.length > 0) {
-    console.log(`\n🚨 FOUND ${brandNewItems.length} BRAND-NEW OFFICIAL NOTICES! Dispatching to Telegram...`);
-    let dispatchedCount = 0;
-    for (const item of brandNewItems) {
-      console.log(`  -> Dispatching: [${item.jurisdiction}] ${item.title.slice(0, 50)}...`);
-      const sent = await sendTelegramNotice(item);
-      if (sent) {
-        seen.add(item.hash);
-        dispatchedCount++;
-      } else {
-        console.warn(`  ⚠️ Could not confirm Telegram delivery for ${item.hash}. Will retry next cycle.`);
-      }
-      await new Promise(r => setTimeout(r, 3000)); // Respect Telegram rate limits (max 20 msgs/min)
-    }
+    console.log(`\n🚨 FOUND ${brandNewItems.length} BRAND-NEW OFFICIAL NOTICES!`);
 
-    // Persist cache with only verified dispatched notices
-    try {
-      fs.writeFileSync(cacheFile, JSON.stringify(Array.from(seen), null, 2));
-      console.log(`💾 Successfully updated seen_hashes.json with ${dispatchedCount} verified notices.`);
-    } catch (e) {}
-
-    if (process.env.GOOGLE_WEBAPP_URL) {
-      console.log(`\n📊 Syncing ${brandNewItems.length} notices directly to Google Sheet Tracker & Email...`);
+    // 1. Google WebApp & Email Sync FIRST (Primary Enterprise Channel)
+    const targetWebAppUrl = process.env.GOOGLE_WEBAPP_URL || GOOGLE_WEBAPP_CONFIG.url;
+    if (targetWebAppUrl) {
+      console.log(`📊 Syncing ${brandNewItems.length} notices directly to Google Sheet Tracker & Email...`);
       const synced = await sendGoogleWebAppSync(brandNewItems);
       console.log(synced ? '✅ Google Sheet & Email sync complete.' : '⚠️ Google Sheet sync skipped or failed.');
     }
+
+    // 2. Telegram Dispatch with Circuit Breaker (Anti-Freeze & Anti-Flood)
+    let dispatchedCount = 0;
+    let consecutiveFailures = 0;
+    const noticesToDispatch = brandNewItems.slice(0, 10); // Dispatch top 10 new notices
+
+    for (const item of noticesToDispatch) {
+      if (consecutiveFailures >= 2) {
+        console.warn(`⚠️ Telegram dispatch paused: consecutive errors encountered (bot restricted or chat ID invalid). Skipping remaining Telegram alerts to maintain system throughput.`);
+        break;
+      }
+      console.log(`  -> Dispatching Telegram: [${item.jurisdiction}] ${item.title.slice(0, 50)}...`);
+      const sent = await sendTelegramNotice(item);
+      if (sent) {
+        dispatchedCount++;
+        consecutiveFailures = 0;
+      } else {
+        consecutiveFailures++;
+      }
+      await new Promise(r => setTimeout(r, 1000));
+    }
+
+    // Persist cache with all discovered notices so we do not spam or loop repeatedly
+    for (const item of brandNewItems) {
+      seen.add(item.hash);
+    }
+    try {
+      fs.writeFileSync(cacheFile, JSON.stringify(Array.from(seen), null, 2));
+      console.log(`💾 Successfully updated seen_hashes.json with ${brandNewItems.length} notices.`);
+    } catch (e) {}
   } else {
     console.log('\n✅ All official portals checked. 0 new notices since last check.');
   }

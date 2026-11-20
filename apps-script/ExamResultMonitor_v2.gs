@@ -69,8 +69,11 @@ const EXAM_SCOPES = [
   {
     name: 'BPSC',
     jurisdiction: 'Bihar',
-    aliases: ['BPSC', 'Bihar Public Service Commission', 'BPSC CCE', 'BPSC TRE', '70th BPSC', '69th BPSC'],
+    aliases: ['BPSC', 'Bihar Public Service Commission', 'BPSC CCE', 'BPSC TRE', '70th BPSC', '71st BPSC', 'BPSC APO', 'Bihar APO', 'Prosecution Officer', 'Bihar Judicial Service', '32nd BJS', '33rd BJS'],
     queries: [
+      'BPSC Prosecution Officer APO prelims mains result',
+      'Bihar Assistant Prosecution Officer APO result cutoff',
+      'Bihar Judicial Service PCS-J exam date result cutoff',
       'BPSC notification recruitment exam',
       'BPSC application last date deadline',
       'BPSC exam calendar schedule date',
@@ -144,8 +147,10 @@ const EXAM_SCOPES = [
   {
     name: 'ADA & Prosecution',
     jurisdiction: 'State Prosecution Departments',
-    aliases: ['ADA', 'Assistant District Attorney', 'APO', 'Assistant Prosecution Officer', 'ADPO', 'APP', 'Public Prosecutor', 'HPSC ADA', 'Punjab ADA'],
+    aliases: ['ADA', 'Assistant District Attorney', 'APO', 'Assistant Prosecution Officer', 'Prosecution Officer', 'ADPO', 'APP', 'Public Prosecutor', 'HPSC ADA', 'Punjab ADA', 'Bihar APO', 'BPSC APO', 'UP APO'],
     queries: [
+      'Bihar Assistant Prosecution Officer APO prelims result',
+      'Bihar APO Prosecution Officer result cutoff',
       'Assistant District Attorney notification recruitment exam',
       'HPSC ADA exam date admit card result',
       'Punjab ADA recruitment exam notification',
@@ -168,6 +173,11 @@ const EXAM_SCOPES = [
 ];
 
 const JUDICIARY_QUERIES = [
+  'Bihar Assistant Prosecution Officer APO prelims result',
+  'Bihar Judicial Service BJS civil judge exam result',
+  'Delhi Judicial Service DJS prelims mains result',
+  'Rajasthan Judicial Service RJS civil judge result',
+  'MP Civil Judge cadre prelims mains result',
   'judiciary exam notification civil judge recruitment India',
   'judicial services application deadline exam date India',
   'High Court recruitment notification judicial service',
@@ -183,13 +193,13 @@ const JUDICIARY_QUERIES = [
 ];
 
 const EXAM_TERMS =
-  /\b(exam|examination|recruit|recruitment|vacanc(?:y|ies)|commission|public service|civil judge|judicial service|judiciary|administrative service|selection|candidate|application|competitive|prelims|preliminary|mains|interview|personality test|assistant district attorney|ada|prosecution|apo|adpo|app|public prosecutor|aibe|bar council|advocate|law officer)\b/i;
+  /\b(exam|examination|recruit|recruitment|vacanc(?:y|ies)|commission|public service|civil judge|judicial service|judiciary|administrative service|selection|candidate|application|competitive|prelims|preliminary|mains|interview|personality test|assistant district attorney|ada|prosecution|apo|adpo|app|jlo|public prosecutor|aibe|bar council|advocate|law officer|hjs|dhjs|djs|bjs|rjs|ojs|wbjs|jmfc|cjjd|law clerk|legal assistant|legal researcher|research assistant|aor|advocate on record)\b/i;
 
 const UPDATE_TERMS =
-  /\b(notification|notifies|notified|advertisement|released|release|announces|announced|schedule|calendar|date|dates|postponed|rescheduled|cancelled|canceled|deferred|admit card|hall ticket|answer key|response sheet|result|results|cut.?off|merit list|selection list|final list|provisional list|document verification|application|registration|last date|deadline|extended|extension|corrigendum|correction window|edit window|syllabus|eligibility|age limit|reservation|vacancy|vacancies|interview|court order|judgment|judgement|stay order|revised|objection window|recruitment rules)\b/i;
+  /\b(notification|notifies|notified|advertisement|released|release|announces|announced|schedule|calendar|date|dates|postponed|rescheduled|cancelled|canceled|deferred|admit card|hall ticket|answer key|response sheet|result|results|cut.?off|merit list|selection list|final list|provisional list|document verification|dv schedule|omr sheet|scorecard|marksheet|marks statement|city intimation|call letter|viva-voce|viva voce|application|registration|last date|deadline|extended|extension|corrigendum|correction window|edit window|syllabus|eligibility|age limit|reservation|vacancy|vacancies|interview|court order|judgment|judgement|stay order|revised|objection window|recruitment rules|परिणाम|प्रवेश पत्र|उत्तर कुंजी|विज्ञप्ति|शुद्धिपत्र)\b/i;
 
 const EXCLUDE_TERMS =
-  /\b(railway|railways|ntpc|rrb|coast guard|cgept|navik|yantrik|hygienist|gramin dak sevak|gds|post office|postal assistant|ibps|sbi po|sbi clerk|sbi apprentice|rbi grade|ssc cgl|ssc chsl|ssc gd|ssc mts|agniveer|army recruitment|navy recruitment|air force recruitment|nda\b|cds\b|afcat|gate\b|neet\b|jee main)\b/i;
+  /\b(railway|railways|ntpc|rrb|coast guard|cgept|navik|yantrik|hygienist|gramin dak sevak|gds|post office|postal assistant|ibps(?!\s*so|\s*specialist|\s*law)|sbi po|sbi clerk|sbi apprentice|rbi grade|ssc cgl|ssc chsl|ssc gd|ssc mts|agniveer|army recruitment|navy recruitment|air force recruitment|nda\b|cds\b|afcat|gate\b|neet\b|jee main|expected cut.?off|safe score|exam analysis|salary|job profile|how to check|preparation tips|bail granted|bail rejected|anticipatory bail|fir\b|murder|accident|quashes constable|quashes dismissal)\b/i;
 
 
 /* ==========================================================================
@@ -835,6 +845,13 @@ function clearlyOtherCommission_(text, expected) {
 }
 
 function inferJudiciaryExam_(text) {
+  if (/bihar.*(apo|prosecution)|bpsc.*(apo|prosecution)/i.test(text)) return 'Bihar Assistant Prosecution Officer (APO)';
+  if (/up.*(apo|prosecution)|uppsc.*(apo|prosecution)/i.test(text)) return 'UP Assistant Prosecution Officer (APO)';
+  if (/prosecution officer|\bapo\b|assistant prosecution officer/i.test(text)) return 'State Assistant Prosecution Officer (APO)';
+  if (/delhi.*(judicial|djs|dhjs)/i.test(text)) return 'Delhi Judicial Service (DJS/DHJS)';
+  if (/bihar.*(judicial|bjs|civil judge)/i.test(text)) return 'Bihar Judicial Service (PCS-J)';
+  if (/rajasthan.*(judicial|rjs|civil judge)/i.test(text)) return 'Rajasthan Judicial Service (RJS)';
+  if (/mp.*(civil judge|judicial)/i.test(text)) return 'MP Civil Judge Cadre';
   if (/\bsupreme court\b/i.test(text)) return 'Supreme Court / Judiciary';
   if (/\bhigh court\b/i.test(text)) return 'High Court / Judiciary';
   if (/\b(civil judge|judicial service|judiciary exam|judicial exam)\b/i.test(text)) return 'State Judiciary Exams';
@@ -843,20 +860,20 @@ function inferJudiciaryExam_(text) {
 }
 
 function classifyCategory_(text) {
-  if (/\b(result|results|merit list|selection list|final list|cut.?off|scorecard)\b/i.test(text)) return 'Result';
-  if (/\b(admit card|hall ticket|call letter)\b/i.test(text)) return 'Admit Card';
-  if (/\b(answer key|response sheet|objection window)\b/i.test(text)) return 'Answer Key / Objections';
-  if (/\b(last date|deadline|application begins|apply online|registration|extended|extension)\b/i.test(text)) return 'Deadline / Application';
-  if (/\b(exam calendar|exam schedule|exam date|timetable|postponed|rescheduled|deferred)\b/i.test(text)) return 'Exam Schedule';
-  if (/\b(court order|judgment|stay order|supreme court|high court)\b/i.test(text)) return 'Court / Policy Update';
-  if (/\b(syllabus|eligibility|age limit|exam pattern)\b/i.test(text)) return 'Eligibility / Syllabus';
-  if (/\b(corrigendum|addendum|revised notification|correction notice)\b/i.test(text)) return 'Corrigendum / Revision';
-  if (/\b(advertisement|notification|vacanc(?:y|ies)|recruitment)\b/i.test(text)) return 'Notification / Recruitment';
+  if (/\b(result|results|merit list|selection list|final list|cut.?off|scorecard|score card|marks|marksheet|marks statement|omr sheet|shortlist|shortlisted|dv list|document verification|परिणाम|मेधा सूची|चयन सूची|प्राप्तांक)\b/i.test(text)) return 'Result';
+  if (/\b(admit card|hall ticket|hall-ticket|call letter|interview letter|e-admit|city intimation|exam city slip|download admit|प्रवेश पत्र|बुलावा पत्र)\b/i.test(text)) return 'Admit Card';
+  if (/\b(answer key|response sheet|objection window|model answer|provisional answer key|final answer key|master question paper|उत्तर कुंजी|आपत्ति)\b/i.test(text)) return 'Answer Key / Objections';
+  if (/\b(last date|deadline|application begins|apply online|registration|extended|extension|application deadline|ऑनलाइन आवेदन)\b/i.test(text)) return 'Deadline / Application';
+  if (/\b(exam calendar|exam schedule|exam date|timetable|time-table|postponed|rescheduled|deferred|dates of exam|date sheet|interview date|interview schedule|viva-voce|viva voce|परीक्षा कार्यक्रम|समय सारणी|स्थगित)\b/i.test(text)) return 'Exam Schedule';
+  if (/\b(court order|judgment|stay order|supreme court|high court|quashed|interim order)\b/i.test(text)) return 'Court / Policy Update';
+  if (/\b(syllabus|eligibility|age limit|exam pattern|scheme of examination|curriculum|पाठ्यक्रम|परीक्षा योजना)\b/i.test(text)) return 'Eligibility / Syllabus';
+  if (/\b(corrigendum|addendum|amendment|errata|cancellation|cancelled|canceled|revised notification|correction notice|edit window|शुद्धिपत्र|संशोधन|निरस्त)\b/i.test(text)) return 'Corrigendum / Revision';
+  if (/\b(advertisement|advt\.?\s*no|notification|vacanc(?:y|ies)|recruitment|direct recruitment|special recruitment|portal open|विज्ञप्ति|भर्ती|अधिसूचना)\b/i.test(text)) return 'Notification / Recruitment';
   return 'Important Exam Update';
 }
 
 function classifyPriority_(text, category) {
-  if (/\b(postponed|rescheduled|cancelled|canceled|stay order|court order|result|cut.?off|admit card)\b/i.test(text)) return 'CRITICAL';
+  if (/\b(postponed|rescheduled|cancelled|canceled|stay order|court order|result|cut.?off|scorecard|admit card|merit list|shortlist|परिणाम|प्रवेश पत्र|स्थगित)\b/i.test(text)) return 'CRITICAL';
   if (['Deadline / Application', 'Admit Card', 'Result', 'Exam Schedule', 'Notification / Recruitment'].includes(category)) return 'HIGH';
   return 'NORMAL';
 }

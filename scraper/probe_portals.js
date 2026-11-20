@@ -19,7 +19,7 @@ const TARGETS = [
   {
     name: 'BPSC (Bihar)',
     code: 'BPSC',
-    url: 'https://www.bpsc.bih.nic.in/'
+    url: 'https://bpsc.bihar.gov.in/'
   },
   {
     name: 'MPSC (Maharashtra)',
