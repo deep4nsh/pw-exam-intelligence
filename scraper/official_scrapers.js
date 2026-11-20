@@ -140,6 +140,84 @@ function cleanText(text) {
   return (text || '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
 }
 
+const MONTH_MAP = {
+  jan: 1, january: 1, feb: 2, february: 2, mar: 3, march: 3,
+  apr: 4, april: 4, may: 5, jun: 6, june: 6, jul: 7, july: 7,
+  aug: 8, august: 8, sep: 9, september: 9, oct: 10, october: 10,
+  nov: 11, november: 11, dec: 12, december: 12
+};
+
+function getTodayIST() {
+  const now = new Date();
+  return now.toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' }); // YYYY-MM-DD
+}
+
+function parseSingleDate(str) {
+  if (!str) return null;
+  str = String(str).trim();
+  const m1 = str.match(/\b([0-3]?\d)[-/.]([0-1]?\d)[-/.](\d{4})\b/);
+  if (m1) return { d: +m1[1], m: +m1[2], y: +m1[3] };
+
+  const m2 = str.match(/\b(\d{4})[-/.]([0-1]?\d)[-/.]([0-3]?\d)\b/);
+  if (m2) return { y: +m2[1], m: +m2[2], d: +m2[3] };
+
+  const m3 = str.match(/\b([a-zA-Z]{3,9})\s+([0-3]?\d)\s*,?\s*(\d{4})\b/);
+  if (m3 && MONTH_MAP[m3[1].toLowerCase()]) return { m: MONTH_MAP[m3[1].toLowerCase()], d: +m3[2], y: +m3[3] };
+
+  const m4 = str.match(/\b([0-3]?\d)\s+([a-zA-Z]{3,9})\s*,?\s*(\d{4})\b/);
+  if (m4 && MONTH_MAP[m4[2].toLowerCase()]) return { d: +m4[1], m: MONTH_MAP[m4[2].toLowerCase()], y: +m4[3] };
+
+  return null;
+}
+
+function extractNoticeDate(item) {
+  if (item.date && item.date !== 'Recent' && item.date.length >= 6) {
+    const p = parseSingleDate(item.date);
+    if (p) return p;
+  }
+  if (item.publishedDate || item.published || item.pubDate) {
+    const raw = item.publishedDate || item.published || item.pubDate;
+    const dt = new Date(raw);
+    if (!isNaN(dt.getTime())) {
+      const dtIST = dt.toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
+      const [y, m, d] = dtIST.split('-').map(Number);
+      return { y, m, d };
+    }
+  }
+  const title = item.title || '';
+  const url = item.url || '';
+  const trailingParen = title.match(/\(\s*([0-3]?\d)[-/.]([0-1]?\d)[-/.](\d{4})\s*\)\s*$/);
+  if (trailingParen) return { d: +trailingParen[1], m: +trailingParen[2], y: +trailingParen[3] };
+  const markedDate = (title + ' ' + url).match(/(?:dated|dt\.?|दिनांक|date)[_:\s]+([0-3]?\d)[-_/.]([0-1]?\d)[-_/.](20\d{2})/i);
+  if (markedDate) return { d: +markedDate[1], m: +markedDate[2], y: +markedDate[3] };
+  const urlDmy = url.match(/[_-]([0-3]\d)[_-]([0-1]\d)[_-](20\d{2})\.pdf/i);
+  if (urlDmy) return { d: +urlDmy[1], m: +urlDmy[2], y: +urlDmy[3] };
+  const urlYmd = url.match(/20\d{2}(0[1-9]|1[0-2])(0[1-9]|[12]\d|3[01])/);
+  if (urlYmd) {
+    const raw = urlYmd[0];
+    return { y: +raw.slice(0, 4), m: +raw.slice(4, 6), d: +raw.slice(6, 8) };
+  }
+  const urlDdmmyyyy = url.match(/[_-]([0-3]\d)(0[1-9]|1[0-2])(20\d{2})/);
+  if (urlDdmmyyyy) {
+    return { d: +urlDdmmyyyy[1], m: +urlDdmmyyyy[2], y: +urlDdmmyyyy[3] };
+  }
+  const anyDmy = title.match(/\b([0-3]?\d)[-/.]([0-1]?\d)[-/.](\d{4})\b/);
+  if (anyDmy) return { d: +anyDmy[1], m: +anyDmy[2], y: +anyDmy[3] };
+  return null;
+}
+
+/**
+ * Strict date filter: checks if article/notice was issued/published TODAY in IST.
+ * If older than today, returns false.
+ */
+function isNoticeFromToday(item) {
+  const todayIST = getTodayIST();
+  const [tY, tM, tD] = todayIST.split('-').map(Number);
+  const p = extractNoticeDate(item);
+  if (!p) return false; // Static page links or undated circulars are not today's updates
+  return p.y === tY && p.m === tM && p.d === tD;
+}
+
 function classifyCategory(title) {
   if (!title || typeof title !== 'string') return 'Important Notice';
   const lower = title.toLowerCase();
@@ -379,13 +457,23 @@ async function scrapeBPSC() {
 async function scrapeUPPSC() {
   const html = await fetchHtml('https://uppsc.up.nic.in/');
   const items = [];
-  // Match: <a title='...' href=Open_PDF_DB.aspx?...>
-  const regex = /<a\s+title='([^']+)'\s+href=([^>\s]+)\s+target=_Blank>/gi;
+  // Match: <a title='...' href=Open_PDF_DB.aspx?...> ... </li>
+  const regex = /<a\s+title='([^']+)'\s+href=([^>\s]+)\s+target=_Blank>([\s\S]*?)<\/li>/gi;
   let match;
   while ((match = regex.exec(html)) !== null && items.length < 50) {
     const title = cleanText(match[1]);
     let linkPath = match[2].trim();
     const pdfUrl = linkPath.startsWith('http') ? linkPath : `https://uppsc.up.nic.in/${linkPath}`;
+    const extra = match[3] || '';
+    const visibleMatch = extra.match(/Visible upto\s*:\s*(\d{1,2}\/\d{1,2}\/\d{4})/i);
+    let pubDateStr = '';
+    if (visibleMatch) {
+      const [d, m, y] = visibleMatch[1].split('/').map(Number);
+      let pubM = m - 1, pubY = y;
+      if (pubM === 0) { pubM = 12; pubY--; }
+      pubDateStr = `${pubY}-${String(pubM).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+    }
+
     if (title.length > 5 && !items.some(i => i.url === pdfUrl)) {
       const category = classifyCategory(title);
       let exam = 'UPPSC Recruitment';
@@ -405,6 +493,7 @@ async function scrapeUPPSC() {
         exam: exam,
         title: title,
         url: pdfUrl,
+        date: pubDateStr,
         category: category,
         priority: category === 'Result' || category === 'Admit Card' || category === 'Notification / Recruitment' ? 'CRITICAL' : 'HIGH',
         marketingAction: generateMarketingHook(category, 'UPPSC'),
@@ -1592,23 +1681,30 @@ async function runAllOfficialScrapers() {
   const legalNoticesCount = allUpdates.filter(n => n.routedTo === 'PW Judiciary Wallah').length;
   console.log(`⚖️ Smart Legal Router Active: ${legalNoticesCount} notices tagged & routed to PW Judiciary Wallah with law campaign playbooks.\n`);
 
-  const fs = require('fs');
+  // STRICT DATE FILTER: Only keep notices published/issued TODAY (in India Standard Time)
+  const todayUpdates = allUpdates.filter(item => isNoticeFromToday(item));
+  const droppedCount = allUpdates.length - todayUpdates.length;
+  console.log(`⏱️ Strict Date Gate: Filtered out ${droppedCount} stale notices older than today.`);
+  console.log(`🎯 STRICTLY FROM TODAY (${getTodayIST()}): ${todayUpdates.length} verified notices.`);
+
+  const fs = require('path');
   const path = require('path');
+  const fsModule = require('fs');
   const cacheFile = path.join(__dirname, 'seen_hashes.json');
   const fullNoticesFile = path.join(__dirname, 'latest_official_notices.json');
 
   let seen = new Set();
-  const isFirstRun = !fs.existsSync(cacheFile);
+  const isFirstRun = !fsModule.existsSync(cacheFile);
 
   if (!isFirstRun) {
     try {
-      seen = new Set(JSON.parse(fs.readFileSync(cacheFile, 'utf8')));
+      seen = new Set(JSON.parse(fsModule.readFileSync(cacheFile, 'utf8')));
     } catch (e) {}
   }
 
   const brandNewItems = [];
 
-  for (const item of allUpdates) {
+  for (const item of todayUpdates) {
     if (!seen.has(item.hash)) {
       if (!isFirstRun) {
         brandNewItems.push(item);
@@ -1618,33 +1714,16 @@ async function runAllOfficialScrapers() {
     }
   }
 
-  // Save complete structured notices database with Smart Cache Merging
+  // Save complete structured notices database strictly containing verified notices from TODAY
   try {
-    let finalNotices = [...allUpdates];
+    let finalNotices = [...todayUpdates];
 
-    // If any portal temporarily failed or timed out, retain its valid notices from previous cache
-    if (fs.existsSync(fullNoticesFile)) {
-      try {
-        const previousData = JSON.parse(fs.readFileSync(fullNoticesFile, "utf8"));
-        const previousNotices = previousData.notices || [];
-        const currentJurisdictions = new Set(allUpdates.map(n => (n.jurisdiction || '').toLowerCase()));
-
-        for (const prev of previousNotices) {
-          // Ignore buggy legacy entries with date column as title
-          if (/\d\d\/\d\d\/\d{4}\s*Last Date/i.test(prev.title || '')) continue;
-          if ((prev.jurisdiction || '').toLowerCase() === 'allahabad high court') continue; // Subsumed into Pan-India Judiciary
-          if (!currentJurisdictions.has((prev.jurisdiction || '').toLowerCase())) {
-            finalNotices.push(prev);
-          }
-        }
-      } catch (err) {}
-    }
-
-    // Filter any clickbait or malformed items that may have lingered in cache
+    // Filter any clickbait or malformed items
     finalNotices = finalNotices.filter(n => !isClickbaitOrIrrelevantNews(n.title));
 
     const formattedData = {
       lastUpdated: new Date().toISOString(),
+      todayDateIST: getTodayIST(),
       totalNotices: finalNotices.length,
       commissionsCovered: [
         "BPSC (Bihar)",
@@ -1661,8 +1740,8 @@ async function runAllOfficialScrapers() {
       ],
       notices: finalNotices
     };
-    fs.writeFileSync(fullNoticesFile, JSON.stringify(formattedData, null, 2));
-    console.log(`📁 Complete notices database (${finalNotices.length} notices across all 11 portals & multi-category tracks) written to: ${fullNoticesFile}`);
+    fsModule.writeFileSync(fullNoticesFile, JSON.stringify(formattedData, null, 2));
+    console.log(`📁 Complete notices database (${finalNotices.length} notices strictly from today) written to: ${fullNoticesFile}`);
   } catch (e) {}
 
   if (isFirstRun) {

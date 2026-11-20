@@ -28,7 +28,7 @@ const CFG = {
   TELEGRAM_BOT_TOKEN: '8962093670:AAEFDh6xdxBqVNUBIf3IybLRufbJYbjvNxI',
   TELEGRAM_CHAT_ID: '-5324420343', // Deepansh & Aditya Sir, Akshay Pw Group
   TIMEZONE: 'Asia/Kolkata',
-  MAX_AGE_HOURS: 72,
+  MAX_AGE_HOURS: 24, // Strictly today's articles only
   MAX_NEW_ROWS_PER_RUN: 150,
   MAX_TELEGRAM_ALERTS_PER_RUN: 5, // Circuit breaker against alert storms
   SEND_EMAIL_WHEN_NO_NEWS: false,
@@ -280,6 +280,83 @@ function isCaItem_(item) {
   ).toLowerCase();
 
   return /ca inter|ca foundation|ca final|icai|chartered accountant|caresults\.icai|resource\.cdn\.icai|icai\.org/i.test(text);
+}
+
+const MONTH_MAP_ = {
+  jan: 1, january: 1, feb: 2, february: 2, mar: 3, march: 3,
+  apr: 4, april: 4, may: 5, jun: 6, june: 6, jul: 7, july: 7,
+  aug: 8, august: 8, sep: 9, september: 9, oct: 10, october: 10,
+  nov: 11, november: 11, dec: 12, december: 12
+};
+
+function getTodayIST_() {
+  return Utilities.formatDate(new Date(), CFG.TIMEZONE, 'yyyy-MM-dd');
+}
+
+function parseSingleDate_(str) {
+  if (!str) return null;
+  str = String(str).trim();
+  const m1 = str.match(/\b([0-3]?\d)[-/.]([0-1]?\d)[-/.](\d{4})\b/);
+  if (m1) return { d: +m1[1], m: +m1[2], y: +m1[3] };
+
+  const m2 = str.match(/\b(\d{4})[-/.]([0-1]?\d)[-/.]([0-3]?\d)\b/);
+  if (m2) return { y: +m2[1], m: +m2[2], d: +m2[3] };
+
+  const m3 = str.match(/\b([a-zA-Z]{3,9})\s+([0-3]?\d)\s*,?\s*(\d{4})\b/);
+  if (m3 && MONTH_MAP_[m3[1].toLowerCase()]) return { m: MONTH_MAP_[m3[1].toLowerCase()], d: +m3[2], y: +m3[3] };
+
+  const m4 = str.match(/\b([0-3]?\d)\s+([a-zA-Z]{3,9})\s*,?\s*(\d{4})\b/);
+  if (m4 && MONTH_MAP_[m4[2].toLowerCase()]) return { d: +m4[1], m: MONTH_MAP_[m4[2].toLowerCase()], y: +m4[3] };
+
+  return null;
+}
+
+function extractNoticeDate_(item) {
+  if (item.date && item.date !== 'Recent' && item.date.length >= 6) {
+    const p = parseSingleDate_(item.date);
+    if (p) return p;
+  }
+  if (item.publishedDate || item.published || item.pubDate) {
+    const raw = item.publishedDate || item.published || item.pubDate;
+    const dt = new Date(raw);
+    if (!isNaN(dt.getTime())) {
+      const dtIST = Utilities.formatDate(dt, CFG.TIMEZONE, 'yyyy-MM-dd');
+      const parts = dtIST.split('-').map(Number);
+      return { y: parts[0], m: parts[1], d: parts[2] };
+    }
+  }
+  const title = item.title || '';
+  const url = item.url || '';
+  const trailingParen = title.match(/\(\s*([0-3]?\d)[-/.]([0-1]?\d)[-/.](\d{4})\s*\)\s*$/);
+  if (trailingParen) return { d: +trailingParen[1], m: +trailingParen[2], y: +trailingParen[3] };
+  const markedDate = (title + ' ' + url).match(/(?:dated|dt\.?|दिनांक|date)[_:\s]+([0-3]?\d)[-_/.]([0-1]?\d)[-_/.](20\d{2})/i);
+  if (markedDate) return { d: +markedDate[1], m: +markedDate[2], y: +markedDate[3] };
+  const urlDmy = url.match(/[_-]([0-3]\d)[_-]([0-1]\d)[_-](20\d{2})\.pdf/i);
+  if (urlDmy) return { d: +urlDmy[1], m: +urlDmy[2], y: +urlDmy[3] };
+  const urlYmd = url.match(/20\d{2}(0[1-9]|1[0-2])(0[1-9]|[12]\d|3[01])/);
+  if (urlYmd) {
+    const raw = urlYmd[0];
+    return { y: +raw.slice(0, 4), m: +raw.slice(4, 6), d: +raw.slice(6, 8) };
+  }
+  const urlDdmmyyyy = url.match(/[_-]([0-3]\d)(0[1-9]|1[0-2])(20\d{2})/);
+  if (urlDdmmyyyy) {
+    return { d: +urlDdmmyyyy[1], m: +urlDdmmyyyy[2], y: +urlDdmmyyyy[3] };
+  }
+  const anyDmy = title.match(/\b([0-3]?\d)[-/.]([0-1]?\d)[-/.](\d{4})\b/);
+  if (anyDmy) return { d: +anyDmy[1], m: +anyDmy[2], y: +anyDmy[3] };
+  return null;
+}
+
+/**
+ * Strict date filter: checks if article/notice was issued/published TODAY in IST.
+ * If older than today, returns false.
+ */
+function isNoticeFromToday_(item) {
+  const todayIST = getTodayIST_();
+  const parts = todayIST.split('-').map(Number);
+  const p = extractNoticeDate_(item);
+  if (!p) return false;
+  return p.y === parts[0] && p.m === parts[1] && p.d === parts[2];
 }
 
 function getCmmEmailForCategory_(item) {
@@ -554,9 +631,13 @@ function monitorExamNews() {
 
       const published = item.published ? new Date(item.published) : null;
       if (published && !isNaN(published.getTime())) {
-        const ageHours = (now - published.getTime()) / 3600000;
-        if (ageHours > CFG.MAX_AGE_HOURS || ageHours < -36) return;
+        const todayIST = getTodayIST_();
+        const pubDateIST = Utilities.formatDate(published, CFG.TIMEZONE, 'yyyy-MM-dd');
+        if (pubDateIST !== todayIST) return; // Discard articles older than today
       }
+
+      // Strict date filter: discard if date in title, URL, or content is older than today
+      if (!isNoticeFromToday_(item)) return;
 
       const evaluation = evaluateItem_(item);
       if (!evaluation.keep) return;
@@ -1564,6 +1645,9 @@ function fetchOfficialNoticesFromGitHub_(known) {
     const notices = payload.notices || [];
 
     notices.forEach(n => {
+      // Strict date gate: only ingest notices published/issued TODAY
+      if (!isNoticeFromToday_(n)) return;
+
       const compHash = generateCompositeHash_(n.title, n.url);
       const uid = n.hash || compHash;
       const cleanU = cleanUrl_(n.url);
@@ -1623,6 +1707,9 @@ function doPost(e) {
 
     const newItems = [];
     incoming.forEach(n => {
+      // Strict date gate: only ingest notices published/issued TODAY
+      if (!isNoticeFromToday_(n)) return;
+
       const compHash = generateCompositeHash_(n.title, n.url);
       const uid = n.hash || compHash;
       const cleanU = cleanUrl_(n.url);
