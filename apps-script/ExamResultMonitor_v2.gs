@@ -554,10 +554,29 @@ function parseSingleDate_(str) {
 }
 
 function extractNoticeDate_(item) {
+  const title = item.title || '';
+  const url = item.url || '';
+
+  // 1. Strict URL Date Inspection: check if article URL contains date (/2026/11/14/, /2026-11-14/, /14-11-2026/)
+  const urlYmdSlashes = url.match(/\b(20\d{2})[-/.](0[1-9]|1[0-2])[-/.](0[1-9]|[12]\d|3[01])\b/);
+  if (urlYmdSlashes) return { y: +urlYmdSlashes[1], m: +urlYmdSlashes[2], d: +urlYmdSlashes[3] };
+  const urlDmySlashes = url.match(/\b(0[1-9]|[12]\d|3[01])[-/.](0[1-9]|1[0-2])[-/.](20\d{2})\b/);
+  if (urlDmySlashes) return { d: +urlDmySlashes[1], m: +urlDmySlashes[2], y: +urlDmySlashes[3] };
+
+  // 2. Explicit dated string in title or URL (e.g. "dated 14-11-2026", "दिनांक 14.11.2026")
+  const markedDate = (title + ' ' + url).match(/(?:dated|dt\.?|दिनांक|date)[_:\s]+([0-3]?\d)[-_/.]([0-1]?\d)[-_/.](20\d{2})/i);
+  if (markedDate) return { d: +markedDate[1], m: +markedDate[2], y: +markedDate[3] };
+
+  const trailingParen = title.match(/\(\s*([0-3]?\d)[-/.]([0-1]?\d)[-/.](\d{4})\s*\)\s*$/);
+  if (trailingParen) return { d: +trailingParen[1], m: +trailingParen[2], y: +trailingParen[3] };
+
+  // 3. Stored/scraped item date string
   if (item.date && item.date !== 'Recent' && item.date.length >= 6) {
     const p = parseSingleDate_(item.date);
     if (p) return p;
   }
+
+  // 4. Feed publication date or ISO timestamp
   if (item.publishedDate || item.published || item.pubDate) {
     const raw = item.publishedDate || item.published || item.pubDate;
     const dt = new Date(raw);
@@ -567,12 +586,7 @@ function extractNoticeDate_(item) {
       return { y: parts[0], m: parts[1], d: parts[2] };
     }
   }
-  const title = item.title || '';
-  const url = item.url || '';
-  const trailingParen = title.match(/\(\s*([0-3]?\d)[-/.]([0-1]?\d)[-/.](\d{4})\s*\)\s*$/);
-  if (trailingParen) return { d: +trailingParen[1], m: +trailingParen[2], y: +trailingParen[3] };
-  const markedDate = (title + ' ' + url).match(/(?:dated|dt\.?|दिनांक|date)[_:\s]+([0-3]?\d)[-_/.]([0-1]?\d)[-_/.](20\d{2})/i);
-  if (markedDate) return { d: +markedDate[1], m: +markedDate[2], y: +markedDate[3] };
+
   const urlDmy = url.match(/[_-]([0-3]\d)[_-]([0-1]\d)[_-](20\d{2})\.pdf/i);
   if (urlDmy) return { d: +urlDmy[1], m: +urlDmy[2], y: +urlDmy[3] };
   const urlYmd = url.match(/20\d{2}(0[1-9]|1[0-2])(0[1-9]|[12]\d|3[01])/);
@@ -806,7 +820,7 @@ const UPDATE_TERMS =
   /\b(notification|notifies|notified|advertisement|released|release|announces|announced|schedule|calendar|date|dates|postponed|rescheduled|cancelled|canceled|deferred|admit card|hall ticket|answer key|response sheet|result|results|cut.?off|merit list|selection list|final list|provisional list|document verification|dv schedule|omr sheet|scorecard|marksheet|marks statement|city intimation|call letter|viva-voce|viva voce|application|registration|last date|deadline|extended|extension|corrigendum|correction window|edit window|syllabus|eligibility|age limit|reservation|vacancy|vacancies|interview|court order|judgment|judgement|stay order|revised|objection window|recruitment rules|datesheet|timetable|scrutiny|model paper|परिणाम|प्रवेश पत्र|उत्तर कुंजी|विज्ञप्ति|शुद्धिपत्र|मॉडल पेपर|परीक्षाफल|समय सारणी)\b/i;
 
 const EXCLUDE_TERMS =
-  /\b(railway|railways|ntpc|rrb|coast guard|cgept|navik|yantrik|hygienist|gramin dak sevak|gds|post office|postal assistant|ibps(?!\s*so|\s*specialist|\s*law)|sbi po|sbi clerk|sbi apprentice|rbi grade|ssc cgl|ssc chsl|ssc gd|ssc mts|agniveer|army recruitment|navy recruitment|air force recruitment|nda\b|cds\b|afcat|gate\b|neet\b|jee main|expected cut.?off|safe score|exam analysis|salary|job profile|how to check|preparation tips|bail granted|bail rejected|anticipatory bail|fir\b|murder|accident|quashes constable|quashes dismissal)\b/i;
+  /\b(railway|railways|ntpc|rrb|coast guard|cgept|navik|yantrik|hygienist|gramin dak sevak|gds|post office|postal assistant|ibps(?!\s*so|\s*specialist|\s*law)|sbi po|sbi clerk|sbi apprentice|rbi grade|ssc cgl|ssc chsl|ssc gd|ssc mts|agniveer|army recruitment|navy recruitment|air force recruitment|nda\b|cds\b|afcat|gate\b|neet\b|jee main|expected cut.?off|safe score|exam analysis|salary|job profile|how to (?:check|download|apply|prepare|access)|preparation tips|bail granted|bail rejected|anticipatory bail|fir\b|murder|accident|quashes constable|quashes dismissal|expected soon|likely soon|expected shortly|likely to release|likely to be (?:released|out|declared)|expected today|expected anytime|check download steps|steps to (?:check|download|apply|access)|will be (?:released|announced|out) soon|tentative schedule|tentative date|date announced soon|link soon|awaited|waiting for|any moment now|anticipated soon|out today\?)\b/i;
 
 
 /* ==========================================================================
@@ -1966,7 +1980,7 @@ function fetchOfficialNoticesFromGitHub_(known) {
         title: n.title,
         url: n.url,
         uniqueId: uid,
-        publishedDate: new Date(),
+        publishedDate: n.publishedDate ? new Date(n.publishedDate) : (n.pubDate ? new Date(n.pubDate) : (parseSingleDate_(n.date) ? new Date(parseSingleDate_(n.date).y, parseSingleDate_(n.date).m - 1, parseSingleDate_(n.date).d) : new Date())),
         jurisdiction: n.jurisdiction || n.state || 'State Commission',
         exam: n.exam || 'Recruitment Exam',
         category: n.category || 'Notification / Recruitment',
@@ -2038,7 +2052,7 @@ function doPost(e) {
         title: n.title,
         url: n.url,
         uniqueId: uid,
-        publishedDate: new Date(),
+        publishedDate: n.publishedDate ? new Date(n.publishedDate) : (n.pubDate ? new Date(n.pubDate) : (parseSingleDate_(n.date) ? new Date(parseSingleDate_(n.date).y, parseSingleDate_(n.date).m - 1, parseSingleDate_(n.date).d) : new Date())),
         jurisdiction: n.jurisdiction || n.state || 'State Commission',
         exam: n.exam || 'Recruitment Exam',
         category: n.category || 'Notification / Recruitment',

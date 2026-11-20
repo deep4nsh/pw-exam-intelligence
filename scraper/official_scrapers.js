@@ -72,7 +72,7 @@ function isClickbaitOrIrrelevantNews(title) {
     if (/mock test/i.test(lower)) return true;
     return false;
   }
-  const isClickbait = /\b(expected cut.?off|safe score|exam analysis|paper analysis|analysis of|how to (?:check|download|apply|prepare)|preparation (?:tips|strategy|guide)|salary|in hand salary|pay scale|job profile|mock test|sample paper|model paper|best books|books for|syllabus breakdown|unofficial answer key|rank predictor|difficulty level|review petitions?|challenging (?:three|3)-year practice|cut off 20\d\d: expected|daughter tops|son of|overcame hardships|paan seller|hardships to become|current affairs|daily.*current affairs|special class|live class|marathon class|reshu jain|institute|smj institute|coaching|target batch|crash course|success story|motivation|motivational|against all odds|overcame adversity|jailed|handcuffs|home burnt|topper|topper story|meet the topper|secured.*rank|tribal youths|twice a year|2 lakh jobs)\b/i.test(lower);
+  const isClickbait = /\b(expected cut.?off|safe score|exam analysis|paper analysis|analysis of|how to (?:check|download|apply|prepare|access)|preparation (?:tips|strategy|guide)|salary|in hand salary|pay scale|job profile|mock test|sample paper|model paper|best books|books for|syllabus breakdown|unofficial answer key|rank predictor|difficulty level|review petitions?|challenging (?:three|3)-year practice|cut off 20\d\d: expected|daughter tops|son of|overcame hardships|paan seller|hardships to become|current affairs|daily.*current affairs|special class|live class|marathon class|reshu jain|institute|smj institute|coaching|target batch|crash course|success story|motivation|motivational|against all odds|overcame adversity|jailed|handcuffs|home burnt|topper|topper story|meet the topper|secured.*rank|tribal youths|twice a year|2 lakh jobs|expected soon|likely soon|expected shortly|likely to release|likely to be (?:released|out|declared)|expected today|expected anytime|check download steps|steps to (?:check|download|apply|access)|will be (?:released|announced|out) soon|tentative schedule|tentative date|date announced soon|link soon|awaited|waiting for|any moment now|anticipated soon|out today\?)\b/i.test(lower);
   if (isClickbait) return true;
 
   // 2. Exclude general court crime / bail / non-exam litigation / disciplinary drama
@@ -171,10 +171,29 @@ function parseSingleDate(str) {
 }
 
 function extractNoticeDate(item) {
+  const title = item.title || '';
+  const url = item.url || '';
+
+  // 1. Strict URL Date Inspection: news sites embed publication date in URL (/2026/11/14/, /2026-11-14/, /14-11-2026/)
+  const urlYmdSlashes = url.match(/\b(20\d{2})[-/.](0[1-9]|1[0-2])[-/.](0[1-9]|[12]\d|3[01])\b/);
+  if (urlYmdSlashes) return { y: +urlYmdSlashes[1], m: +urlYmdSlashes[2], d: +urlYmdSlashes[3] };
+  const urlDmySlashes = url.match(/\b(0[1-9]|[12]\d|3[01])[-/.](0[1-9]|1[0-2])[-/.](20\d{2})\b/);
+  if (urlDmySlashes) return { d: +urlDmySlashes[1], m: +urlDmySlashes[2], y: +urlDmySlashes[3] };
+
+  // 2. Explicit dated string in title or URL (e.g. "dated 14-11-2026", "दिनांक 14.11.2026")
+  const markedDate = (title + ' ' + url).match(/(?:dated|dt\.?|दिनांक|date)[_:\s]+([0-3]?\d)[-_/.]([0-1]?\d)[-_/.](20\d{2})/i);
+  if (markedDate) return { d: +markedDate[1], m: +markedDate[2], y: +markedDate[3] };
+
+  const trailingParen = title.match(/\(\s*([0-3]?\d)[-/.]([0-1]?\d)[-/.](\d{4})\s*\)\s*$/);
+  if (trailingParen) return { d: +trailingParen[1], m: +trailingParen[2], y: +trailingParen[3] };
+
+  // 3. Stored/scraped item date string (e.g. "14 Nov 2026")
   if (item.date && item.date !== 'Recent' && item.date.length >= 6) {
     const p = parseSingleDate(item.date);
     if (p) return p;
   }
+
+  // 4. Feed publication date or ISO timestamp
   if (item.publishedDate || item.published || item.pubDate) {
     const raw = item.publishedDate || item.published || item.pubDate;
     const dt = new Date(raw);
@@ -184,12 +203,7 @@ function extractNoticeDate(item) {
       return { y, m, d };
     }
   }
-  const title = item.title || '';
-  const url = item.url || '';
-  const trailingParen = title.match(/\(\s*([0-3]?\d)[-/.]([0-1]?\d)[-/.](\d{4})\s*\)\s*$/);
-  if (trailingParen) return { d: +trailingParen[1], m: +trailingParen[2], y: +trailingParen[3] };
-  const markedDate = (title + ' ' + url).match(/(?:dated|dt\.?|दिनांक|date)[_:\s]+([0-3]?\d)[-_/.]([0-1]?\d)[-_/.](20\d{2})/i);
-  if (markedDate) return { d: +markedDate[1], m: +markedDate[2], y: +markedDate[3] };
+
   const urlDmy = url.match(/[_-]([0-3]\d)[_-]([0-1]\d)[_-](20\d{2})\.pdf/i);
   if (urlDmy) return { d: +urlDmy[1], m: +urlDmy[2], y: +urlDmy[3] };
   const urlYmd = url.match(/20\d{2}(0[1-9]|1[0-2])(0[1-9]|[12]\d|3[01])/);
