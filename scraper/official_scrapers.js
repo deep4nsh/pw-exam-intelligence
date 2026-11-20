@@ -1473,6 +1473,54 @@ function applySmartLegalRouting(item) {
   return item;
 }
 
+// Smart Cross-Commission Multi-Category Router (Legal, UPMSP, ICAI, GATE, AE-JE, Agriculture)
+function applyMultiCategoryRouting(item) {
+  if (!item) return item;
+
+  // 1. First apply legal routing
+  item = applySmartLegalRouting(item);
+  if (item.isLegalTrack) return item;
+
+  // 2. Preserve UPMSP and ICAI target emails
+  if (item.targetEmail === 'anshu.mishra@pw.live' || item.targetEmail === 'moksh.sharma@pw.live') {
+    return item;
+  }
+
+  const title = (item.title || '').trim();
+  const rawExam = (item.exam || '').trim();
+  const jur = (item.jurisdiction || '').toUpperCase();
+  const fullText = `${jur} ${rawExam} ${title}`;
+
+  // 3. GATE check
+  if (/\bgate\s*(202[5-7])?\b|graduate aptitude test in engineering/i.test(fullText) && !/colgate|gatekeeper|irrigation gate/i.test(fullText)) {
+    item.category = 'GATE';
+    item.targetEmail = 'falguni.gupta@pw.live, kashif.ahmed@pw.live, harsh.ayush1@pw.live';
+    item.cmm = 'Falguni Gupta, Kashif Ahmed, Harsh Ayush';
+    item.marketingAction = generateMarketingHook(item.category, 'GATE');
+    return item;
+  }
+
+  // 4. AE-JE check
+  if (/\bae\s*\/\s*je\b|\bae[- ]je\b|assistant engineer|junior engineer|assistant executive engineer|\baee\b|upsssc je|ssc je|rrb je|\brpsc aen\b|\bmppsc ae\b|\bbpsc ae\b|\buppsc ae\b/i.test(fullText)) {
+    item.category = 'AE-JE';
+    item.targetEmail = 'falguni.gupta@pw.live, kashif.ahmed@pw.live, ananya.rajak@pw.live';
+    item.cmm = 'Falguni Gupta, Kashif Ahmed, Ananya Rajak';
+    item.marketingAction = generateMarketingHook(item.category, item.exam || 'AE-JE');
+    return item;
+  }
+
+  // 5. Agriculture check
+  if (/\bagriculture\b|\bicar\b|\basrb\b|\bibps afo\b|agriculture officer|krishi adhikari|agriculture supervisor|technical assistant.*agri/i.test(fullText)) {
+    item.category = 'Agriculture';
+    item.targetEmail = 'falguni.gupta@pw.live, kashif.ahmed@pw.live, ananya.rajak@pw.live';
+    item.cmm = 'Falguni Gupta, Kashif Ahmed, Ananya Rajak';
+    item.marketingAction = generateMarketingHook(item.category, item.exam || 'Agriculture');
+    return item;
+  }
+
+  return item;
+}
+
 // 10. Scrape UP State Board (UPMSP - https://upmsp.edu.in/)
 async function scrapeUPMSP() {
   const url = 'https://upmsp.edu.in/';
@@ -1674,9 +1722,9 @@ async function runAllOfficialScrapers() {
   console.log(`🎯 TOTAL OFFICIAL NOTICES EXTRACTED: ${allUpdates.length}`);
   console.log('===============================================================');
 
-  // Smart Cross-Commission Legal Router: Route all legal updates to PW Judiciary Wallah
+  // Smart Cross-Commission Multi-Category Router (Legal, UPMSP, ICAI, GATE, AE-JE, Agriculture)
   for (let i = 0; i < allUpdates.length; i++) {
-    allUpdates[i] = applySmartLegalRouting(allUpdates[i]);
+    allUpdates[i] = applyMultiCategoryRouting(allUpdates[i]);
   }
   const legalNoticesCount = allUpdates.filter(n => n.routedTo === 'PW Judiciary Wallah').length;
   console.log(`⚖️ Smart Legal Router Active: ${legalNoticesCount} notices tagged & routed to PW Judiciary Wallah with law campaign playbooks.\n`);
@@ -1736,7 +1784,10 @@ async function runAllOfficialScrapers() {
         "ADA & State Prosecution (HPSC, PPSC, APO, ADPO)",
         "Bar Advocacy & Regulatory Law (AIBE, SEBI Legal, IBPS SO Law)",
         "UP State Board (UPMSP Class 10 & 12)",
-        "ICAI (CA Foundation & Intermediate)"
+        "ICAI (CA Foundation & Intermediate)",
+        "GATE (Engineering & Technology)",
+        "AE-JE (Central & State Engineering Recruitments)",
+        "Agriculture (ICAR, ASRB & State Agriculture Bodies)"
       ],
       notices: finalNotices
     };

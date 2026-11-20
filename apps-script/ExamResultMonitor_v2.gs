@@ -123,6 +123,180 @@ const BUILTIN_CMM_SCOPES = [
       'ICAI CA Inter results date sheet'
     ],
     kind: 'cmm_category'
+  },
+  {
+    name: 'GATE',
+    sheetTab: 'GATE',
+    jurisdiction: 'National / IIT',
+    exam: 'GATE (CSE, DA, ECE, EE, ME, CE, IN, Sciences)',
+    category: 'GATE',
+    recipientEmail: 'falguni.gupta@pw.live, kashif.ahmed@pw.live, harsh.ayush1@pw.live',
+    aliases: [
+      'GATE Computer Science',
+      'GATE CS',
+      'GATE Data Science and Artificial Intelligence',
+      'GATE EE',
+      'GATE ME',
+      'GATE CE',
+      'GATE IN',
+      'Graduate Aptitude Test',
+      'GATE exam'
+    ],
+    includes: [
+      'GATE',
+      'GATE 2027',
+      'GATE 2026',
+      'Graduate Aptitude Test in Engineering',
+      'GATE CSE',
+      'GATE DA',
+      'GATE ECE',
+      'GATE Electrical Engineering',
+      'GATE Mechanical Engineering',
+      'GATE Civil Engineering',
+      'GATE Instrumentation Engineering',
+      'GATE Engineering Sciences',
+      'GATE Life Sciences',
+      'GATE Chemistry',
+      'GATE Physics',
+      'GATE Mathematics',
+      'GATE preparation',
+      'GATE mock test',
+      'GATE previous year questions',
+      'GATE answer key',
+      'GATE result',
+      'GATE admit card',
+      'GATE counselling'
+    ],
+    excludes: [
+      'JAM',
+      'CUET'
+    ],
+    queries: [
+      'GATE 2026 2027 exam notification dates',
+      'GATE answer key result score card update',
+      'Graduate Aptitude Test in Engineering notification',
+      'GATE admit card counselling schedule'
+    ],
+    kind: 'cmm_category'
+  },
+  {
+    name: 'AE-JE',
+    sheetTab: 'AE-JE',
+    jurisdiction: 'Pan-India / State & Central Engineering',
+    exam: 'Assistant Engineer & Junior Engineer (AE/JE)',
+    category: 'AE-JE',
+    recipientEmail: 'falguni.gupta@pw.live, kashif.ahmed@pw.live, ananya.rajak@pw.live',
+    aliases: [
+      'AE/JE',
+      'AE',
+      'JE',
+      'AEE',
+      'UPPSC Assistant Engineer',
+      'SSC Junior Engineer',
+      'Railway Junior Engineer',
+      'Bihar Assistant Engineer',
+      'Rajasthan Assistant Engineer',
+      'Madhya Pradesh Assistant Engineer',
+      'Uttarakhand AE JE',
+      'Haryana Assistant Engineer'
+    ],
+    includes: [
+      'AE JE',
+      'Assistant Engineer',
+      'Junior Engineer',
+      'Assistant Executive Engineer',
+      'Engineering recruitment',
+      'State AE JE',
+      'UPPSC AE',
+      'UPSSSC JE',
+      'SSC JE',
+      'RRB JE',
+      'BPSC AE',
+      'RPSC AEN',
+      'MPPSC AE',
+      'UKPSC AE JE',
+      'HPSC AE',
+      'PSU engineering recruitment',
+      'AE JE syllabus',
+      'AE JE previous year questions',
+      'AE JE mock test',
+      'AE JE admit card',
+      'AE JE answer key',
+      'AE JE result'
+    ],
+    excludes: [
+      'GATE',
+      'Diploma admission'
+    ],
+    queries: [
+      'SSC JE RRB JE recruitment notification',
+      'State AE JE Assistant Engineer result exam date',
+      'UPPSC AE UPSSSC JE vacancy circular',
+      'Junior Engineer recruitment answer key'
+    ],
+    kind: 'cmm_category'
+  },
+  {
+    name: 'Agriculture',
+    sheetTab: 'Agriculture',
+    jurisdiction: 'Pan-India / ICAR & State Agriculture',
+    exam: 'Agriculture & Allied Competitive Exams',
+    category: 'Agriculture',
+    recipientEmail: 'falguni.gupta@pw.live, kashif.ahmed@pw.live, ananya.rajak@pw.live',
+    aliases: [
+      'Agricultural Scientists Recruitment Board',
+      'NABARD Agriculture',
+      'Agriculture Field Officer',
+      'ADO'
+    ],
+    includes: [
+      'Agriculture',
+      'Agriculture exams',
+      'Agriculture competitive exams',
+      'Agriculture entrance exam',
+      'ICAR',
+      'ICAR AIEEA',
+      'ICAR PG',
+      'ICAR JRF',
+      'ICAR SRF',
+      'ICAR NET',
+      'ASRB NET',
+      'NABARD Grade A Agriculture',
+      'IBPS AFO',
+      'State Agriculture Officer',
+      'Agriculture Officer',
+      'Agriculture Development Officer',
+      'AAO Agriculture',
+      'Agriculture Supervisor',
+      'Rajasthan Agriculture Supervisor',
+      'UP Agriculture Technical Assistant',
+      'BSc Agriculture',
+      'MSc Agriculture',
+      'Agronomy',
+      'Horticulture',
+      'Plant Pathology',
+      'Entomology',
+      'Soil Science',
+      'Agricultural Economics',
+      'Agricultural Extension',
+      'Agriculture syllabus',
+      'Agriculture previous year questions',
+      'Agriculture mock test',
+      'Agriculture admit card',
+      'Agriculture answer key',
+      'Agriculture result'
+    ],
+    excludes: [
+      'NEET',
+      'JEE'
+    ],
+    queries: [
+      'ICAR AIEEA NET PG exam notification',
+      'IBPS AFO Agriculture Field Officer result',
+      'State Agriculture Officer Supervisor vacancy',
+      'NABARD Grade A Agriculture exam date'
+    ],
+    kind: 'cmm_category'
   }
 ];
 
@@ -176,7 +350,7 @@ function loadCategoryScopesFromTagsSheet_() {
       const data = sheet.getRange(1, 1, lastRow, numCols).getValues();
 
       let categoryName = sheetName;
-      let cmmEmail = '';
+      const cmmEmails = [];
       const includes = [];
       const aliases = [];
       const excludes = [];
@@ -190,15 +364,19 @@ function loadCategoryScopesFromTagsSheet_() {
           categoryName = colA;
         }
 
-        if (/mail|email/i.test(colA) && colB.includes('@')) {
-          cmmEmail = colB.trim();
-        } else if (colB.includes('@') && !cmmEmail) {
-          cmmEmail = colB.trim();
-        } else if (colA.includes('@') && !cmmEmail) {
-          cmmEmail = colA.trim();
-        }
+        // Collect all CMM emails across columns A and B
+        [colA, colB].forEach(cell => {
+          if (cell && cell.includes('@')) {
+            cell.replace(/;/g, ',').split(',').forEach(em => {
+              em = em.trim();
+              if (em.includes('@') && !cmmEmails.includes(em)) {
+                cmmEmails.push(em);
+              }
+            });
+          }
+        });
 
-        if (colB && !/tag to add|category|exam/i.test(colB) && !colB.includes('@')) {
+        if (colB && !/tag to add|category|exam|mail|email/i.test(colB) && !colB.includes('@')) {
           if (colC === 'ALIAS') {
             aliases.push(colB);
           } else if (colC === 'EXCLUDE') {
@@ -209,9 +387,13 @@ function loadCategoryScopesFromTagsSheet_() {
         }
       });
 
+      let cmmEmail = cmmEmails.join(', ');
       if (!cmmEmail) {
         if (/up state|upmsp|up board/i.test(categoryName + ' ' + sheetName)) cmmEmail = 'anshu.mishra@pw.live';
         else if (/ca |icai/i.test(categoryName + ' ' + sheetName)) cmmEmail = 'moksh.sharma@pw.live';
+        else if (/gate/i.test(categoryName + ' ' + sheetName)) cmmEmail = 'falguni.gupta@pw.live, kashif.ahmed@pw.live, harsh.ayush1@pw.live';
+        else if (/ae[- ]?je/i.test(categoryName + ' ' + sheetName)) cmmEmail = 'falguni.gupta@pw.live, kashif.ahmed@pw.live, ananya.rajak@pw.live';
+        else if (/agri/i.test(categoryName + ' ' + sheetName)) cmmEmail = 'falguni.gupta@pw.live, kashif.ahmed@pw.live, ananya.rajak@pw.live';
         else cmmEmail = CFG.EMAIL_TO;
       }
 
@@ -280,6 +462,66 @@ function isCaItem_(item) {
   ).toLowerCase();
 
   return /ca inter|ca foundation|ca final|icai|chartered accountant|caresults\.icai|resource\.cdn\.icai|icai\.org/i.test(text);
+}
+
+function isGateItem_(item) {
+  if (!item) return false;
+  const emails = String(item.recipientEmail || '') + ' ' + String(item.targetEmail || '');
+  if (/falguni\.gupta|kashif\.ahmed|harsh\.ayush1/i.test(emails) && /gate/i.test(String(item.category || '') + ' ' + String(item.sheetTab || '') + ' ' + String(item.exam || ''))) return true;
+  const text = (
+    String(item.category || '') + ' ' +
+    String(item.exam || '') + ' ' +
+    String(item.jurisdiction || '') + ' ' +
+    String(item.scope || '') + ' ' +
+    String(item.title || '') + ' ' +
+    String(item.url || '') + ' ' +
+    String(item.queryLabel || '')
+  ).toLowerCase();
+
+  return /\bgate\b|graduate aptitude test in engineering|gate 202[5-7]|gate cse|gate da|gate ece/i.test(text);
+}
+
+function isAeJeItem_(item) {
+  if (!item) return false;
+  const emails = String(item.recipientEmail || '') + ' ' + String(item.targetEmail || '');
+  if (/falguni\.gupta|kashif\.ahmed|ananya\.rajak/i.test(emails) && /ae[- ]?je/i.test(String(item.category || '') + ' ' + String(item.sheetTab || ''))) return true;
+  const text = (
+    String(item.category || '') + ' ' +
+    String(item.exam || '') + ' ' +
+    String(item.jurisdiction || '') + ' ' +
+    String(item.scope || '') + ' ' +
+    String(item.title || '') + ' ' +
+    String(item.url || '') + ' ' +
+    String(item.queryLabel || '')
+  ).toLowerCase();
+
+  return /\bae[- /]?je\b|\bassistant engineer\b|\bjunior engineer\b|\baee\b|upsssc je|ssc je|rrb je|bpsc ae|uppsc ae|rpsc aen|mppsc ae/i.test(text);
+}
+
+function isAgricultureItem_(item) {
+  if (!item) return false;
+  const emails = String(item.recipientEmail || '') + ' ' + String(item.targetEmail || '');
+  if (/falguni\.gupta|kashif\.ahmed|ananya\.rajak/i.test(emails) && /agri/i.test(String(item.category || '') + ' ' + String(item.sheetTab || ''))) return true;
+  const text = (
+    String(item.category || '') + ' ' +
+    String(item.exam || '') + ' ' +
+    String(item.jurisdiction || '') + ' ' +
+    String(item.scope || '') + ' ' +
+    String(item.title || '') + ' ' +
+    String(item.url || '') + ' ' +
+    String(item.queryLabel || '')
+  ).toLowerCase();
+
+  return /\bagriculture\b|\bicar\b|\basrb net\b|\bibps afo\b|\bagronomy\b|\bhorticulture\b|agriculture officer|krishi adhikari|agriculture supervisor/i.test(text);
+}
+
+function isCmmOnlyItem_(item) {
+  if (!item) return false;
+  if (item.kind === 'cmm_category') return true;
+  if (isUpBoardItem_(item) || isCaItem_(item) || isGateItem_(item) || isAeJeItem_(item) || isAgricultureItem_(item)) return true;
+  const emails = String(item.recipientEmail || '') + ' ' + String(item.targetEmail || '');
+  if (emails && emails.includes('@pw.live') && !emails.includes(getEmailTo_())) return true;
+  return false;
 }
 
 const MONTH_MAP_ = {
@@ -368,6 +610,21 @@ function getCmmEmailForCategory_(item) {
   // 2. Strict Category Isolation: CA items ALWAYS route to Moksh Sharma
   if (isCaItem_(item)) {
     return 'moksh.sharma@pw.live';
+  }
+
+  // 3. Strict Category Isolation: GATE items ALWAYS route to Falguni, Kashif, Harsh
+  if (isGateItem_(item)) {
+    return 'falguni.gupta@pw.live, kashif.ahmed@pw.live, harsh.ayush1@pw.live';
+  }
+
+  // 4. Strict Category Isolation: AE-JE items ALWAYS route to Falguni, Kashif, Ananya
+  if (isAeJeItem_(item)) {
+    return 'falguni.gupta@pw.live, kashif.ahmed@pw.live, ananya.rajak@pw.live';
+  }
+
+  // 5. Strict Category Isolation: Agriculture items ALWAYS route to Falguni, Kashif, Ananya
+  if (isAgricultureItem_(item)) {
+    return 'falguni.gupta@pw.live, kashif.ahmed@pw.live, ananya.rajak@pw.live';
   }
 
   if (item.targetEmail && item.targetEmail.includes('@') && item.targetEmail !== getEmailTo_()) {
@@ -697,7 +954,7 @@ function monitorExamNews() {
         // Keep pristine official scraper-generated hooks
         return;
       }
-      if (item.kind === 'cmm_category' || isUpBoardItem_(item) || isCaItem_(item)) {
+      if (item.kind === 'cmm_category' || isCmmOnlyItem_(item)) {
         // Preserve category, exam & recipient email for CMM categories
         const enrichment = enrichWithAIOrRules_(item, geminiKey);
         item.summary = enrichment.summary || item.summary || item.title;
@@ -765,11 +1022,10 @@ function dispatchTelegramAlerts_(items) {
     return;
   }
 
-  // Filter urgent State PSC & Judiciary items ONLY (strictly exclude UP Board and CA)
+  // Filter urgent State PSC & Judiciary items ONLY (strictly exclude all CMM categories)
   const urgent = items.filter(i => 
     (i.priority === 'CRITICAL' || i.priority === 'HIGH') && 
-    !isUpBoardItem_(i) && 
-    !isCaItem_(i)
+    !isCmmOnlyItem_(i)
   );
 
   if (urgent.length === 0) {
@@ -964,6 +1220,9 @@ function sendCategorizedExecutiveEmails_(items, spreadsheetUrl) {
 
   const upBoardItems = [];
   const caItems = [];
+  const gateItems = [];
+  const aeJeItems = [];
+  const agriItems = [];
   const pscJudiciaryItems = [];
   const otherCmmGroups = {};
   const coreEmail = getEmailTo_();
@@ -981,12 +1240,36 @@ function sendCategorizedExecutiveEmails_(items, spreadsheetUrl) {
       return;
     }
 
-    // 3. Dynamic CMM or State PSC routing
+    // 3. Check GATE
+    if (isGateItem_(item)) {
+      gateItems.push(item);
+      return;
+    }
+
+    // 4. Check AE-JE
+    if (isAeJeItem_(item)) {
+      aeJeItems.push(item);
+      return;
+    }
+
+    // 5. Check Agriculture
+    if (isAgricultureItem_(item)) {
+      agriItems.push(item);
+      return;
+    }
+
+    // 6. Dynamic CMM or State PSC routing
     const email = getCmmEmailForCategory_(item);
     if (email === 'anshu.mishra@pw.live') {
       upBoardItems.push(item);
     } else if (email === 'moksh.sharma@pw.live') {
       caItems.push(item);
+    } else if (/harsh\.ayush1/i.test(email) || (email.includes('falguni.gupta') && /gate/i.test(item.category || item.exam || ''))) {
+      gateItems.push(item);
+    } else if (/ae[- ]?je/i.test(item.category || item.exam || '')) {
+      aeJeItems.push(item);
+    } else if (/agri/i.test(item.category || item.exam || '')) {
+      agriItems.push(item);
     } else if (email === coreEmail) {
       pscJudiciaryItems.push(item);
     } else {
@@ -1005,12 +1288,27 @@ function sendCategorizedExecutiveEmails_(items, spreadsheetUrl) {
     dispatchSingleCategoryEmail_('moksh.sharma@pw.live', caItems, spreadsheetUrl, 'CA (Foundation & Intermediate)');
   }
 
-  // 3. Dispatch any other dynamic CMM categories to their respective CMM only
+  // 3. Dispatch GATE strictly to Falguni, Kashif, Harsh ONLY
+  if (gateItems.length > 0) {
+    dispatchSingleCategoryEmail_('falguni.gupta@pw.live, kashif.ahmed@pw.live, harsh.ayush1@pw.live', gateItems, spreadsheetUrl, 'GATE');
+  }
+
+  // 4. Dispatch AE-JE strictly to Falguni, Kashif, Ananya ONLY
+  if (aeJeItems.length > 0) {
+    dispatchSingleCategoryEmail_('falguni.gupta@pw.live, kashif.ahmed@pw.live, ananya.rajak@pw.live', aeJeItems, spreadsheetUrl, 'AE-JE');
+  }
+
+  // 5. Dispatch Agriculture strictly to Falguni, Kashif, Ananya ONLY
+  if (agriItems.length > 0) {
+    dispatchSingleCategoryEmail_('falguni.gupta@pw.live, kashif.ahmed@pw.live, ananya.rajak@pw.live', agriItems, spreadsheetUrl, 'Agriculture');
+  }
+
+  // 6. Dispatch any other dynamic CMM categories to their respective CMM only
   Object.keys(otherCmmGroups).forEach(email => {
     dispatchSingleCategoryEmail_(email, otherCmmGroups[email], spreadsheetUrl);
   });
 
-  // 4. Dispatch State PSC & Judiciary strictly to CFG.EMAIL_TO (ZERO UP Board, ZERO CA)
+  // 7. Dispatch State PSC & Judiciary strictly to CFG.EMAIL_TO (ZERO UP Board, ZERO CA, ZERO GATE/AE-JE/Agri)
   if (pscJudiciaryItems.length > 0) {
     dispatchSingleCategoryEmail_(coreEmail, pscJudiciaryItems, spreadsheetUrl, 'State PSC & Judiciary');
   }
@@ -1029,6 +1327,12 @@ function dispatchSingleCategoryEmail_(recipientEmail, items, spreadsheetUrl, tit
       categoryTitle = 'UP State Board';
     } else if (recipientEmail === 'moksh.sharma@pw.live') {
       categoryTitle = 'CA (Foundation & Intermediate)';
+    } else if (recipientEmail.includes('harsh.ayush1')) {
+      categoryTitle = 'GATE';
+    } else if (items.some(i => /ae[- ]?je/i.test(i.category || i.exam || ''))) {
+      categoryTitle = 'AE-JE';
+    } else if (items.some(i => /agri/i.test(i.category || i.exam || ''))) {
+      categoryTitle = 'Agriculture';
     } else if (items.every(i => i.jurisdiction === items[0].jurisdiction)) {
       categoryTitle = items[0].jurisdiction;
     } else {
@@ -1694,6 +1998,16 @@ function doPost(e) {
 
   try {
     const postData = JSON.parse(e.postData.contents);
+    if (postData.action === 'sendTagsConfirmation') {
+      const filterParam = postData.categories ? (Array.isArray(postData.categories) ? postData.categories : postData.categories.split(',')) : null;
+      const results = sendTagsConfirmationToCMMs(filterParam);
+      return ContentService.createTextOutput(JSON.stringify({
+        status: 'ok',
+        message: 'Tags confirmation sent to CMMs',
+        results: results
+      })).setMimeType(ContentService.MimeType.JSON);
+    }
+
     const incoming = Array.isArray(postData) ? postData : (postData.notices || [postData]);
     if (!incoming || incoming.length === 0) {
       return ContentService.createTextOutput(JSON.stringify({ status: 'ok', inserted: 0 }))
@@ -1835,6 +2149,26 @@ function syncOfficialNoticesNow() {
  * Allows cloud runners to fetch Indian portals through Google Workspace IPs
  */
 function doGet(e) {
+  if (e && e.parameter && e.parameter.action === 'sendTagsConfirmation') {
+    const filterParam = e.parameter.categories ? e.parameter.categories.split(',') : null;
+    const results = sendTagsConfirmationToCMMs(filterParam);
+    return ContentService.createTextOutput(JSON.stringify({
+      status: 'ok',
+      message: 'Tags confirmation sent to CMMs',
+      results: results
+    })).setMimeType(ContentService.MimeType.JSON);
+  }
+
+  if (e && e.parameter && e.parameter.action === 'syncTags') {
+    const scopes = syncTagsFromSheet();
+    return ContentService.createTextOutput(JSON.stringify({
+      status: 'ok',
+      message: 'Synced tags from Sheet',
+      scopesCount: scopes.length,
+      scopes: scopes.map(s => ({ name: s.name, tab: s.sheetTab, email: s.recipientEmail }))
+    })).setMimeType(ContentService.MimeType.JSON);
+  }
+
   const targetUrl = (e && e.parameter && e.parameter.url);
   if (!targetUrl) {
     return ContentService.createTextOutput(JSON.stringify({
@@ -1865,10 +2199,22 @@ function doGet(e) {
 
 /**
  * Utility: Sends confirmation email to all CMMs showing their active category tags.
- * Run manually in Apps Script to verify communication with CMMs.
+ * @param {Array<string>} [categoriesFilter] Optional array of category/tab names to filter (e.g. ['GATE', 'AE-JE', 'Agriculture'])
  */
-function sendTagsConfirmationToCMMs() {
-  const scopes = getActiveCategoryScopes_().filter(s => s.kind === 'cmm_category');
+function sendTagsConfirmationToCMMs(categoriesFilter) {
+  _cachedScopes = null;
+  let scopes = getActiveCategoryScopes_().filter(s => s.kind === 'cmm_category');
+
+  if (categoriesFilter && Array.isArray(categoriesFilter) && categoriesFilter.length > 0) {
+    const filterLower = categoriesFilter.map(c => String(c).toLowerCase().trim());
+    scopes = scopes.filter(s => 
+      filterLower.some(f => 
+        String(s.name || '').toLowerCase().includes(f) ||
+        String(s.sheetTab || '').toLowerCase().includes(f)
+      )
+    );
+  }
+
   const results = [];
 
   scopes.forEach(scope => {
@@ -1881,10 +2227,13 @@ function sendTagsConfirmationToCMMs() {
     let aliasList = (scope.aliases || []).map(t => `<li style="margin-bottom:4px;"><b>ALIAS:</b> <code>${escapeHtml_(t)}</code></li>`).join('');
     let excludeList = (scope.excludes || []).map(t => `<li style="margin-bottom:4px;color:#c5221f;"><b>EXCLUDE:</b> <code>${escapeHtml_(t)}</code></li>`).join('');
 
+    const totalTags = (scope.includes || []).length + (scope.aliases || []).length + (scope.excludes || []).length;
+
     const htmlBody = `
       <div style="font-family:Arial,sans-serif;background:#f8f9fa;padding:24px;color:#202124;">
-        <div style="max-width:600px;margin:0 auto;background:#ffffff;border-radius:8px;border:1px solid #dadce0;overflow:hidden;">
+        <div style="max-width:600px;margin:0 auto;background:#ffffff;border-radius:8px;border:1px solid #dadce0;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,0.08);">
           <div style="background:#1e293b;color:#ffffff;padding:20px 24px;">
+            <div style="font-size:11px;font-weight:bold;text-transform:uppercase;letter-spacing:1px;color:#38bdf8;margin-bottom:4px;">Physics Wallah Growth & Marketing Intelligence</div>
             <h2 style="margin:0;font-size:18px;">⚡ PW Exam Intelligence Radar</h2>
             <div style="font-size:13px;color:#94a3b8;margin-top:4px;">Category Monitoring Activated: <b>${escapeHtml_(scope.name)}</b></div>
           </div>
@@ -1898,7 +2247,7 @@ function sendTagsConfirmationToCMMs() {
               <b>📬 Routing Confirmation:</b> All breaking notices, official circulars, and results for this category will be delivered directly to: <code>${escapeHtml_(toEmail)}</code>.
             </div>
             <h4 style="font-size:14px;color:#0f172a;margin:20px 0 8px 0;border-bottom:1px solid #e2e8f0;padding-bottom:4px;">
-              📋 Registered Monitoring Tags:
+              📋 Registered Monitoring Tags (${totalTags} active):
             </h4>
             <ul style="font-size:13px;line-height:1.6;padding-left:20px;">
               ${includeList}
@@ -1921,7 +2270,7 @@ function sendTagsConfirmationToCMMs() {
         htmlBody: htmlBody,
         name: 'PW Exam Intelligence Radar'
       });
-      results.push({ category: scope.name, email: toEmail, status: 'SENT' });
+      results.push({ category: scope.name, email: toEmail, status: 'SENT', totalTags: totalTags });
     } catch (e) {
       results.push({ category: scope.name, email: toEmail, status: 'FAILED', error: e.message });
     }
@@ -1930,6 +2279,13 @@ function sendTagsConfirmationToCMMs() {
   log_('INFO', 'Dispatched tags confirmation to CMMs', JSON.stringify(results));
   Logger.log('Tags confirmation dispatched: ' + JSON.stringify(results));
   return results;
+}
+
+/**
+ * Utility: Sends confirmation email specifically for the 3 newly added categories
+ */
+function sendTagsConfirmationToNewCMMs() {
+  return sendTagsConfirmationToCMMs(['GATE', 'AE-JE', 'Agriculture']);
 }
 
 /**
@@ -1943,4 +2299,23 @@ function syncTagsFromSheet() {
     Logger.log(` - [${s.kind || 'psc'}] ${s.name} (${s.sheetTab || ''}) -> Email: ${s.recipientEmail || CFG.EMAIL_TO}`);
   });
   return scopes;
+}
+
+/**
+ * Automatically creates custom menu in Google Sheets UI
+ */
+function onOpen() {
+  try {
+    const ui = SpreadsheetApp.getUi();
+    ui.createMenu('🏛️ PW Exam Intelligence')
+      .addItem('📧 Send Tags Confirmation (All CMMs)', 'sendTagsConfirmationToCMMs')
+      .addItem('📧 Send Tags Confirmation (3 New: GATE, AE-JE, Agri)', 'sendTagsConfirmationToNewCMMs')
+      .addItem('🔄 Refresh & Sync Tags from Sheet', 'syncTagsFromSheet')
+      .addSeparator()
+      .addItem('⚡ Sync Official Notices Now', 'syncOfficialNoticesNow')
+      .addItem('🔍 Run News Intelligence Cycle', 'monitorExamNews')
+      .addToUi();
+  } catch (e) {
+    Logger.log('onOpen notice: ' + e.message);
+  }
 }

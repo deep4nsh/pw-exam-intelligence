@@ -1,7 +1,7 @@
 # 🏛️ Physics Wallah Exam Intelligence Radar
 
 > **Private Real-Time Exam & Multi-Category Intelligence Pipeline for PW Marketing Leadership**  
-> Covers **State PSCs** (UPPSC, BPSC, MPSC, MPPSC, OPSC, RPSC), **Judiciary & Law** (Pan-India High Courts, SCI, ADA, AIBE), **UP State Board** (UPMSP Class 10/12), and **Commerce / Professional** (ICAI CA Foundation & Intermediate) with category-targeted email routing, instant Telegram alerts, pre-written marketing plays, clean Google Sheet tracking, and rich executive digests.
+> Covers **State PSCs** (UPPSC, BPSC, MPSC, MPPSC, OPSC, RPSC), **Judiciary & Law** (Pan-India High Courts, SCI, ADA, AIBE), **UP State Board** (UPMSP Class 10/12), **Commerce / Professional** (ICAI CA Foundation & Intermediate), **GATE** (Engineering & Tech), **AE-JE** (Assistant & Junior Engineer), and **Agriculture** (ICAR, ASRB, State Agri) with category-targeted email routing, instant Telegram alerts, pre-written marketing plays, clean Google Sheet tracking, and rich executive digests.
 
 ---
 
@@ -21,14 +21,20 @@ This repository operates on a **₹0 recurring cost stack** with zero server mai
    - **Bar Advocacy & AIBE:** All India Bar Examination and Bar Council of India notifications.
    - **UP State Board (UPMSP):** Class 10 & 12 Board model papers, exam datesheets, results, and scrutiny notices via `upmsp.edu.in`.
    - **ICAI (Chartered Accountants):** CA Foundation & Intermediate announcements, results, and examination circulars via `icai.org`.
+   - **GATE & Engineering:** IIT & IISc GATE notifications, answer keys, dates, and score updates.
+   - **AE-JE Technical:** State & Central Assistant Engineer and Junior Engineer recruitments (UPPSC, BPSC, SSC, RRB).
+   - **Agriculture & Allied:** ICAR, ASRB, IBPS AFO, State Agriculture Officers & Supervisors.
 
 2. **Multi-Category CMM Routing & Central Tags Sheet:**
    - **Dynamic CMM Ingestion:** Reads categories, tags (`INCLUDE`, `ALIAS`, `EXCLUDE`), and emails directly from the central Google Sheet (`1IIdA-chEZvTRT4xPKmvFp_U-6mCv6t2VdPTXOOhooYQ`).
    - **Strict Category Isolation:** Each Category Marketing Manager receives alerts **only** for their respective tags:
      - **UP State Board:** Delivered exclusively to `anshu.mishra@pw.live`
      - **CA Inter & Foundation:** Delivered exclusively to `moksh.sharma@pw.live`
+     - **GATE:** Delivered exclusively to `falguni.gupta@pw.live`, `kashif.ahmed@pw.live`, `harsh.ayush1@pw.live`
+     - **AE-JE:** Delivered exclusively to `falguni.gupta@pw.live`, `kashif.ahmed@pw.live`, `ananya.rajak@pw.live`
+     - **Agriculture:** Delivered exclusively to `falguni.gupta@pw.live`, `kashif.ahmed@pw.live`, `ananya.rajak@pw.live`
      - **State PSC & Judiciary:** Delivered to Marketing Leadership (`CFG.EMAIL_TO`)
-   - **Tag Honor Rules:** Custom exclusion tags (such as `Mock test` for CA) are enforced at ingestion time.
+   - **Tag Honor Rules:** Custom exclusion tags (such as `JAM`, `CUET` for GATE; `GATE`, `Diploma admission` for AE-JE; `NEET`, `JEE` for Agri; `Mock test` for CA) are enforced at ingestion time.
 
 2. **24/7 GitHub Actions Automation (`.github/workflows/scrape.yml`):**
    - Runs on cron every 20 minutes automatically.

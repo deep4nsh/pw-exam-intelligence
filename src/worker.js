@@ -69,6 +69,11 @@ function getMenuMarkup() {
         { text: "💼 CA Foundation & Inter", callback_data: "sync_ca" }
       ],
       [
+        { text: "🎯 GATE", callback_data: "sync_gate" },
+        { text: "⚙️ AE-JE", callback_data: "sync_aeje" },
+        { text: "🌾 Agriculture", callback_data: "sync_agri" }
+      ],
+      [
         { text: "📜 Bar Advocacy & AIBE", callback_data: "sync_bar" },
         { text: "⚡ Sync All (Full Radar)", callback_data: "sync_all" }
       ]
@@ -232,7 +237,10 @@ export default {
               "sync_ada": { name: "ADA & Prosecution", state: "HPSC, PPSC, APO & ADPO", key: "ADA", icon: "🏛️" },
               "sync_bar": { name: "Bar Advocacy & Law", state: "AIBE / Bar Council of India", key: "Bar", icon: "📜" },
               "sync_upmsp": { name: "UP State Board (UPMSP)", state: "Uttar Pradesh", key: "UP State Board", icon: "🏫" },
-              "sync_ca": { name: "ICAI (Chartered Accountants)", state: "Pan-India", key: "ICAI", icon: "💼" }
+              "sync_ca": { name: "ICAI (Chartered Accountants)", state: "Pan-India", key: "ICAI", icon: "💼" },
+              "sync_gate": { name: "GATE", state: "National / IIT", key: "GATE", icon: "🎯" },
+              "sync_aeje": { name: "AE-JE (Assistant & Junior Engineer)", state: "Pan-India", key: "AE-JE", icon: "⚙️" },
+              "sync_agri": { name: "Agriculture Exams", state: "Pan-India / ICAR", key: "Agriculture", icon: "🌾" }
             };
 
             // Option: Full Radar Sync
