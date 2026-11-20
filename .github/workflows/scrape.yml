@@ -42,10 +42,12 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           cp scraper/latest_official_notices.json dashboard/public/notices.json 2>/dev/null || true
           cp scraper/latest_official_notices.json dashboard/src/data/notices.json 2>/dev/null || true
-          git add scraper/seen_hashes.json scraper/latest_official_notices.json dashboard/public/notices.json dashboard/src/data/notices.json
+          cp scraper/latest_official_notices.json dist/notices.json 2>/dev/null || true
+          git add scraper/seen_hashes.json scraper/latest_official_notices.json dashboard/public/notices.json dashboard/src/data/notices.json dist/notices.json
           if ! git diff --cached --quiet; then
             git commit -m "chore(radar): sync verified official circulars [skip ci]"
-            git push
+            git pull --rebase origin main || true
+            git push origin main
             echo "✅ Successfully synced new circulars to repository."
           else
             echo "ℹ️ No changes in circular cache. Everything up to date."

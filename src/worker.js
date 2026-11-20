@@ -118,7 +118,18 @@ async function answerCallbackQuery(callbackQueryId, text = "") {
 }
 
 async function fetchLatestNotices(env, origin) {
-  // Try ASSETS first
+  // 1. Prioritize live notices from GitHub main (updated continuously by 24/7 CI/CD)
+  try {
+    const ghRes = await fetch(`${GITHUB_RAW_URL}?t=${Date.now()}`, {
+      headers: { "User-Agent": "PW-Exam-Radar-Worker" }
+    });
+    if (ghRes.ok) {
+      const data = await ghRes.json();
+      if (data.notices && data.notices.length > 0) return data.notices;
+    }
+  } catch (e) {}
+
+  // 2. Fallback to bundled ASSETS if GitHub is unreachable
   if (env && env.ASSETS) {
     try {
       const assetRes = await env.ASSETS.fetch(new Request(`${origin}/notices.json`));
@@ -129,21 +140,30 @@ async function fetchLatestNotices(env, origin) {
     } catch (e) {}
   }
 
-  // Fallback to latest GitHub commit on main
-  try {
-    const ghRes = await fetch(`${GITHUB_RAW_URL}?t=${Date.now()}`);
-    if (ghRes.ok) {
-      const data = await ghRes.json();
-      if (data.notices && data.notices.length > 0) return data.notices;
-    }
-  } catch (e) {}
-
   return [];
 }
 
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
+
+    // 0. Live dynamic notices feed for React Dashboard
+    if (url.pathname === "/notices.json") {
+      const notices = await fetchLatestNotices(env, url.origin);
+      if (notices && notices.length > 0) {
+        return new Response(JSON.stringify({
+          lastUpdated: new Date().toISOString(),
+          totalNotices: notices.length,
+          notices: notices
+        }), {
+          headers: {
+            "Content-Type": "application/json; charset=utf-8",
+            "Cache-Control": "public, max-age=60",
+            "Access-Control-Allow-Origin": "*"
+          }
+        });
+      }
+    }
 
     // 1. Existing Proxy for RPSC & Portal Ingestion
     if (url.pathname === "/api/proxy") {

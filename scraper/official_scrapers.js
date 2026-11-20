@@ -65,8 +65,8 @@ function isClickbaitOrIrrelevantNews(title) {
   if (!title || typeof title !== 'string') return true;
   const lower = title.toLowerCase();
 
-  // 1. Exclude clickbait SEO coaching institute filler articles & human interest gossip
-  const isClickbait = /\b(expected cut.?off|safe score|exam analysis|paper analysis|analysis of|how to (?:check|download|apply|prepare)|preparation (?:tips|strategy|guide)|salary|in hand salary|pay scale|job profile|mock test|sample paper|model paper|best books|books for|syllabus breakdown|unofficial answer key|rank predictor|difficulty level|review petitions?|challenging (?:three|3)-year practice|cut off 20\d\d: expected|daughter tops|son of|overcame hardships|paan seller|hardships to become)\b/i.test(lower);
+  // 1. Exclude clickbait SEO coaching filler, YouTube classes, Daily Current Affairs, and human interest stories
+  const isClickbait = /\b(expected cut.?off|safe score|exam analysis|paper analysis|analysis of|how to (?:check|download|apply|prepare)|preparation (?:tips|strategy|guide)|salary|in hand salary|pay scale|job profile|mock test|sample paper|model paper|best books|books for|syllabus breakdown|unofficial answer key|rank predictor|difficulty level|review petitions?|challenging (?:three|3)-year practice|cut off 20\d\d: expected|daughter tops|son of|overcame hardships|paan seller|hardships to become|current affairs|daily.*current affairs|special class|live class|marathon class|reshu jain|institute|smj institute|coaching|target batch|crash course|success story|motivation|motivational|against all odds|overcame adversity|jailed|handcuffs|home burnt|topper|topper story|meet the topper|secured.*rank|tribal youths|twice a year|2 lakh jobs)\b/i.test(lower);
   if (isClickbait) return true;
 
   // 2. Exclude general court crime / bail / non-exam litigation / disciplinary drama
@@ -87,6 +87,7 @@ function isClickbaitOrIrrelevantNews(title) {
 
 
 async function fetchHtml(url, timeoutMs = 25000) {
+  // Tier 1: Direct Node.js fetch with browser headers and redirect following
   try {
     const res = await fetch(url, {
       headers: {
@@ -94,17 +95,35 @@ async function fetchHtml(url, timeoutMs = 25000) {
         "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
         "Accept-Language": "en-US,en;q=0.9,hi;q=0.8"
       },
+      redirect: 'follow',
       signal: AbortSignal.timeout(timeoutMs)
     });
-    return await res.text();
-  } catch (err) {
-    try {
-      const { execSync } = require('child_process');
-      const stdout = execSync(`curl -s -k -L --max-time ${Math.round(timeoutMs / 1000)} "${url}" -H "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64)"`, { encoding: 'utf8', maxBuffer: 10 * 1024 * 1024 });
-      if (stdout && stdout.length > 0) return stdout;
-    } catch (e2) {}
-    throw err;
-  }
+    if (res.ok) {
+      const text = await res.text();
+      if (text && text.length > 200) return text;
+    }
+  } catch (err) {}
+
+  // Tier 2: curl fallback with SSL flexibility
+  try {
+    const { execSync } = require('child_process');
+    const stdout = execSync(`curl -s -k -L --max-time ${Math.round(timeoutMs / 1000)} "${url}" -H "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64)"`, { encoding: 'utf8', maxBuffer: 10 * 1024 * 1024 });
+    if (stdout && stdout.length > 200) return stdout;
+  } catch (e2) {}
+
+  // Tier 3: Edge Proxy Fallback for geoblocked or firewall-protected portals
+  try {
+    const proxyUrl = `https://pw-exam-intelligence.deepansh-gup124.workers.dev/api/proxy?url=${encodeURIComponent(url)}`;
+    const pRes = await fetch(proxyUrl, {
+      signal: AbortSignal.timeout(timeoutMs)
+    });
+    if (pRes.ok) {
+      const pText = await pRes.text();
+      if (pText && pText.length > 200) return pText;
+    }
+  } catch (e3) {}
+
+  throw new Error(`Failed to fetch HTML from ${url} across all direct & proxy tiers`);
 }
 
 function generateHash(title, url) {
@@ -408,10 +427,10 @@ async function scrapeMPPSC() {
     }
   } catch (e) {}
 
-  // Ensure full notices via real-time feed if geofence limits direct extraction
-  if (items.length < 10) {
+  // Fallback to real-time feed ONLY if direct portal extraction returned 0 notices (e.g. commission server down)
+  if (items.length === 0) {
     try {
-      const feedUrl = "https://news.google.com/rss/search?q=MPPSC+when:30d&hl=en-IN&gl=IN&ceid=IN:en";
+      const feedUrl = "https://news.google.com/rss/search?q=MPPSC+when:24h&hl=en-IN&gl=IN&ceid=IN:en";
       const feedRes = await fetchHtml(feedUrl, 15000);
       const itemRegex = /<item>[\s\S]*?<title>([\s\S]*?)<\/title>[\s\S]*?<link>([\s\S]*?)<\/link>[\s\S]*?<pubDate>([\s\S]*?)<\/pubDate>[\s\S]*?<\/item>/gi;
       let fMatch;
@@ -495,10 +514,10 @@ async function scrapeRPSC() {
     }
   }
 
-  // Tier 3: Official Google News Feed Fallback
-  if (items.length < 10) {
+  // Tier 3: Official Google News Feed Fallback (ONLY if direct portal extraction returned 0 notices)
+  if (items.length === 0) {
     try {
-      const feedUrl = "https://news.google.com/rss/search?q=site:rpsc.rajasthan.gov.in+OR+(RPSC+RAS+admit+card+OR+result+OR+exam)+when:14d&hl=en-IN&gl=IN&ceid=IN:en";
+      const feedUrl = "https://news.google.com/rss/search?q=site:rpsc.rajasthan.gov.in+OR+(RPSC+RAS+admit+card+OR+result+OR+exam)+when:24h&hl=en-IN&gl=IN&ceid=IN:en";
       const feedRes = await fetchHtml(feedUrl, 15000);
       const itemRegex = /<item>[\s\S]*?<title>([\s\S]*?)<\/title>[\s\S]*?<link>([\s\S]*?)<\/link>[\s\S]*?<pubDate>([\s\S]*?)<\/pubDate>[\s\S]*?<\/item>/gi;
       let fMatch;
@@ -724,7 +743,7 @@ async function scrapePanIndiaJudiciary() {
 
   // Tier 2: Filtered High Courts & Supreme Court Real-Time Feed (Cleaned of court crime & clickbait)
   try {
-    const feedUrl = "https://news.google.com/rss/search?q=(%22Delhi+Judicial+Service%22+OR+%22DJS%22+OR+%22DHJS%22+OR+%22Bihar+Judicial+Service%22+OR+%22BJS%22+OR+%22Rajasthan+Judicial+Service%22+OR+%22RJS%22+OR+%22MP+Civil+Judge%22+OR+%22UP+PCS-J%22+OR+%22UP+HJS%22+OR+%22Civil+Judge+Recruitment%22+OR+%22High+Court+Recruitment%22+OR+%22Bombay+High+Court%22+OR+%22Gujarat+High+Court%22+OR+%22Calcutta+High+Court%22+OR+%22Punjab+and+Haryana+High+Court%22+OR+%22Supreme+Court+of+India+Recruitment%22)+AND+(Exam+OR+Result+OR+%22Admit+Card%22+OR+Notification+OR+Recruitment+OR+Interview)+when:30d&hl=en-IN&gl=IN&ceid=IN:en";
+    const feedUrl = "https://news.google.com/rss/search?q=(%22Delhi+Judicial+Service%22+OR+%22DJS%22+OR+%22DHJS%22+OR+%22Bihar+Judicial+Service%22+OR+%22BJS%22+OR+%22Rajasthan+Judicial+Service%22+OR+%22RJS%22+OR+%22MP+Civil+Judge%22+OR+%22UP+PCS-J%22+OR+%22UP+HJS%22+OR+%22Civil+Judge+Recruitment%22+OR+%22High+Court+Recruitment%22+OR+%22Bombay+High+Court%22+OR+%22Gujarat+High+Court%22+OR+%22Calcutta+High+Court%22+OR+%22Punjab+and+Haryana+High+Court%22+OR+%22Supreme+Court+of+India+Recruitment%22)+AND+(Exam+OR+Result+OR+%22Admit+Card%22+OR+Notification+OR+Recruitment+OR+Interview)+when:24h&hl=en-IN&gl=IN&ceid=IN:en";
     const feedRes = await fetchHtml(feedUrl, 15000);
     const itemRegex = /<item>[\s\S]*?<title>([\s\S]*?)<\/title>[\s\S]*?<link>([\s\S]*?)<\/link>[\s\S]*?<pubDate>([\s\S]*?)<\/pubDate>[\s\S]*?<\/item>/gi;
     let fMatch;
@@ -849,7 +868,7 @@ async function scrapeADAAndProsecution() {
 
   // Tier 2: Pan-India ADA, Prosecution & State Legal Feeds (Punjab ADA, UP APO, MP ADPO, Bihar APO, HPSC ADA, RPSC JLO)
   try {
-    const feedUrl = "https://news.google.com/rss/search?q=(%22BPSC+APO%22+OR+%22Bihar+APO%22+OR+%22UP+APO%22+OR+%22UPPSC+APO%22+OR+%22HPSC+ADA%22+OR+%22Punjab+ADA%22+OR+%22PPSC+ADA%22+OR+%22Haryana+ADA%22+OR+%22MP+ADPO%22+OR+%22RPSC+JLO%22+OR+%22Assistant+Prosecution+Officer+India%22)+AND+(Recruitment+OR+Exam+OR+Result+OR+%22Admit+Card%22+OR+Notification)+when:60d&hl=en-IN&gl=IN&ceid=IN:en";
+    const feedUrl = "https://news.google.com/rss/search?q=(%22BPSC+APO%22+OR+%22Bihar+APO%22+OR+%22UP+APO%22+OR+%22UPPSC+APO%22+OR+%22HPSC+ADA%22+OR+%22Punjab+ADA%22+OR+%22PPSC+ADA%22+OR+%22Haryana+ADA%22+OR+%22MP+ADPO%22+OR+%22RPSC+JLO%22+OR+%22Assistant+Prosecution+Officer+India%22)+AND+(Recruitment+OR+Exam+OR+Result+OR+%22Admit+Card%22+OR+Notification)+when:24h&hl=en-IN&gl=IN&ceid=IN:en";
     const feedRes = await fetchHtml(feedUrl, 15000);
     const itemRegex = /<item>[\s\S]*?<title>([\s\S]*?)<\/title>[\s\S]*?<link>([\s\S]*?)<\/link>[\s\S]*?<pubDate>([\s\S]*?)<\/pubDate>[\s\S]*?<\/item>/gi;
     let match;
@@ -1039,7 +1058,7 @@ async function scrapeBarAdvocacyAndAIBE() {
 
   // Tier 2C: Direct Banking & Regulatory Legal Streams (Real-Time Fallback & Breaking News)
   try {
-    const regQuery = "https://news.google.com/rss/search?q=(%22IBPS+SO%22+OR+%22SEBI+Grade+A%22)+AND+(Law+OR+Legal)+when:30d&hl=en-IN&gl=IN&ceid=IN:en";
+    const regQuery = "https://news.google.com/rss/search?q=(%22IBPS+SO%22+OR+%22SEBI+Grade+A%22)+AND+(Law+OR+Legal)+when:24h&hl=en-IN&gl=IN&ceid=IN:en";
     const regRes = await fetchHtml(regQuery, 15000);
     const itemRegex = /<item>[\s\S]*?<title>([\s\S]*?)<\/title>[\s\S]*?<link>([\s\S]*?)<\/link>[\s\S]*?<pubDate>([\s\S]*?)<\/pubDate>[\s\S]*?<\/item>/gi;
     let match;
@@ -1082,7 +1101,7 @@ async function scrapeBarAdvocacyAndAIBE() {
 
   // Tier 3: Bar Council of India, Supreme Court AOR & General Bar Admissions
   try {
-    const barQuery = "https://news.google.com/rss/search?q=(%22All+India+Bar+Examination%22+OR+%22AIBE%22+OR+%22Bar+Council+of+India%22+OR+%22Advocate+on+Record%22)+AND+(Exam+OR+Admit+Card+OR+Result+OR+Registration+OR+Notification)+when:30d&hl=en-IN&gl=IN&ceid=IN:en";
+    const barQuery = "https://news.google.com/rss/search?q=(%22All+India+Bar+Examination%22+OR+%22AIBE%22+OR+%22Bar+Council+of+India%22+OR+%22Advocate+on+Record%22)+AND+(Exam+OR+Admit+Card+OR+Result+OR+Registration+OR+Notification)+when:24h&hl=en-IN&gl=IN&ceid=IN:en";
     const barRes = await fetchHtml(barQuery, 15000);
     const itemRegex = /<item>[\s\S]*?<title>([\s\S]*?)<\/title>[\s\S]*?<link>([\s\S]*?)<\/link>[\s\S]*?<pubDate>([\s\S]*?)<\/pubDate>[\s\S]*?<\/item>/gi;
     let match;
@@ -1663,37 +1682,35 @@ function sendTelegramNotice(item, tokenOverride = null) {
   });
 }
 
-function sendGoogleWebAppSync(items) {
-  return new Promise((resolve) => {
-    const webAppUrl = process.env.GOOGLE_WEBAPP_URL || GOOGLE_WEBAPP_CONFIG.url;
-    if (!webAppUrl) return resolve(false);
+async function sendGoogleWebAppSync(items) {
+  const webAppUrl = process.env.GOOGLE_WEBAPP_URL || GOOGLE_WEBAPP_CONFIG.url;
+  if (!webAppUrl) return false;
 
+  try {
+    const res = await fetch(webAppUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ notices: items }),
+      redirect: 'follow',
+      signal: AbortSignal.timeout(30000)
+    });
+
+    const text = await res.text();
     try {
-      const parsed = new URL(webAppUrl);
-      const data = JSON.stringify({ notices: items });
-      const req = https.request({
-        hostname: parsed.hostname,
-        port: 443,
-        path: parsed.pathname + (parsed.search || ''),
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Content-Length': Buffer.byteLength(data)
-        },
-        timeout: 15000
-      }, (res) => {
-        res.resume();
-        const isSuccess = (res.statusCode >= 200 && res.statusCode < 400);
-        res.on('end', () => resolve(isSuccess));
-      });
-      req.on('timeout', () => { req.destroy(); resolve(false); });
-      req.on('error', () => resolve(false));
-      req.write(data);
-      req.end();
+      const json = JSON.parse(text);
+      if (json.status === 'success' || json.status === 'ok') {
+        return true;
+      }
+      return json.inserted !== undefined;
     } catch (e) {
-      resolve(false);
+      return text.includes('"status":"success"') || text.includes('"status":"ok"');
     }
-  });
+  } catch (err) {
+    console.warn(`⚠️ Google WebApp sync error:`, err.message);
+    return false;
+  }
 }
 
 if (require.main === module) {
@@ -1711,6 +1728,7 @@ module.exports = {
   scrapeADAAndProsecution,
   scrapeBarAdvocacyAndAIBE,
   applySmartLegalRouting,
+  isClickbaitOrIrrelevantNews,
   sendTelegramNotice,
   runAllOfficialScrapers
 };

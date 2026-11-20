@@ -34,7 +34,7 @@ const CFG = {
   SEND_EMAIL_WHEN_NO_NEWS: false,
   FONT: 'Arial',
   FONT_SIZE: 10,
-  GEMINI_MODEL: 'gemini-flash-latest',
+  GEMINI_MODEL: 'gemini-1.5-flash',
   GITHUB_NOTICES_URL: 'https://raw.githubusercontent.com/deep4nsh/pw-exam-intelligence/main/scraper/latest_official_notices.json'
 };
 
@@ -533,10 +533,8 @@ function callGeminiFlash_(title, description, jurisdiction, apiKey) {
 
   const code = response.getResponseCode();
   if (code !== 200) {
-    if (code === 401 || code === 403 || code === 429) {
-      _geminiDisabled = true; // Trip circuit breaker immediately! Don't stall future items.
-      log_('WARN', 'Gemini API returned ' + code + '. Circuit breaker tripped; switching to instant rule engine for this cycle.', '');
-    }
+    _geminiDisabled = true; // Trip circuit breaker immediately on ANY error (401, 403, 404, 429, 500) to prevent stalling!
+    log_('WARN', 'Gemini API returned ' + code + '. Circuit breaker tripped; switching to instant rule engine for this cycle.', '');
     return null;
   }
 
@@ -944,21 +942,26 @@ function formatDataRows_(sheet, startRow, count) {
   sheet.getRange(startRow, 4, count, 1)
     .setHorizontalAlignment('center');
 
-  // Col 5: Priority color pills
+  // Col 5: Priority color pills (Batch-applied in 1 remote RPC instead of loop)
   const priorityRange = sheet.getRange(startRow, 5, count, 1);
   priorityRange.setFontWeight('bold').setHorizontalAlignment('center');
   const priorities = priorityRange.getValues();
+  const bgColors = [];
+  const textColors = [];
   for (let i = 0; i < count; i++) {
     const p = priorities[i][0];
-    const cell = sheet.getRange(startRow + i, 5);
     if (p === 'CRITICAL') {
-      cell.setBackground('#fce8e6').setFontColor('#c5221f');
+      bgColors.push(['#fce8e6']);
+      textColors.push(['#c5221f']);
     } else if (p === 'HIGH') {
-      cell.setBackground('#fef7e0').setFontColor('#b06000');
+      bgColors.push(['#fef7e0']);
+      textColors.push(['#b06000']);
     } else {
-      cell.setBackground('#f1f3f4').setFontColor('#5f6368');
+      bgColors.push(['#f1f3f4']);
+      textColors.push(['#5f6368']);
     }
   }
+  priorityRange.setBackgrounds(bgColors).setFontColors(textColors);
 
   // Col 7: Suggested Marketing Play highlight
   sheet.getRange(startRow, 7, count, 1)
@@ -1114,10 +1117,15 @@ function fetchOfficialNoticesFromGitHub_(known) {
     const notices = payload.notices || [];
 
     notices.forEach(n => {
-      const uid = n.hash || generateCompositeHash_(n.title, n.url);
-      if (known.has(uid) || known.has(n.url)) return;
+      const compHash = generateCompositeHash_(n.title, n.url);
+      const uid = n.hash || compHash;
+      const cleanU = cleanUrl_(n.url);
+      if (known.has(uid) || (n.hash && known.has(n.hash)) || known.has(compHash) || known.has(n.url) || (cleanU && known.has(cleanU))) return;
       known.add(uid);
+      if (n.hash) known.add(n.hash);
+      known.add(compHash);
       known.add(n.url);
+      if (cleanU) known.add(cleanU);
 
       items.push({
         title: n.title,
@@ -1167,10 +1175,15 @@ function doPost(e) {
 
     const newItems = [];
     incoming.forEach(n => {
-      const uid = n.hash || generateCompositeHash_(n.title, n.url);
-      if (known.has(uid) || known.has(n.url)) return;
+      const compHash = generateCompositeHash_(n.title, n.url);
+      const uid = n.hash || compHash;
+      const cleanU = cleanUrl_(n.url);
+      if (known.has(uid) || (n.hash && known.has(n.hash)) || known.has(compHash) || known.has(n.url) || (cleanU && known.has(cleanU))) return;
       known.add(uid);
+      if (n.hash) known.add(n.hash);
+      known.add(compHash);
       known.add(n.url);
+      if (cleanU) known.add(cleanU);
 
       newItems.push({
         title: n.title,
