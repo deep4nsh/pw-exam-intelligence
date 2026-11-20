@@ -1,6 +1,6 @@
 {
-  "lastUpdated": "2026-11-19T21:55:02.296Z",
-  "totalNotices": 90,
+  "lastUpdated": "2026-11-20T02:50:03.130Z",
+  "totalNotices": 83,
   "commissionsCovered": [
     "BPSC (Bihar)",
     "UPPSC (Uttar Pradesh)",
@@ -504,42 +504,6 @@
       "hash": "a06327ee16a89f002b6c"
     },
     {
-      "jurisdiction": "MPSC (Maharashtra)",
-      "state": "Maharashtra",
-      "exam": "Maharashtra Non-Gazetted Group B & C",
-      "title": "Advt. No. 017/2026 Maharashtra Group-C Services Combine Preliminary Examination 2026 - Corrigendum",
-      "url": "https://mpsc.gov.in/web/api/v1/downloadFileImage/english/14530",
-      "date": "2026-11-17",
-      "category": "Corrigendum / Revision",
-      "priority": "HIGH",
-      "marketingAction": "Review circular details and prepare student guidance/community update.",
-      "hash": "ea88470a18c0f4c84cce"
-    },
-    {
-      "jurisdiction": "MPSC (Maharashtra)",
-      "state": "Maharashtra",
-      "exam": "Maharashtra Non-Gazetted Group B & C",
-      "title": "Advt. No. 017/2026 Maharashtra Group-C Services Combined Preliminary Examination 2026 - Announcement regarding Qualification Criteria",
-      "url": "https://mpsc.gov.in/web/api/v1/downloadFileImage/english/14527",
-      "date": "2026-11-13",
-      "category": "Important Notice",
-      "priority": "HIGH",
-      "marketingAction": "Review circular details and prepare student guidance/community update.",
-      "hash": "1731c04f45fe5f23a58c"
-    },
-    {
-      "jurisdiction": "MPSC (Maharashtra)",
-      "state": "Maharashtra",
-      "exam": "Maharashtra Non-Gazetted Group B & C",
-      "title": "Advt. No. 017/2026 Maharashtra Group-C Services Combine Preliminary Examination 2026 - Corrigendum regarding posts & new application submission",
-      "url": "https://mpsc.gov.in/web/api/v1/downloadFileImage/english/14525",
-      "date": "2026-11-06",
-      "category": "Corrigendum / Revision",
-      "priority": "HIGH",
-      "marketingAction": "Review circular details and prepare student guidance/community update.",
-      "hash": "35c31cf6d6ce2af123cb"
-    },
-    {
       "jurisdiction": "Pan-India Judiciary",
       "state": "Allahabad High Court (UP)",
       "exam": "High Court Judicial Recruitment",
@@ -582,60 +546,6 @@
       "priority": "HIGH",
       "marketingAction": "Host faculty live strategy session; offer mock test series and model answers.",
       "hash": "e8a78ea03804b956bd91"
-    },
-    {
-      "jurisdiction": "Pan-India Judiciary",
-      "state": "Supreme Court of India (SCI)",
-      "exam": "Supreme Court Judicial Registry / Law Clerk",
-      "title": "Civil Judge Exam | Supreme Court Refuses To Extend One-Year Deemed Practice Benefit To 2026 Law Graduates",
-      "url": "https://news.google.com/rss/articles/CBMi-wFBVV95cUxNem02aHl0VU5MQ2NMS2NablEyWWlYNGxwRkU4VWdlcFpHT3lrRnZBZElucGJFdXFIVUtYcm9yelBmT1JMX1ItajJIMTliTXF0azlwNVdoLU5fYllLcXlVUW1NZ1NqLUZBazgwZjVYVEdUMC14bTFwTUhfeF9DMGpEUGl2QWVjOHVYLUlfLURuY08wczNNbkp4dzhTMHFKbU9CczhQczdHRnMxV1hJekFZTmRnUkhQVnJaeG5RWlVWZEItbXpoQzhRLUc3N3hDVUM4WERBMnI5THFteTRhTC0ya1pnQXdudXdIaGlhQ2IxWHBhTDdaaFVUMUlaTdIBgAJBVV95cUxQcUctTVBadFBTNklFcnJOSUlsZ2NPVmdIZkdua0RQQjV6NV9Tc3BsaFl4VUNnMWdkVW80bjRpYW5iUHREVUMtSUhoeEtaRGhrNUxJVG5zTFRWZW5Ra1hPb05nazJFUTZFQlhQNGZoN0JJZ1pfQ2pjM2ExQTRwT2RjNU9LR0FHeU5KaEg3dElPWUVOOHNHdkVEZEl2eGdLaExRdXB4VmpNY1YxMlQ3QjQ2c285a2E1SjdFaXQwT0hGR3FQbWpTdTNZWHFKYVR3NDUxb3hOMnNsc1ZvOFMyODFOaDEtVHRzMTE0aDB4NFg0dF9rVnVCdGphbnd4dlRZNVc4?oc=5",
-      "date": "19 Nov 2026",
-      "category": "Important Notice",
-      "priority": "HIGH",
-      "marketingAction": "Host faculty live strategy session; offer mock test series and model answers.",
-      "hash": "1c4b9c90d3bd3770a78a",
-      "isLegalTrack": true,
-      "routedTo": "PW Judiciary Wallah"
-    },
-    {
-      "jurisdiction": "Pan-India Judiciary",
-      "state": "Pan-India Judiciary",
-      "exam": "High Court Judicial Recruitment",
-      "title": "UPPSC announces 365 vacancies for civil judge exam",
-      "url": "https://news.google.com/rss/articles/CBMixgFBVV95cUxQOHNGaUNncmRWZklZcnRzdUdUZmMwdkhRZXhtQWM3RUZ2WTZfMEZoMkhXSXJEc25mM0hYZFRudHRDbjBQU2NLdHlENWx1M0hGVmFncXJzQzBrOFU5cjhGQWZlR2V4MXFoTGswZ0ZKMVdTZGtSS0lQRjFwbFB4UFNjOEM1Xzhlb0xSdm04RGdua3Eyb2JLVzBSbldBeHA2cE40cldtcEFJdjBNUXctNThKT2kwU0toWUV0Qnd0TXpfcExzLVRyTXfSAcsBQVVfeXFMTWpmWlgzTDBPS09EakdIZXl5R24zZ2ZJZ0FDWWFsUHlaUEVOOHFMdEhEcWphWkZLYmo0eHBDTzJ5Q2pYcnNkaUdVRm9iX1NncjJXT2JJdmRUNkpxQzF5UlNDaWl3SmpybmxEUC1HbXRwcnh0azNaUThWNWJ1N3FTV1h1VWtVMElkVEc0OTZYSEMtSUVsLVlnTWhlcHRHVnY4QmNtdWFncDc4TUJ3U0NlMF95Ykdvc1UtaTYzYW5tRGQxcUdxLTlHWnJHWDg?oc=5",
-      "date": "19 Nov 2026",
-      "category": "Important Notice",
-      "priority": "HIGH",
-      "marketingAction": "Host faculty live strategy session; offer mock test series and model answers.",
-      "hash": "d5d42bde11992889a5e6",
-      "isLegalTrack": true,
-      "routedTo": "PW Judiciary Wallah"
-    },
-    {
-      "jurisdiction": "Pan-India Judiciary",
-      "state": "Madhya Pradesh High Court (MPHC)",
-      "exam": "MP High Court Judicial Recruitment",
-      "title": "MP High Court Quashes Constable’s Dismissal For Not Listing Acquitted Cases In Recruitment Form",
-      "url": "https://news.google.com/rss/articles/CBMizwFBVV95cUxNc0NTakYtZS1yd0c2c21yQ3hmSjlIRllVX015Wjdwa2REUWZEZWNISF9jQmpIX3FjbDE3YjVrNU9NbmNLQXFfN2RhdHpyNVVILTl6ZlZkV19VeEgxRTVsdzZpR25fSXltc0g1MjhfTTRycVVOLUpXczkwQXZOWm9sRU9nS0VQTmNFWkhmRzRaZU9uQml4SHJFdVI4eUp2V3YwTUhXQ090ZDZrdzlza1BGbEo0MFNqTzVBeXhubnhsdzAzMjVBY2RvQm94SmRlUmfSAdQBQVVfeXFMTWNsVXhTZGlDeUZFcUFhZEl3S2IwelhVNkRBYU9HUDZEMmFiWmc3aFh1VmZKUTIyM0czSDVHYVQwbzdyRlI5Ylk1SDN3SkhvTTlwVnduYnFZLUFuai00MGtIemw2NW9lWjA4OHlwckRhcHZvM01SZERiYkRVM1JlYUI3eFNBTDdTVU5OMDh5T0JRSk9EV3ZCR3BmMlp4SDQ1VE1TNEFTbGJwQVo5M0FMbk96RTJMTnNNZ3EtVXZja0QyUHVGLUFKbGM5SkYxRDBDTFBuNjM?oc=5",
-      "date": "02 Nov 2026",
-      "category": "Notification / Recruitment",
-      "priority": "HIGH",
-      "marketingAction": "Schedule YouTube Live notification breakdown (<45m) and launch Target Batch ad creatives.",
-      "hash": "42c2445867bc99d8ddf4"
-    },
-    {
-      "jurisdiction": "Pan-India Judiciary",
-      "state": "Supreme Court of India (SCI)",
-      "exam": "Supreme Court Judicial Registry / Law Clerk",
-      "title": "Supreme Court hears review petitions challenging three-year practice rule for entry-level judges",
-      "url": "https://news.google.com/rss/articles/CBMiywFBVV95cUxQU1dTMVNaTDhHdldMc3ZkZ1pqemtsZGFRUGFqTzBwTjlXaU9ObHlfMmtVdHQyNkkxZENvSUllTXdKbWNTUV9YTjZoQ0VNMGpSd0VKUVRaZFR3TzVpa0VTZlpjbjRCWFlwcElENnY0WjZJdlFFbFFQTWd0ZTd5Nml3bmR1MVhvUmFId2lBTzhXUExoZlFLQkU1TXJaeTNNZ1plcG9OcllMVlRiNm9nN3FZVFE5ODM0WUhON1N3TVc1SkpuNlcwMW50VEdiOA?oc=5",
-      "date": "28 Jul 2026",
-      "category": "Important Notice",
-      "priority": "HIGH",
-      "marketingAction": "Host faculty live strategy session; offer mock test series and model answers.",
-      "hash": "494372066bd16beb18d2",
-      "isLegalTrack": true,
-      "routedTo": "PW Judiciary Wallah"
     },
     {
       "jurisdiction": "ADA & Prosecution",
