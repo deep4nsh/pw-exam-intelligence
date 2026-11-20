@@ -83,12 +83,12 @@ To turn on 24/7 automated scraping:
    Go to **Settings > Secrets and variables > Actions** and add:
    - `TELEGRAM_BOT_TOKEN`: `8962093670:AAEFDh6xdxBqVNUBIf3IybLRufbJYbjvNxI`
    - `TELEGRAM_CHAT_ID`: `-5324420343`
-   - `GOOGLE_WEBAPP_URL`: `https://script.google.com/macros/s/AKfycbyRZAvIjfSSTzmQgB1-WVjoSsXmBv80Tu0zeEuofNJ3gbFvFbPmCVlvbPbExKwE3_e6/exec`
+   - `GOOGLE_WEBAPP_URL`: `https://script.google.com/macros/s/AKfycbxHxjKogREmGK0El7qaHXyxFCpNPFFX370aoo27R2HBBmOcWtQ7hZ5l3RKK2FN6zte0/exec`
 
 4. **Google Apps Script Web App Deployment Details:**
-   - **Deployment ID:** `AKfycbyRZAvIjfSSTzmQgB1-WVjoSsXmBv80Tu0zeEuofNJ3gbFvFbPmCVlvbPbExKwE3_e6`
-   - **Web App URL:** `https://script.google.com/macros/s/AKfycbyRZAvIjfSSTzmQgB1-WVjoSsXmBv80Tu0zeEuofNJ3gbFvFbPmCVlvbPbExKwE3_e6/exec`
-   - **Internal PW URL:** `https://script.google.com/a/macros/pw.live/s/AKfycbyRZAvIjfSSTzmQgB1-WVjoSsXmBv80Tu0zeEuofNJ3gbFvFbPmCVlvbPbExKwE3_e6/exec`
+   - **Deployment ID:** `AKfycbxHxjKogREmGK0El7qaHXyxFCpNPFFX370aoo27R2HBBmOcWtQ7hZ5l3RKK2FN6zte0`
+   - **Web App URL:** `https://script.google.com/macros/s/AKfycbxHxjKogREmGK0El7qaHXyxFCpNPFFX370aoo27R2HBBmOcWtQ7hZ5l3RKK2FN6zte0/exec`
+   - **Internal PW URL:** `https://script.google.com/a/macros/pw.live/s/AKfycbxHxjKogREmGK0El7qaHXyxFCpNPFFX370aoo27R2HBBmOcWtQ7hZ5l3RKK2FN6zte0/exec`
 
 5. **Enable Workflow Write Permissions:**
    Go to **Settings > Actions > General > Workflow permissions** and select **"Read and write permissions"** so the GitHub Action can commit updated circular hashes.
