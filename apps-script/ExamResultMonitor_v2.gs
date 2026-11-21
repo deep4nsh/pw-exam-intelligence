@@ -341,7 +341,7 @@ function loadCategoryScopesFromTagsSheet_() {
 
     sheets.forEach(sheet => {
       const sheetName = sheet.getName().trim();
-      if (sheetName.toLowerCase() === 'sample') return;
+      if (sheetName.toLowerCase() === 'sample' || sheetName === CFG.LOG_SHEET_NAME || sheetName === CFG.SHEET_NAME) return;
 
       const lastRow = sheet.getLastRow();
       if (lastRow < 2) return;
