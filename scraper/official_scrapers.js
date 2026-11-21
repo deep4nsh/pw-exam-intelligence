@@ -1647,6 +1647,139 @@ async function scrapeICAI() {
   return items;
 }
 
+// 12. Scrape GATE (Graduate Aptitude Test in Engineering)
+async function scrapeGATE() {
+  const items = [];
+  try {
+    const query = '("GATE 2026" OR "GATE 2027" OR "Graduate Aptitude Test in Engineering") AND (Notification OR "Admit Card" OR Result OR Schedule OR Dates OR "Answer Key" OR Scorecard) when:24h';
+    const feedUrl = `https://news.google.com/rss/search?q=${encodeURIComponent(query)}&hl=en-IN&gl=IN&ceid=IN:en`;
+    const res = await fetchHtml(feedUrl, 15000);
+    const itemRegex = /<item>[\s\S]*?<title>([\s\S]*?)<\/title>[\s\S]*?<link>([\s\S]*?)<\/link>[\s\S]*?<pubDate>([\s\S]*?)<\/pubDate>[\s\S]*?<\/item>/gi;
+    let match;
+    while ((match = itemRegex.exec(res)) !== null && items.length < 30) {
+      let title = cleanText(match[1]).replace(/ - [^-]+$/g, '').trim();
+      const link = match[2].trim();
+      const pubDate = match[3].trim();
+
+      if (isClickbaitOrIrrelevantNews(title)) continue;
+      if (/colgate|gatekeeper|irrigation gate/i.test(title)) continue;
+      if (!/\bgate\s*(202[5-7])?\b|graduate aptitude test in engineering/i.test(title)) continue;
+
+      if (title.length > 5 && !items.some(i => i.title === title || i.url === link)) {
+        const category = classifyCategory(title);
+        items.push({
+          jurisdiction: 'National / IIT',
+          state: 'National',
+          exam: 'GATE (Engineering & Technology)',
+          title: title,
+          url: link,
+          date: pubDate ? pubDate.split(' ').slice(1, 4).join(' ') : '',
+          category: 'GATE',
+          priority: category === 'Result' || category === 'Admit Card' || category === 'Notification / Recruitment' ? 'CRITICAL' : 'HIGH',
+          marketingAction: generateMarketingHook(category, 'GATE'),
+          targetEmail: 'falguni.gupta@pw.live, kashif.ahmed@pw.live, harsh.ayush1@pw.live',
+          cmm: 'Falguni Gupta, Kashif Ahmed, Harsh Ayush',
+          hash: generateHash(title, link)
+        });
+      }
+    }
+  } catch (e) {
+    console.error('Error scraping GATE news feed:', e.message);
+  }
+  return items;
+}
+
+// 13. Scrape AE-JE (Assistant Engineer & Junior Engineer)
+async function scrapeAEJE() {
+  const items = [];
+  try {
+    const query = '("SSC JE" OR "RRB JE" OR "Assistant Engineer" OR "Junior Engineer" OR "AE JE") AND (Recruitment OR Notification OR "Admit Card" OR Result OR "Answer Key" OR "City Intimation") when:24h';
+    const feedUrl = `https://news.google.com/rss/search?q=${encodeURIComponent(query)}&hl=en-IN&gl=IN&ceid=IN:en`;
+    const res = await fetchHtml(feedUrl, 15000);
+    const itemRegex = /<item>[\s\S]*?<title>([\s\S]*?)<\/title>[\s\S]*?<link>([\s\S]*?)<\/link>[\s\S]*?<pubDate>([\s\S]*?)<\/pubDate>[\s\S]*?<\/item>/gi;
+    let match;
+    while ((match = itemRegex.exec(res)) !== null && items.length < 30) {
+      let title = cleanText(match[1]).replace(/ - [^-]+$/g, '').trim();
+      const link = match[2].trim();
+      const pubDate = match[3].trim();
+
+      if (isClickbaitOrIrrelevantNews(title)) continue;
+      if (!/\bae\s*\/\s*je\b|\bae[- ]je\b|assistant engineer|junior engineer|assistant executive engineer|\baee\b|upsssc je|ssc je|rrb je|\brpsc aen\b|\bmppsc ae\b|\bbpsc ae\b|\buppsc ae\b/i.test(title)) continue;
+
+      if (title.length > 5 && !items.some(i => i.title === title || i.url === link)) {
+        const category = classifyCategory(title);
+        let exam = 'Assistant Engineer & Junior Engineer (AE/JE)';
+        if (/ssc je/i.test(title)) exam = 'SSC Junior Engineer (SSC JE)';
+        else if (/rrb je/i.test(title)) exam = 'Railway Junior Engineer (RRB JE)';
+
+        items.push({
+          jurisdiction: 'Central & State Engineering Recruitments',
+          state: 'Pan-India',
+          exam: exam,
+          title: title,
+          url: link,
+          date: pubDate ? pubDate.split(' ').slice(1, 4).join(' ') : '',
+          category: 'AE-JE',
+          priority: category === 'Result' || category === 'Admit Card' || category === 'Notification / Recruitment' ? 'CRITICAL' : 'HIGH',
+          marketingAction: generateMarketingHook(category, exam),
+          targetEmail: 'falguni.gupta@pw.live, kashif.ahmed@pw.live, ananya.rajak@pw.live',
+          cmm: 'Falguni Gupta, Kashif Ahmed, Ananya Rajak',
+          hash: generateHash(title, link)
+        });
+      }
+    }
+  } catch (e) {
+    console.error('Error scraping AE-JE news feed:', e.message);
+  }
+  return items;
+}
+
+// 14. Scrape Agriculture (ICAR, ASRB, IBPS AFO & State Agriculture Bodies)
+async function scrapeAgriculture() {
+  const items = [];
+  try {
+    const query = '("ICAR AIEEA" OR "ASRB NET" OR "IBPS AFO" OR "Agriculture Officer" OR "Krishi Adhikari" OR "Agriculture Supervisor") AND (Recruitment OR Notification OR "Admit Card" OR Result OR Exam) when:24h';
+    const feedUrl = `https://news.google.com/rss/search?q=${encodeURIComponent(query)}&hl=en-IN&gl=IN&ceid=IN:en`;
+    const res = await fetchHtml(feedUrl, 15000);
+    const itemRegex = /<item>[\s\S]*?<title>([\s\S]*?)<\/title>[\s\S]*?<link>([\s\S]*?)<\/link>[\s\S]*?<pubDate>([\s\S]*?)<\/pubDate>[\s\S]*?<\/item>/gi;
+    let match;
+    while ((match = itemRegex.exec(res)) !== null && items.length < 30) {
+      let title = cleanText(match[1]).replace(/ - [^-]+$/g, '').trim();
+      const link = match[2].trim();
+      const pubDate = match[3].trim();
+
+      if (isClickbaitOrIrrelevantNews(title)) continue;
+      if (!/\bagriculture\b|\bicar\b|\basrb\b|\bibps afo\b|agriculture officer|krishi adhikari|agriculture supervisor|technical assistant.*agri/i.test(title)) continue;
+
+      if (title.length > 5 && !items.some(i => i.title === title || i.url === link)) {
+        const category = classifyCategory(title);
+        let exam = 'Agriculture & Allied Competitive Exams';
+        if (/icar/i.test(title)) exam = 'ICAR Entrance / JRF';
+        else if (/asrb/i.test(title)) exam = 'ASRB NET Recruitment';
+        else if (/ibps afo/i.test(title)) exam = 'IBPS Agriculture Field Officer (AFO)';
+
+        items.push({
+          jurisdiction: 'ICAR & State Agriculture Bodies',
+          state: 'Pan-India',
+          exam: exam,
+          title: title,
+          url: link,
+          date: pubDate ? pubDate.split(' ').slice(1, 4).join(' ') : '',
+          category: 'Agriculture',
+          priority: category === 'Result' || category === 'Admit Card' || category === 'Notification / Recruitment' ? 'CRITICAL' : 'HIGH',
+          marketingAction: generateMarketingHook(category, exam),
+          targetEmail: 'falguni.gupta@pw.live, kashif.ahmed@pw.live, ananya.rajak@pw.live',
+          cmm: 'Falguni Gupta, Kashif Ahmed, Ananya Rajak',
+          hash: generateHash(title, link)
+        });
+      }
+    }
+  } catch (e) {
+    console.error('Error scraping Agriculture news feed:', e.message);
+  }
+  return items;
+}
+
 // Master Runner
 async function runAllOfficialScrapers() {
   console.log('===============================================================');
@@ -1730,6 +1863,27 @@ async function runAllOfficialScrapers() {
     const icai = await scrapeICAI();
     console.log(`✅ Discovered ${icai.length} notices`);
     allUpdates.push(...icai);
+  } catch (e) { console.log(`❌ Failed: ${e.message || e.code || e}`); }
+
+  try {
+    process.stdout.write('12. Scraping GATE (Engineering & Technology)... ');
+    const gate = await scrapeGATE();
+    console.log(`✅ Discovered ${gate.length} notices`);
+    allUpdates.push(...gate);
+  } catch (e) { console.log(`❌ Failed: ${e.message || e.code || e}`); }
+
+  try {
+    process.stdout.write('13. Scraping AE-JE (Central & State Engineering)... ');
+    const aeje = await scrapeAEJE();
+    console.log(`✅ Discovered ${aeje.length} notices`);
+    allUpdates.push(...aeje);
+  } catch (e) { console.log(`❌ Failed: ${e.message || e.code || e}`); }
+
+  try {
+    process.stdout.write('14. Scraping Agriculture (ICAR, ASRB & State Bodies)... ');
+    const agri = await scrapeAgriculture();
+    console.log(`✅ Discovered ${agri.length} notices`);
+    allUpdates.push(...agri);
   } catch (e) { console.log(`❌ Failed: ${e.message || e.code || e}`); }
 
   console.log('\n===============================================================');
@@ -2024,6 +2178,9 @@ module.exports = {
   scrapeBarAdvocacyAndAIBE,
   scrapeUPMSP,
   scrapeICAI,
+  scrapeGATE,
+  scrapeAEJE,
+  scrapeAgriculture,
   applySmartLegalRouting,
   isClickbaitOrIrrelevantNews,
   sendTelegramNotice,
