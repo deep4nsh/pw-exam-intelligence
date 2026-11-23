@@ -126,17 +126,6 @@
   border-color: var(--pw-brand-hover);
 }
 
-.btn-header.telegram {
-  background: #0284c7;
-  border-color: #0284c7;
-  color: #ffffff;
-}
-
-.btn-header.telegram:hover {
-  background: #0369a1;
-  border-color: #0369a1;
-}
-
 .spin {
   animation: spin 1s linear infinite;
 }
@@ -144,67 +133,6 @@
 @keyframes spin {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
-}
-
-/* Telegram Interactive Menu Callout */
-.telegram-callout {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background: #eff6ff;
-  border: 1px solid #bfdbfe;
-  border-radius: 12px;
-  padding: 12px 18px;
-  margin-bottom: 24px;
-  gap: 16px;
-  flex-wrap: wrap;
-}
-
-.callout-left {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.callout-icon {
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
-  background: #0284c7;
-  color: #ffffff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.callout-title {
-  font-size: 13.5px;
-  font-weight: 700;
-  color: #1e3a8a;
-}
-
-.callout-desc {
-  font-size: 12.5px;
-  color: #1e40af;
-  margin-top: 1px;
-}
-
-.callout-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  background: #0284c7;
-  color: #ffffff;
-  font-size: 12px;
-  font-weight: 700;
-  padding: 7px 14px;
-  border-radius: 8px;
-  transition: all 0.15s ease;
-}
-
-.callout-btn:hover {
-  background: #0369a1;
 }
 
 /* Metrics Row */

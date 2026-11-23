@@ -40,19 +40,6 @@ try {
   }
 } catch (e) {}
 
-const FALLBACK_TOKEN = '8962093670:AAEFDh6xdxBqVNUBIf3IybLRufbJYbjvNxI';
-const REVOKED_TOKEN = '8962093670:AAGoDyQX553VbSAOh_35ntPQN96QtflWhOg';
-
-let envToken = (process.env.TELEGRAM_BOT_TOKEN || '').trim();
-if (!envToken || envToken === REVOKED_TOKEN || envToken.includes('WhOg')) {
-  envToken = FALLBACK_TOKEN;
-}
-
-const TELEGRAM_CONFIG = {
-  token: envToken,
-  chatId: (process.env.TELEGRAM_CHAT_ID || '-5324420343').trim()
-};
-
 const GOOGLE_WEBAPP_CONFIG = {
   deploymentId: 'AKfycbxHxjKogREmGK0El7qaHXyxFCpNPFFX370aoo27R2HBBmOcWtQ7hZ5l3RKK2FN6zte0',
   url: process.env.GOOGLE_WEBAPP_URL || 'https://script.google.com/macros/s/AKfycbxHxjKogREmGK0El7qaHXyxFCpNPFFX370aoo27R2HBBmOcWtQ7hZ5l3RKK2FN6zte0/exec'
@@ -1532,6 +1519,33 @@ function applyMultiCategoryRouting(item) {
     return item;
   }
 
+  // 6. MP State Board check
+  if (/mp board|mpbse|madhya pradesh board/i.test(fullText) && /class 10|class 12|time table|datesheet|admit card|result|model paper|vigyapti|pariksha/i.test(fullText)) {
+    item.category = 'MP State Board';
+    item.targetEmail = 'gitij.kumar@pw.live';
+    item.cmm = 'Gitij Kumar';
+    item.marketingAction = generateMarketingHook(item.category, 'MP Board Class 10/12');
+    return item;
+  }
+
+  // 7. RBSE / Rajasthan Board check
+  if (/rajasthan board|rbse|bser|ajmer board/i.test(fullText) && /class 10|class 12|time table|datesheet|admit card|result|model paper|vigyapti|pariksha/i.test(fullText)) {
+    item.category = 'RBSE State Board';
+    item.targetEmail = 'gitij.kumar@pw.live';
+    item.cmm = 'Gitij Kumar';
+    item.marketingAction = generateMarketingHook(item.category, 'RBSE Class 10/12');
+    return item;
+  }
+
+  // 8. CG State Board check
+  if (/chhattisgarh board|cgbse|cg board/i.test(fullText) && /class 10|class 12|time table|datesheet|admit card|result|model paper|vigyapti|pariksha/i.test(fullText)) {
+    item.category = 'CG State Board';
+    item.targetEmail = 'gitij.kumar@pw.live';
+    item.cmm = 'Gitij Kumar';
+    item.marketingAction = generateMarketingHook(item.category, 'CGBSE Class 10/12');
+    return item;
+  }
+
   return item;
 }
 
@@ -1780,6 +1794,129 @@ async function scrapeAgriculture() {
   return items;
 }
 
+// 15. Scrape MP State Board (MPBSE Class 10 & 12)
+async function scrapeMPBoard() {
+  const items = [];
+  try {
+    const query = '("MP Board" OR "MPBSE" OR "Madhya Pradesh Board") AND ("Class 10" OR "Class 12" OR "Time Table" OR "Admit Card" OR "Date Sheet" OR "Result" OR "Model Paper") when:24h';
+    const feedUrl = `https://news.google.com/rss/search?q=${encodeURIComponent(query)}&hl=en-IN&gl=IN&ceid=IN:en`;
+    const res = await fetchHtml(feedUrl, 15000);
+    const itemRegex = /<item>[\s\S]*?<title>([\s\S]*?)<\/title>[\s\S]*?<link>([\s\S]*?)<\/link>[\s\S]*?<pubDate>([\s\S]*?)<\/pubDate>[\s\S]*?<\/item>/gi;
+    let match;
+    while ((match = itemRegex.exec(res)) !== null && items.length < 30) {
+      let title = cleanText(match[1]).replace(/ - [^-]+$/g, '').trim();
+      const link = match[2].trim();
+      const pubDate = match[3].trim();
+
+      if (isClickbaitOrIrrelevantNews(title)) continue;
+      if (!/mp board|mpbse|madhya pradesh board/i.test(title)) continue;
+
+      if (title.length > 5 && !items.some(i => i.title === title || i.url === link)) {
+        const category = classifyCategory(title);
+        items.push({
+          jurisdiction: 'Madhya Pradesh State Board (MPBSE)',
+          state: 'Madhya Pradesh',
+          exam: 'MP Board (Class 10 / 12)',
+          title: title,
+          url: link,
+          date: pubDate ? pubDate.split(' ').slice(1, 4).join(' ') : '',
+          category: 'MP State Board',
+          priority: category === 'Result' || category === 'Exam Schedule' || category === 'Admit Card' ? 'CRITICAL' : 'HIGH',
+          marketingAction: generateMarketingHook(category, 'MP Board Class 10/12'),
+          targetEmail: 'gitij.kumar@pw.live',
+          cmm: 'Gitij Kumar',
+          hash: generateHash(title, link)
+        });
+      }
+    }
+  } catch (e) {
+    console.error('Error scraping MP Board news feed:', e.message);
+  }
+  return items;
+}
+
+// 16. Scrape RBSE State Board (Rajasthan Board Class 10 & 12)
+async function scrapeRBSE() {
+  const items = [];
+  try {
+    const query = '("RBSE" OR "Rajasthan Board" OR "BSER Ajmer") AND ("Class 10" OR "Class 12" OR "Time Table" OR "Admit Card" OR "Date Sheet" OR "Result" OR "Model Paper") when:24h';
+    const feedUrl = `https://news.google.com/rss/search?q=${encodeURIComponent(query)}&hl=en-IN&gl=IN&ceid=IN:en`;
+    const res = await fetchHtml(feedUrl, 15000);
+    const itemRegex = /<item>[\s\S]*?<title>([\s\S]*?)<\/title>[\s\S]*?<link>([\s\S]*?)<\/link>[\s\S]*?<pubDate>([\s\S]*?)<\/pubDate>[\s\S]*?<\/item>/gi;
+    let match;
+    while ((match = itemRegex.exec(res)) !== null && items.length < 30) {
+      let title = cleanText(match[1]).replace(/ - [^-]+$/g, '').trim();
+      const link = match[2].trim();
+      const pubDate = match[3].trim();
+
+      if (isClickbaitOrIrrelevantNews(title)) continue;
+      if (!/rajasthan board|rbse|bser/i.test(title)) continue;
+
+      if (title.length > 5 && !items.some(i => i.title === title || i.url === link)) {
+        const category = classifyCategory(title);
+        items.push({
+          jurisdiction: 'Rajasthan State Board (RBSE / BSER)',
+          state: 'Rajasthan',
+          exam: 'Rajasthan Board (Class 10 / 12)',
+          title: title,
+          url: link,
+          date: pubDate ? pubDate.split(' ').slice(1, 4).join(' ') : '',
+          category: 'RBSE State Board',
+          priority: category === 'Result' || category === 'Exam Schedule' || category === 'Admit Card' ? 'CRITICAL' : 'HIGH',
+          marketingAction: generateMarketingHook(category, 'RBSE Class 10/12'),
+          targetEmail: 'gitij.kumar@pw.live',
+          cmm: 'Gitij Kumar',
+          hash: generateHash(title, link)
+        });
+      }
+    }
+  } catch (e) {
+    console.error('Error scraping RBSE news feed:', e.message);
+  }
+  return items;
+}
+
+// 17. Scrape CG State Board (CGBSE Class 10 & 12)
+async function scrapeCGBoard() {
+  const items = [];
+  try {
+    const query = '("CGBSE" OR "CG Board" OR "Chhattisgarh Board") AND ("Class 10" OR "Class 12" OR "Time Table" OR "Admit Card" OR "Date Sheet" OR "Result" OR "Model Paper") when:24h';
+    const feedUrl = `https://news.google.com/rss/search?q=${encodeURIComponent(query)}&hl=en-IN&gl=IN&ceid=IN:en`;
+    const res = await fetchHtml(feedUrl, 15000);
+    const itemRegex = /<item>[\s\S]*?<title>([\s\S]*?)<\/title>[\s\S]*?<link>([\s\S]*?)<\/link>[\s\S]*?<pubDate>([\s\S]*?)<\/pubDate>[\s\S]*?<\/item>/gi;
+    let match;
+    while ((match = itemRegex.exec(res)) !== null && items.length < 30) {
+      let title = cleanText(match[1]).replace(/ - [^-]+$/g, '').trim();
+      const link = match[2].trim();
+      const pubDate = match[3].trim();
+
+      if (isClickbaitOrIrrelevantNews(title)) continue;
+      if (!/chhattisgarh board|cgbse|cg board/i.test(title)) continue;
+
+      if (title.length > 5 && !items.some(i => i.title === title || i.url === link)) {
+        const category = classifyCategory(title);
+        items.push({
+          jurisdiction: 'Chhattisgarh State Board (CGBSE)',
+          state: 'Chhattisgarh',
+          exam: 'CG Board (Class 10 / 12)',
+          title: title,
+          url: link,
+          date: pubDate ? pubDate.split(' ').slice(1, 4).join(' ') : '',
+          category: 'CG State Board',
+          priority: category === 'Result' || category === 'Exam Schedule' || category === 'Admit Card' ? 'CRITICAL' : 'HIGH',
+          marketingAction: generateMarketingHook(category, 'CGBSE Class 10/12'),
+          targetEmail: 'gitij.kumar@pw.live',
+          cmm: 'Gitij Kumar',
+          hash: generateHash(title, link)
+        });
+      }
+    }
+  } catch (e) {
+    console.error('Error scraping CGBSE news feed:', e.message);
+  }
+  return items;
+}
+
 // Master Runner
 async function runAllOfficialScrapers() {
   console.log('===============================================================');
@@ -1886,11 +2023,32 @@ async function runAllOfficialScrapers() {
     allUpdates.push(...agri);
   } catch (e) { console.log(`❌ Failed: ${e.message || e.code || e}`); }
 
+  try {
+    process.stdout.write('15. Scraping MP State Board (MPBSE Class 10/12)... ');
+    const mpb = await scrapeMPBoard();
+    console.log(`✅ Discovered ${mpb.length} notices`);
+    allUpdates.push(...mpb);
+  } catch (e) { console.log(`❌ Failed: ${e.message || e.code || e}`); }
+
+  try {
+    process.stdout.write('16. Scraping RBSE State Board (Rajasthan Board Class 10/12)... ');
+    const rbse = await scrapeRBSE();
+    console.log(`✅ Discovered ${rbse.length} notices`);
+    allUpdates.push(...rbse);
+  } catch (e) { console.log(`❌ Failed: ${e.message || e.code || e}`); }
+
+  try {
+    process.stdout.write('17. Scraping CG State Board (CGBSE Class 10/12)... ');
+    const cgb = await scrapeCGBoard();
+    console.log(`✅ Discovered ${cgb.length} notices`);
+    allUpdates.push(...cgb);
+  } catch (e) { console.log(`❌ Failed: ${e.message || e.code || e}`); }
+
   console.log('\n===============================================================');
   console.log(`🎯 TOTAL OFFICIAL NOTICES EXTRACTED: ${allUpdates.length}`);
   console.log('===============================================================');
 
-  // Smart Cross-Commission Multi-Category Router (Legal, UPMSP, ICAI, GATE, AE-JE, Agriculture)
+  // Smart Cross-Commission Multi-Category Router (Legal, UPMSP, ICAI, GATE, AE-JE, Agriculture, MP/RBSE/CG Board)
   for (let i = 0; i < allUpdates.length; i++) {
     allUpdates[i] = applyMultiCategoryRouting(allUpdates[i]);
   }
@@ -1955,7 +2113,10 @@ async function runAllOfficialScrapers() {
         "ICAI (CA Foundation & Intermediate)",
         "GATE (Engineering & Technology)",
         "AE-JE (Central & State Engineering Recruitments)",
-        "Agriculture (ICAR, ASRB & State Agriculture Bodies)"
+        "Agriculture (ICAR, ASRB & State Agriculture Bodies)",
+        "MP State Board (MPBSE Class 10 & 12)",
+        "RBSE State Board (Rajasthan Board Class 10 & 12)",
+        "CG State Board (CGBSE Class 10 & 12)"
       ],
       notices: finalNotices
     };
@@ -1971,33 +2132,12 @@ async function runAllOfficialScrapers() {
   } else if (brandNewItems.length > 0) {
     console.log(`\n🚨 FOUND ${brandNewItems.length} BRAND-NEW OFFICIAL NOTICES!`);
 
-    // 1. Google WebApp & Email Sync FIRST (Primary Enterprise Channel)
+    // Google WebApp & Email Sync (Primary Enterprise Channel)
     const targetWebAppUrl = process.env.GOOGLE_WEBAPP_URL || GOOGLE_WEBAPP_CONFIG.url;
     if (targetWebAppUrl) {
       console.log(`📊 Syncing ${brandNewItems.length} notices directly to Google Sheet Tracker & Email...`);
       const synced = await sendGoogleWebAppSync(brandNewItems);
       console.log(synced ? '✅ Google Sheet & Email sync complete.' : '⚠️ Google Sheet sync skipped or failed.');
-    }
-
-    // 2. Telegram Dispatch with Circuit Breaker (Anti-Freeze & Anti-Flood)
-    let dispatchedCount = 0;
-    let consecutiveFailures = 0;
-    const noticesToDispatch = brandNewItems.slice(0, 10); // Dispatch top 10 new notices
-
-    for (const item of noticesToDispatch) {
-      if (consecutiveFailures >= 2) {
-        console.warn(`⚠️ Telegram dispatch paused: consecutive errors encountered (bot restricted or chat ID invalid). Skipping remaining Telegram alerts to maintain system throughput.`);
-        break;
-      }
-      console.log(`  -> Dispatching Telegram: [${item.jurisdiction}] ${item.title.slice(0, 50)}...`);
-      const sent = await sendTelegramNotice(item);
-      if (sent) {
-        dispatchedCount++;
-        consecutiveFailures = 0;
-      } else {
-        consecutiveFailures++;
-      }
-      await new Promise(r => setTimeout(r, 1000));
     }
 
     // Persist cache with all discovered notices so we do not spam or loop repeatedly
@@ -2046,89 +2186,6 @@ function cleanTitle(raw) {
     t = t.charAt(0).toUpperCase() + t.slice(1);
   }
   return t;
-}
-
-function sendTelegramNotice(item, tokenOverride = null) {
-  return new Promise((resolve) => {
-    const tokenToUse = tokenOverride || TELEGRAM_CONFIG.token;
-    const cleanHead = cleanTitle(item.title);
-    const priorityBadge = item.priority === "CRITICAL" ? "🚨 <b>CRITICAL NEW EXAM NOTICE</b>" : (item.priority === "HIGH" ? "⚠️ <b>HIGH PRIORITY CIRCULAR</b>" : "📢 <b>NEW OFFICIAL CIRCULAR</b>");
-    const stateName = item.state || item.jurisdiction;
-
-    const verticalLine = item.routedTo ? `⚖️ <b>Routed Vertical:</b> <b>${escapeHtml(item.routedTo)}</b>\n` : '';
-
-    const text =
-      `${priorityBadge}\n` +
-      `━━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
-      `🏛️ <b>Commission / Body:</b> ${escapeHtml(item.jurisdiction)} (${escapeHtml(stateName)})\n` +
-      verticalLine +
-      `📌 <b>Exam / Role:</b> ${escapeHtml(item.exam)}\n` +
-      `🏷️ <b>Category:</b> <b>${escapeHtml(item.category)}</b>\n\n` +
-      `📋 <b>Notice Headline:</b>\n<b>${escapeHtml(cleanHead)}</b>\n\n` +
-      `🎯 <b>RECOMMENDED MARKETING PLAY:</b>\n` +
-      `<i>"${escapeHtml(item.marketingAction)}"</i>\n\n` +
-      `━━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
-      `📄 <a href="${escapeHtml(item.url)}"><b>📥 Download Official Notice (PDF / Link) ↗</b></a>\n` +
-      `🌐 <a href="https://pw-exam-intelligence.deepansh-gup124.workers.dev"><b>Open Live Web Dashboard ↗</b></a>`;
-
-    const data = JSON.stringify({
-      chat_id: TELEGRAM_CONFIG.chatId,
-      text: text,
-      parse_mode: 'HTML',
-      disable_web_page_preview: false
-    });
-
-    const req = https.request({
-      hostname: 'api.telegram.org',
-      port: 443,
-      path: `/bot${tokenToUse}/sendMessage`,
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Content-Length': Buffer.byteLength(data)
-      },
-      timeout: 12000
-    }, (res) => {
-      let body = '';
-      res.on('data', chunk => body += chunk);
-      res.on('end', () => {
-        if (res.statusCode === 200) {
-          resolve(true);
-        } else if (res.statusCode === 401 && tokenToUse !== FALLBACK_TOKEN) {
-          console.warn(`⚠️ Token unauthorized (401). Retrying with active fallback token...`);
-          TELEGRAM_CONFIG.token = FALLBACK_TOKEN;
-          sendTelegramNotice(item, FALLBACK_TOKEN).then(resolve);
-        } else if (res.statusCode === 429) {
-          try {
-            const errObj = JSON.parse(body);
-            const retrySec = (errObj.parameters && errObj.parameters.retry_after) || 5;
-            console.warn(`⏳ Rate limited by Telegram (429). Backing off for ${retrySec + 1}s...`);
-            setTimeout(() => {
-              sendTelegramNotice(item, tokenToUse).then(resolve);
-            }, (retrySec + 1) * 1000);
-          } catch (e) {
-            resolve(false);
-          }
-        } else {
-          console.error(`❌ Telegram dispatch error [HTTP ${res.statusCode}]: ${body}`);
-          resolve(false);
-        }
-      });
-    });
-
-    req.on('timeout', () => {
-      console.error('❌ Telegram request timed out.');
-      req.destroy();
-      resolve(false);
-    });
-    req.on('error', (err) => {
-      console.error('❌ Telegram network error:', err.message);
-      resolve(false);
-    });
-
-    req.write(data);
-    req.end();
-  });
 }
 
 async function sendGoogleWebAppSync(items) {
@@ -2181,9 +2238,12 @@ module.exports = {
   scrapeGATE,
   scrapeAEJE,
   scrapeAgriculture,
+  scrapeMPBoard,
+  scrapeRBSE,
+  scrapeCGBoard,
   applySmartLegalRouting,
+  applyMultiCategoryRouting,
   isClickbaitOrIrrelevantNews,
-  sendTelegramNotice,
   runAllOfficialScrapers
 };
 

@@ -3,16 +3,13 @@
  * Google Apps Script
  *
  * Upgrades in v2.0:
- * 1. 🚀 Instant Telegram Bot Alerts to PW Marketing Group / DM with inline marketing action hooks.
- * 2. 🤖 Gemini 1.5 Flash (Free Tier) Integration: Pristine 5-word English summaries, Hindi/Advt resolution, and 1-sentence campaign hooks.
- * 3. 📧 Rich Executive HTML Email: Visual card blocks with headlines, marketing plays, and direct links right in your inbox.
- * 4. 🛡️ Circuit Breakers & Anti-Flood: Max 5 urgent Telegram alerts per run (bundles into a digest if more to prevent spam).
- * 5. 🔑 Composite SHA-256 Hash: Prevents duplicates and avoids Google News redirect token bugs.
+ * 1. 🤖 Gemini 1.5 Flash (Free Tier) Integration: Pristine 5-word English summaries, Hindi/Advt resolution, and 1-sentence campaign hooks.
+ * 2. 📧 Rich Executive HTML Email: Visual card blocks with headlines, marketing plays, and direct links right in your inbox.
+ * 3. 🎯 Category-Targeted CMM Isolation: Dedicated digests to CMMs (UP Board, CA, GATE, AE-JE, Agriculture, MP Board, RBSE, CG Board).
+ * 4. 🔑 Composite SHA-256 Hash: Prevents duplicates and avoids Google News redirect token bugs.
  *
  * Script Properties (Project Settings > Script Properties):
  * - TRACKER_SHEET_ID (Required): Your Google Spreadsheet ID
- * - TELEGRAM_BOT_TOKEN (Optional): Telegram bot token from @BotFather
- * - TELEGRAM_CHAT_ID (Optional): Chat ID or Group ID (e.g., -100xxxxxxxxxx or your personal ID)
  * - GEMINI_API_KEY (Optional): Free API key from https://aistudio.google.com
  * - EMAIL_TO (Optional): Defaults to CFG.EMAIL_TO
  *
@@ -25,12 +22,9 @@ const CFG = {
   SHEET_NAME: 'Exam News Tracker',
   LOG_SHEET_NAME: 'Monitor Logs',
   EMAIL_TO: 'deepansh.gupta@pw.live,akshay.vaishnav@pw.live,aditya.kiran@pw.live,manas.mohan@pw.live,dipika.agrawal@pw.live,chhatrashal.singh@pw.live',
-  TELEGRAM_BOT_TOKEN: '8962093670:AAEFDh6xdxBqVNUBIf3IybLRufbJYbjvNxI',
-  TELEGRAM_CHAT_ID: '-5324420343', // Deepansh & Aditya Sir, Akshay Pw Group
   TIMEZONE: 'Asia/Kolkata',
   MAX_AGE_HOURS: 24, // Strictly today's articles only
   MAX_NEW_ROWS_PER_RUN: 150,
-  MAX_TELEGRAM_ALERTS_PER_RUN: 5, // Circuit breaker against alert storms
   SEND_EMAIL_WHEN_NO_NEWS: false,
   FONT: 'Arial',
   FONT_SIZE: 10,
@@ -50,7 +44,7 @@ const HEADERS = [
   'Quick Summary',
   '🎯 Suggested Marketing Action',
   'Official Notice / Link',
-  'Telegram Alert',
+  'Alert Status',
   'Unique ID'
 ];
 
@@ -297,6 +291,45 @@ const BUILTIN_CMM_SCOPES = [
       'NABARD Grade A Agriculture exam date'
     ],
     kind: 'cmm_category'
+  },
+  {
+    name: 'MP State Board',
+    sheetTab: 'MP Board',
+    jurisdiction: 'Madhya Pradesh State Board (MPBSE)',
+    exam: 'MP Board (Class 10 / 12)',
+    category: 'MP State Board',
+    recipientEmail: 'gitij.kumar@pw.live',
+    aliases: ['MP Board', 'MPBSE', 'Madhya Pradesh Board', 'mpbse.nic.in'],
+    includes: ['MP Board', 'MPBSE', 'Class 10', 'Class 12', 'Time Table', 'Date Sheet', 'Model Paper', 'Admit Card', 'Result'],
+    excludes: [],
+    queries: ['MP Board Class 10 12 time table date sheet', 'MPBSE board exam model paper admit card result', 'Madhya Pradesh board pariksha timetable'],
+    kind: 'cmm_category'
+  },
+  {
+    name: 'RBSE State Board',
+    sheetTab: 'Rajasthan Board',
+    jurisdiction: 'Rajasthan State Board (RBSE / BSER)',
+    exam: 'Rajasthan Board (Class 10 / 12)',
+    category: 'RBSE State Board',
+    recipientEmail: 'gitij.kumar@pw.live',
+    aliases: ['RBSE', 'Rajasthan Board', 'BSER', 'rajeduboard'],
+    includes: ['RBSE', 'Rajasthan Board', 'BSER', 'Class 10', 'Class 12', 'Time Table', 'Date Sheet', 'Model Paper', 'Admit Card', 'Result'],
+    excludes: [],
+    queries: ['RBSE Class 10 12 time table date sheet', 'Rajasthan Board admit card model paper result', 'BSER Ajmer board exam timetable'],
+    kind: 'cmm_category'
+  },
+  {
+    name: 'CG State Board',
+    sheetTab: 'Chhattisgarh  Board',
+    jurisdiction: 'Chhattisgarh State Board (CGBSE)',
+    exam: 'CG Board (Class 10 / 12)',
+    category: 'CG State Board',
+    recipientEmail: 'gitij.kumar@pw.live',
+    aliases: ['CGBSE', 'CG Board', 'Chhattisgarh Board', 'cgbse.nic.in'],
+    includes: ['CGBSE', 'CG Board', 'Chhattisgarh Board', 'Class 10', 'Class 12', 'Time Table', 'Date Sheet', 'Model Paper', 'Admit Card', 'Result'],
+    excludes: [],
+    queries: ['CGBSE Class 10 12 time table date sheet', 'CG Board admit card model paper result', 'Chhattisgarh board pariksha timetable'],
+    kind: 'cmm_category'
   }
 ];
 
@@ -394,6 +427,7 @@ function loadCategoryScopesFromTagsSheet_() {
         else if (/gate/i.test(categoryName + ' ' + sheetName)) cmmEmail = 'falguni.gupta@pw.live, kashif.ahmed@pw.live, harsh.ayush1@pw.live';
         else if (/ae[- ]?je/i.test(categoryName + ' ' + sheetName)) cmmEmail = 'falguni.gupta@pw.live, kashif.ahmed@pw.live, ananya.rajak@pw.live';
         else if (/agri/i.test(categoryName + ' ' + sheetName)) cmmEmail = 'falguni.gupta@pw.live, kashif.ahmed@pw.live, ananya.rajak@pw.live';
+        else if (/mp board|mpbse|rajasthan board|rbse|chhattisgarh board|cgbse|cg board/i.test(categoryName + ' ' + sheetName)) cmmEmail = 'gitij.kumar@pw.live';
         else cmmEmail = CFG.EMAIL_TO;
       }
 
@@ -515,10 +549,26 @@ function isAgricultureItem_(item) {
   return /\bagriculture\b|\bicar\b|\basrb net\b|\bibps afo\b|\bagronomy\b|\bhorticulture\b|agriculture officer|krishi adhikari|agriculture supervisor/i.test(text);
 }
 
+function isGitijBoardItem_(item) {
+  if (!item) return false;
+  if (item.recipientEmail === 'gitij.kumar@pw.live' || item.targetEmail === 'gitij.kumar@pw.live') return true;
+  const text = (
+    String(item.category || '') + ' ' +
+    String(item.exam || '') + ' ' +
+    String(item.jurisdiction || '') + ' ' +
+    String(item.scope || '') + ' ' +
+    String(item.title || '') + ' ' +
+    String(item.url || '') + ' ' +
+    String(item.queryLabel || '')
+  ).toLowerCase();
+
+  return /mp board|mpbse|rajasthan board|rbse|bser|chhattisgarh board|cgbse|cg board|madhya pradesh board/i.test(text);
+}
+
 function isCmmOnlyItem_(item) {
   if (!item) return false;
   if (item.kind === 'cmm_category') return true;
-  if (isUpBoardItem_(item) || isCaItem_(item) || isGateItem_(item) || isAeJeItem_(item) || isAgricultureItem_(item)) return true;
+  if (isUpBoardItem_(item) || isCaItem_(item) || isGateItem_(item) || isAeJeItem_(item) || isAgricultureItem_(item) || isGitijBoardItem_(item)) return true;
   const emails = String(item.recipientEmail || '') + ' ' + String(item.targetEmail || '');
   if (emails && emails.includes('@pw.live') && !emails.includes(getEmailTo_())) return true;
   return false;
@@ -639,6 +689,11 @@ function getCmmEmailForCategory_(item) {
   // 5. Strict Category Isolation: Agriculture items ALWAYS route to Falguni, Kashif, Ananya
   if (isAgricultureItem_(item)) {
     return 'falguni.gupta@pw.live, kashif.ahmed@pw.live, ananya.rajak@pw.live';
+  }
+
+  // 6. Strict Category Isolation: MP, RBSE, and CG Board items ALWAYS route to Gitij Kumar
+  if (isGitijBoardItem_(item)) {
+    return 'gitij.kumar@pw.live';
   }
 
   if (item.targetEmail && item.targetEmail.includes('@') && item.targetEmail !== getEmailTo_()) {
@@ -986,9 +1041,6 @@ function monitorExamNews() {
       if (enrichment.refinedPriority) item.priority = enrichment.refinedPriority;
     });
 
-    // Dispatch Telegram Alerts
-    dispatchTelegramAlerts_(selected);
-
     // Insert into Tracker Sheet (Clean 10-Column Executive Schema)
     const rows = selected.map(item => [
       item.publishedDate || new Date(),
@@ -999,7 +1051,7 @@ function monitorExamNews() {
       item.summary,
       item.marketingAction,
       item.url,
-      item.telegramStatus || 'SKIPPED',
+      'SENT_VIA_EMAIL',
       item.uniqueId
     ]);
 
@@ -1021,88 +1073,6 @@ function monitorExamNews() {
     throw err;
   } finally {
     lock.releaseLock();
-  }
-}
-
-
-/* ==========================================================================
-   TELEGRAM DISPATCH ENGINE (With Anti-Flood Circuit Breaker)
-   ========================================================================== */
-
-function dispatchTelegramAlerts_(items) {
-  const props = PropertiesService.getScriptProperties();
-  const token = props.getProperty('TELEGRAM_BOT_TOKEN') || CFG.TELEGRAM_BOT_TOKEN;
-  const chatId = props.getProperty('TELEGRAM_CHAT_ID') || CFG.TELEGRAM_CHAT_ID;
-
-  if (!token || !chatId) {
-    items.forEach(i => i.telegramStatus = 'NO_CONFIG');
-    return;
-  }
-
-  // Filter urgent State PSC & Judiciary items ONLY (strictly exclude all CMM categories)
-  const urgent = items.filter(i => 
-    (i.priority === 'CRITICAL' || i.priority === 'HIGH') && 
-    !isCmmOnlyItem_(i)
-  );
-
-  if (urgent.length === 0) {
-    items.forEach(i => i.telegramStatus = 'SKIPPED_NORMAL');
-    return;
-  }
-
-  // Circuit breaker: If more than MAX_TELEGRAM_ALERTS_PER_RUN, send a single digest
-  if (urgent.length > CFG.MAX_TELEGRAM_ALERTS_PER_RUN) {
-    const digestText = buildTelegramDigest_(urgent);
-    const sent = sendTelegramRaw_(token, chatId, digestText);
-    items.forEach(i => i.telegramStatus = sent ? 'DIGEST_SENT' : 'FAILED');
-    return;
-  }
-
-  // Individual alerts for <= MAX_TELEGRAM_ALERTS_PER_RUN
-  urgent.forEach(item => {
-    const msg =
-      `🚨 <b>[${escapeHtml_(item.jurisdiction)}] ${escapeHtml_(item.category.toUpperCase())}</b>\n\n` +
-      `📋 <b>Exam:</b> ${escapeHtml_(item.exam)}\n` +
-      `📰 <b>Title:</b> ${escapeHtml_(item.title)}\n` +
-      `💡 <b>Summary:</b> ${escapeHtml_(item.summary)}\n\n` +
-      `🎯 <b>MARKETING ACTION:</b>\n<i>"${escapeHtml_(item.marketingAction)}"</i>\n\n` +
-      `🔗 <a href="${item.url}">Read Official / News Link</a>`;
-
-    const success = sendTelegramRaw_(token, chatId, msg);
-    item.telegramStatus = success ? 'SENT' : 'FAILED';
-    Utilities.sleep(1200); // 1.2s delay to respect Telegram 1 msg/sec rate limit
-  });
-}
-
-function buildTelegramDigest_(items) {
-  let text = `📢 <b>EXAM RADAR DIGEST: ${items.length} Urgent Updates Detected</b>\n\n`;
-  items.slice(0, 8).forEach((item, idx) => {
-    text += `${idx + 1}. [${escapeHtml_(item.jurisdiction)}] <b>${escapeHtml_(item.exam)}</b>: ${escapeHtml_(item.summary)}\n`;
-    text += `   👉 <i>Action:</i> ${escapeHtml_(item.marketingAction)}\n`;
-    text += `   🔗 <a href="${item.url}">Link</a>\n\n`;
-  });
-  text += `<i>Review full tracker in Google Sheets.</i>`;
-  return text;
-}
-
-function sendTelegramRaw_(token, chatId, htmlText) {
-  const url = `https://api.telegram.org/bot${token}/sendMessage`;
-  try {
-    const res = UrlFetchApp.fetch(url, {
-      method: 'post',
-      contentType: 'application/json',
-      muteHttpExceptions: true,
-      payload: JSON.stringify({
-        chat_id: chatId,
-        text: htmlText,
-        parse_mode: 'HTML',
-        disable_web_page_preview: false
-      })
-    });
-    return res.getResponseCode() === 200;
-  } catch (e) {
-    log_('WARN', 'Telegram dispatch failed', String(e));
-    return false;
   }
 }
 
@@ -1202,7 +1172,7 @@ function generateMarketingActionFallback_(category, exam) {
     case 'Answer Key / Objections':
       return `Host faculty Answer Key discussion stream; promote student rank predictor tool.`;
     case 'Deadline / Application':
-      return `Send urgent deadline reminder on Telegram and app: 'Last 24 Hours to Apply'.`;
+      return `Send urgent deadline reminder on student app push: 'Last 24 Hours to Apply'.`;
     default:
       return `Monitor student chatter and prepare revision/guidance community post.`;
   }
@@ -1240,6 +1210,7 @@ function sendCategorizedExecutiveEmails_(items, spreadsheetUrl) {
   const gateItems = [];
   const aeJeItems = [];
   const agriItems = [];
+  const gitijBoardItems = [];
   const pscJudiciaryItems = [];
   const otherCmmGroups = {};
   const coreEmail = getEmailTo_();
@@ -1275,7 +1246,13 @@ function sendCategorizedExecutiveEmails_(items, spreadsheetUrl) {
       return;
     }
 
-    // 6. Dynamic CMM or State PSC routing
+    // 6. Check Gitij State Boards (MP, Rajasthan, CG)
+    if (isGitijBoardItem_(item) || item.targetEmail === 'gitij.kumar@pw.live' || item.recipientEmail === 'gitij.kumar@pw.live') {
+      gitijBoardItems.push(item);
+      return;
+    }
+
+    // 7. Dynamic CMM or State PSC routing
     const email = getCmmEmailForCategory_(item);
     if (email === 'anshu.mishra@pw.live') {
       upBoardItems.push(item);
@@ -1287,6 +1264,8 @@ function sendCategorizedExecutiveEmails_(items, spreadsheetUrl) {
       aeJeItems.push(item);
     } else if (/agri/i.test(item.category || item.exam || '')) {
       agriItems.push(item);
+    } else if (email === 'gitij.kumar@pw.live') {
+      gitijBoardItems.push(item);
     } else if (email === coreEmail) {
       pscJudiciaryItems.push(item);
     } else {
@@ -1320,12 +1299,17 @@ function sendCategorizedExecutiveEmails_(items, spreadsheetUrl) {
     dispatchSingleCategoryEmail_('falguni.gupta@pw.live, kashif.ahmed@pw.live, ananya.rajak@pw.live', agriItems, spreadsheetUrl, 'Agriculture');
   }
 
-  // 6. Dispatch any other dynamic CMM categories to their respective CMM only
+  // 6. Dispatch MP, RBSE, and CG Boards strictly to Gitij Kumar ONLY
+  if (gitijBoardItems.length > 0) {
+    dispatchSingleCategoryEmail_('gitij.kumar@pw.live', gitijBoardItems, spreadsheetUrl, 'State Board (MP / RBSE / CG)');
+  }
+
+  // 7. Dispatch any other dynamic CMM categories to their respective CMM only
   Object.keys(otherCmmGroups).forEach(email => {
     dispatchSingleCategoryEmail_(email, otherCmmGroups[email], spreadsheetUrl);
   });
 
-  // 7. Dispatch State PSC & Judiciary strictly to CFG.EMAIL_TO (ZERO UP Board, ZERO CA, ZERO GATE/AE-JE/Agri)
+  // 8. Dispatch State PSC & Judiciary strictly to CFG.EMAIL_TO (ZERO UP Board, ZERO CA, ZERO GATE/AE-JE/Agri/MP/RBSE/CG)
   if (pscJudiciaryItems.length > 0) {
     dispatchSingleCategoryEmail_(coreEmail, pscJudiciaryItems, spreadsheetUrl, 'State PSC & Judiciary');
   }
@@ -1344,6 +1328,8 @@ function dispatchSingleCategoryEmail_(recipientEmail, items, spreadsheetUrl, tit
       categoryTitle = 'UP State Board';
     } else if (recipientEmail === 'moksh.sharma@pw.live') {
       categoryTitle = 'CA (Foundation & Intermediate)';
+    } else if (recipientEmail === 'gitij.kumar@pw.live') {
+      categoryTitle = 'State Board (MP / RBSE / CG)';
     } else if (recipientEmail.includes('harsh.ayush1')) {
       categoryTitle = 'GATE';
     } else if (items.some(i => /ae[- ]?je/i.test(i.category || i.exam || ''))) {
@@ -1738,7 +1724,7 @@ function initializeTrackerSheet_(sheet) {
   sheet.setRowHeight(1, 38);
 
   // Column widths for 10-column layout
-  // 1: Date, 2: State, 3: Exam, 4: Category, 5: Priority, 6: Summary, 7: Action, 8: Link, 9: Telegram, 10: ID (Hidden)
+  // 1: Date, 2: State, 3: Exam, 4: Category, 5: Priority, 6: Summary, 7: Action, 8: Link, 9: Alert Status, 10: ID (Hidden)
   const widths = [135, 115, 230, 140, 95, 220, 320, 130, 110, 50];
   widths.forEach((w, i) => sheet.setColumnWidth(i + 1, w));
   sheet.hideColumns(10); // Hide Unique ID column from view
@@ -1817,7 +1803,7 @@ function formatDataRows_(sheet, startRow, count) {
     .setHorizontalAlignment('center')
     .setFontWeight('bold');
 
-  // Col 9: Telegram Status
+  // Col 9: Email Alert Status
   sheet.getRange(startRow, 9, count, 1)
     .setHorizontalAlignment('center');
 }
@@ -2004,7 +1990,7 @@ function fetchOfficialNoticesFromGitHub_(known) {
         marketingAction: n.marketingAction,
         isOfficialVerified: true,
         targetEmail: n.targetEmail,
-        telegramStatus: 'SENT_VIA_ACTIONS'
+        alertStatus: 'SENT_VIA_EMAIL'
       });
     });
   } catch (err) {
@@ -2076,7 +2062,7 @@ function doPost(e) {
         marketingAction: n.marketingAction,
         isOfficialVerified: true,
         targetEmail: n.targetEmail,
-        telegramStatus: 'SENT_VIA_ACTIONS'
+        alertStatus: 'SENT_VIA_EMAIL'
       });
     });
 
@@ -2092,7 +2078,7 @@ function doPost(e) {
         item.summary,
         item.marketingAction,
         item.url,
-        item.telegramStatus,
+        item.alertStatus || 'SENT_VIA_EMAIL',
         item.uniqueId
       ]);
 
@@ -2151,7 +2137,7 @@ function syncOfficialNoticesNow() {
       item.summary,
       item.marketingAction,
       item.url,
-      item.telegramStatus || 'SENT_VIA_ACTIONS',
+      item.alertStatus || 'SENT_VIA_EMAIL',
       item.uniqueId
     ]);
 

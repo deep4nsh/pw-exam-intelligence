@@ -27,8 +27,6 @@ jobs:
 
       - name: "Run Official Commissions, Judiciary & ADA Scrapers"
         env:
-          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           GOOGLE_WEBAPP_URL: ${{ secrets.GOOGLE_WEBAPP_URL }}
           NODE_OPTIONS: "--openssl-legacy-provider"
           NODE_TLS_REJECT_UNAUTHORIZED: "0"

@@ -16,8 +16,7 @@ import {
   X,
   LayoutGrid,
   List,
-  Share2,
-  Send
+  Share2
 } from 'lucide-react';
 import './App.css';
 
@@ -238,16 +237,6 @@ export default function App() {
           </button>
 
           <a
-            href="https://t.me/pw_exam_updates_bot"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="btn-header telegram"
-          >
-            <Send size={14} />
-            <span>Telegram Bot & Menu</span>
-          </a>
-
-          <a
             href="https://github.com/deep4nsh/pw-exam-intelligence"
             target="_blank"
             rel="noopener noreferrer"
@@ -258,30 +247,6 @@ export default function App() {
           </a>
         </div>
       </header>
-
-      {/* Telegram Interactive Menu Callout */}
-      <div className="telegram-callout">
-        <div className="callout-left">
-          <div className="callout-icon">
-            <Send size={16} />
-          </div>
-          <div>
-            <div className="callout-title">Interactive Telegram Menu Active for All Members</div>
-            <div className="callout-desc">
-              All team members can tap the 8-option inline menu in the Telegram group to trigger on-demand state circular syncs anytime.
-            </div>
-          </div>
-        </div>
-        <a
-          href="https://t.me/pw_exam_updates_bot"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="callout-btn"
-        >
-          <span>Open Bot Menu</span>
-          <ExternalLink size={12} />
-        </a>
-      </div>
 
       {/* KPI Cards Row (White Theme) */}
       <section className="metrics-grid">

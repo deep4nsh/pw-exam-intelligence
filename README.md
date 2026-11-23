@@ -1,7 +1,7 @@
 # 🏛️ Physics Wallah Exam Intelligence Radar
 
-> **Private Real-Time Exam & Multi-Category Intelligence Pipeline for PW Marketing Leadership**  
-> Covers **State PSCs** (UPPSC, BPSC, MPSC, MPPSC, OPSC, RPSC), **Judiciary & Law** (Pan-India High Courts, SCI, ADA, AIBE), **UP State Board** (UPMSP Class 10/12), **Commerce / Professional** (ICAI CA Foundation & Intermediate), **GATE** (Engineering & Tech), **AE-JE** (Assistant & Junior Engineer), and **Agriculture** (ICAR, ASRB, State Agri) with category-targeted email routing, instant Telegram alerts, pre-written marketing plays, clean Google Sheet tracking, and rich executive digests.
+> **Private Real-Time Exam & Multi-Category Intelligence Pipeline for PW Marketing Leadership & CMMs**  
+> Covers **State PSCs** (UPPSC, BPSC, MPSC, MPPSC, OPSC, RPSC), **Judiciary & Law** (Pan-India High Courts, SCI, ADA, AIBE), **UP State Board** (UPMSP Class 10/12), **Commerce / Professional** (ICAI CA Foundation & Intermediate), **GATE** (Engineering & Tech), **AE-JE** (Assistant & Junior Engineer), **Agriculture** (ICAR, ASRB, State Agri), and **State Boards** (MP Board, RBSE Rajasthan, CG Board) with category-targeted instant email alerts, pre-written marketing plays, clean Google Sheet tracking, and executive digests.
 
 ---
 
@@ -24,8 +24,11 @@ This repository operates on a **₹0 recurring cost stack** with zero server mai
    - **GATE & Engineering:** IIT & IISc GATE notifications, answer keys, dates, and score updates.
    - **AE-JE Technical:** State & Central Assistant Engineer and Junior Engineer recruitments (UPPSC, BPSC, SSC, RRB).
    - **Agriculture & Allied:** ICAR, ASRB, IBPS AFO, State Agriculture Officers & Supervisors.
+   - **MP State Board (MPBSE):** Madhya Pradesh Class 10 & 12 timetables, admit cards, and circulars.
+   - **RBSE State Board:** Rajasthan Board secondary & senior secondary examination notifications.
+   - **CG State Board (CGBSE):** Chhattisgarh Board exam timetables, admit cards, and results.
 
-2. **Multi-Category CMM Routing & Central Tags Sheet:**
+2. **Multi-Category CMM Routing & Central Sheet Sync:**
    - **Dynamic CMM Ingestion:** Reads categories, tags (`INCLUDE`, `ALIAS`, `EXCLUDE`), and emails directly from the central Google Sheet (`1IIdA-chEZvTRT4xPKmvFp_U-6mCv6t2VdPTXOOhooYQ`).
    - **Strict Category Isolation:** Each Category Marketing Manager receives alerts **only** for their respective tags:
      - **UP State Board:** Delivered exclusively to `anshu.mishra@pw.live`
@@ -33,24 +36,20 @@ This repository operates on a **₹0 recurring cost stack** with zero server mai
      - **GATE:** Delivered exclusively to `falguni.gupta@pw.live`, `kashif.ahmed@pw.live`, `harsh.ayush1@pw.live`
      - **AE-JE:** Delivered exclusively to `falguni.gupta@pw.live`, `kashif.ahmed@pw.live`, `ananya.rajak@pw.live`
      - **Agriculture:** Delivered exclusively to `falguni.gupta@pw.live`, `kashif.ahmed@pw.live`, `ananya.rajak@pw.live`
+     - **State Board (MP / RBSE / CG):** Delivered exclusively to `gitij.kumar@pw.live`
      - **State PSC & Judiciary:** Delivered to Marketing Leadership (`CFG.EMAIL_TO`)
-   - **Tag Honor Rules:** Custom exclusion tags (such as `JAM`, `CUET` for GATE; `GATE`, `Diploma admission` for AE-JE; `NEET`, `JEE` for Agri; `Mock test` for CA) are enforced at ingestion time.
+   - **Tag Honor Rules:** Strict exclusion tags (such as `JAM`, `CUET` for GATE; `Diploma admission` for AE-JE; `NEET`, `JEE` for Agri; `Mock test` for CA) are enforced at ingestion time.
 
-2. **24/7 GitHub Actions Automation (`.github/workflows/scrape.yml`):**
-   - Runs on cron every 20 minutes automatically.
-   - Alerts sent to Telegram in real-time only when brand-new circulars drop.
-   - Deduplicates notices via SHA-256 hashes stored in `scraper/seen_hashes.json`.
-   - Commits state changes back to GitHub without human intervention.
+3. **24/7 Automation via GitHub Actions & Webhook Triggers:**
+   - **GitHub Actions (`.github/workflows/scrape.yml`):** Runs on cron every 10 minutes automatically.
+   - **Cron-job.org / Webhook Trigger:** Directly pings `https://script.google.com/macros/s/AKfycbxHxjKogREmGK0El7qaHXyxFCpNPFFX370aoo27R2HBBmOcWtQ7hZ5l3RKK2FN6zte0/exec?action=runMonitor` to trigger news monitoring and email dispatch on demand.
+   - **Deduplication:** Uses SHA-256 hashes stored in `scraper/seen_hashes.json` and row history in Google Sheets to prevent duplicate email alerts.
 
-3. **Telegram Instant Alert Bot:**
-   - Group: `Deepansh & Aditya Sir, Akshay Pw`
-   - Formatted with jurisdiction tags, exam name, notice description, PDF links, and **actionable marketing hooks**.
-
-4. **Apps Script / Google Sheet / Email Pipeline (`apps-script/`):**
+4. **Apps Script / Google Sheet / Email Pipeline (`apps-script/ExamResultMonitor_v2.gs`):**
    - Color-coded priority badges (`CRITICAL`, `HIGH`, `NORMAL`).
-   - Highlighted marketing campaign hooks.
+   - Highlighted marketing campaign plays and hooks.
    - Clickable direct PDF links.
-   - Scannable email digests with bullet points.
+   - Instant rich HTML email alerts formatted specifically for executive clarity.
 
 ---
 
@@ -66,31 +65,28 @@ npm run scrape
 npm run probe
 ```
 
+### Build Dashboard:
+```bash
+npm run build
+```
+
 ---
 
-## ⚙️ GitHub Deployment Setup (One-Time)
+## ⚙️ Deployment & Configuration
 
-To turn on 24/7 automated scraping:
-
-1. **Create a private repository** on GitHub (e.g. `pw-exam-intelligence`).
-2. **Push this codebase:**
-   ```bash
-   git remote add origin https://github.com/<your-username>/pw-exam-intelligence.git
-   git branch -M main
-   git push -u origin main
-   ```
-3. **(Optional) Configure GitHub Secrets:**
-   Go to **Settings > Secrets and variables > Actions** and add:
-   - `TELEGRAM_BOT_TOKEN`: `8962093670:AAEFDh6xdxBqVNUBIf3IybLRufbJYbjvNxI`
-   - `TELEGRAM_CHAT_ID`: `-5324420343`
-   - `GOOGLE_WEBAPP_URL`: `https://script.google.com/macros/s/AKfycbxHxjKogREmGK0El7qaHXyxFCpNPFFX370aoo27R2HBBmOcWtQ7hZ5l3RKK2FN6zte0/exec`
-
-4. **Google Apps Script Web App Deployment Details:**
+1. **Google Apps Script Web App Deployment:**
    - **Deployment ID:** `AKfycbxHxjKogREmGK0El7qaHXyxFCpNPFFX370aoo27R2HBBmOcWtQ7hZ5l3RKK2FN6zte0`
    - **Web App URL:** `https://script.google.com/macros/s/AKfycbxHxjKogREmGK0El7qaHXyxFCpNPFFX370aoo27R2HBBmOcWtQ7hZ5l3RKK2FN6zte0/exec`
-   - **Internal PW URL:** `https://script.google.com/a/macros/pw.live/s/AKfycbxHxjKogREmGK0El7qaHXyxFCpNPFFX370aoo27R2HBBmOcWtQ7hZ5l3RKK2FN6zte0/exec`
+   - **Trigger Actions:**
+     - `?action=runMonitor` : Triggers the 24/7 exam news monitor & instant email dispatch.
+     - `?action=syncTags` : Syncs CMM tags and recipient scopes from the central sheet.
+     - `?action=health` : Returns system health and last processed metrics.
 
-5. **Enable Workflow Write Permissions:**
+2. **GitHub Actions Secrets:**
+   Go to **Settings > Secrets and variables > Actions** and ensure:
+   - `GOOGLE_WEBAPP_URL`: `https://script.google.com/macros/s/AKfycbxHxjKogREmGK0El7qaHXyxFCpNPFFX370aoo27R2HBBmOcWtQ7hZ5l3RKK2FN6zte0/exec`
+
+3. **Enable Workflow Write Permissions:**
    Go to **Settings > Actions > General > Workflow permissions** and select **"Read and write permissions"** so the GitHub Action can commit updated circular hashes.
 
 ---
@@ -100,14 +96,17 @@ To turn on 24/7 automated scraping:
 ```
 ├── .github/
 │   └── workflows/
-│       └── scrape.yml             # 24/7 automated scraping cron job
+│       └── scrape.yml             # 10-minute automated scraping cron job
 ├── apps-script/
-│   └── ExamResultMonitor_v2.gs    # Google Sheet & Email digest engine
+│   └── ExamResultMonitor_v2.gs    # Google Sheet & Email alert dispatch engine
 ├── scraper/
-│   ├── official_scrapers.js       # All 7 commission & court scrapers
+│   ├── official_scrapers.js       # All 17 commission, board & legal scrapers
 │   ├── probe_portals.js           # Network connectivity diagnostic
-│   ├── latest_official_notices.json # Full structured database (56 notices)
+│   ├── latest_official_notices.json # Full structured database
 │   └── seen_hashes.json           # SHA-256 deduplication cache
+├── dashboard/                     # React executive radar web application
+├── src/
+│   └── worker.js                  # Cloudflare worker proxy & JSON feed API
 ├── package.json
 └── README.md
 ```
