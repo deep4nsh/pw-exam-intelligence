@@ -2178,6 +2178,15 @@ function syncOfficialNoticesNow() {
  * Allows cloud runners to fetch Indian portals through Google Workspace IPs
  */
 function doGet(e) {
+  if (e && e.parameter && e.parameter.action === 'runMonitor') {
+    monitorExamNews();
+    return ContentService.createTextOutput(JSON.stringify({
+      status: 'ok',
+      message: 'Monitor execution cycle completed',
+      timestamp: new Date().toISOString()
+    })).setMimeType(ContentService.MimeType.JSON);
+  }
+
   if (e && e.parameter && e.parameter.action === 'sendTagsConfirmation') {
     const filterParam = e.parameter.categories ? e.parameter.categories.split(',') : null;
     const results = sendTagsConfirmationToCMMs(filterParam);
