@@ -83,21 +83,20 @@ const BUILTIN_CMM_SCOPES = [
     kind: 'cmm_category'
   },
   {
-    name: 'CA Inter & Fond Online',
+    name: 'CA (Foundation & Intermediate)',
     sheetTab: 'CA',
     jurisdiction: 'ICAI / National',
     exam: 'CA Foundation / Intermediate',
-    category: 'CA Inter & Fond Online',
+    category: 'CA (Foundation & Intermediate)',
     recipientEmail: 'moksh.sharma@pw.live',
     aliases: [
       'CA Inter',
       'CA Inter results',
       'ICAI',
-      'Foundation',
-      'Intermediate',
-      'Chartered Accountants',
       'CA Foundation',
-      'CA Intermediate'
+      'CA Intermediate',
+      'Chartered Accountants',
+      'Chartered Accountant'
     ],
     includes: [
       'CA Foundation',
@@ -114,7 +113,8 @@ const BUILTIN_CMM_SCOPES = [
       'ICAI CA Intermediate result exam schedule',
       'Chartered Accountants CA Inter foundation notice',
       'ICAI examination announcement circular',
-      'ICAI CA Inter results date sheet'
+      'ICAI CA Inter results date sheet',
+      'ICAI CA Foundation admit card notice'
     ],
     kind: 'cmm_category'
   },
@@ -431,13 +431,29 @@ function loadCategoryScopesFromTagsSheet_() {
         else cmmEmail = CFG.EMAIL_TO;
       }
 
-      const queryKeywords = [...includes, ...aliases]
-        .filter(k => !k.startsWith('http') && k.length > 2 && !/amarujala|jagran/i.test(k))
-        .slice(0, 6);
+      let queries = [];
+      if (/^ca$|^icai$/i.test(sheetName) || /ca |icai/i.test(categoryName)) {
+        categoryName = 'CA (Foundation & Intermediate)';
+        queries = [
+          'ICAI CA Foundation result announcement date',
+          'ICAI CA Intermediate result exam schedule',
+          'ICAI CA Inter foundation exam date sheet',
+          'Chartered Accountants ICAI CA Inter results',
+          'ICAI examination announcement circular',
+          'ICAI CA Foundation admit card notice'
+        ];
+      } else {
+        const queryKeywords = [...includes, ...aliases]
+          .filter(k => !k.startsWith('http') && k.length > 2 && !/amarujala|jagran/i.test(k))
+          .slice(0, 6);
 
-      const queries = queryKeywords.map(k => `${categoryName} ${k}`);
-      if (queries.length === 0) {
-        queries.push(`${categoryName} exam notification result dates`);
+        queries = queryKeywords.map(k => {
+          if (k.toLowerCase().includes(categoryName.toLowerCase())) return `${k} exam update date`;
+          return `${categoryName} ${k}`;
+        });
+        if (queries.length === 0) {
+          queries.push(`${categoryName} exam notification result dates`);
+        }
       }
 
       dynamicScopes.push({
@@ -466,9 +482,22 @@ function loadCategoryScopesFromTagsSheet_() {
   return null;
 }
 
+function isStatePscOrJudiciaryItem_(item) {
+  if (!item) return false;
+  if (item.kind === 'psc' || item.kind === 'judiciary') return true;
+  const text = (
+    String(item.category || '') + ' ' +
+    String(item.exam || '') + ' ' +
+    String(item.jurisdiction || '') + ' ' +
+    String(item.scope || '') + ' ' +
+    String(item.title || '')
+  ).toLowerCase();
+
+  return /\b(uppsc|bpsc|mppsc|rpsc|opsc|mpsc|ras\b|judiciary|high court|supreme court|civil judge|judicial service|apo\b|adpo\b|ada\b)\b/i.test(text);
+}
+
 function isUpBoardItem_(item) {
   if (!item) return false;
-  if (item.recipientEmail === 'anshu.mishra@pw.live' || item.targetEmail === 'anshu.mishra@pw.live') return true;
   const text = (
     String(item.category || '') + ' ' +
     String(item.exam || '') + ' ' +
@@ -478,13 +507,17 @@ function isUpBoardItem_(item) {
     String(item.url || '') + ' ' +
     String(item.queryLabel || '')
   ).toLowerCase();
+
+  // Guard: Never confuse State PSC with State Board!
+  if (/\b(uppsc|bpsc|mppsc|rpsc|opsc|mpsc|judiciary)\b/i.test(text)) {
+    return false;
+  }
 
   return /up state board|up board|upmsp|madhyamik|हाईस्कूल|इण्टरमीडिएट|results\.upmsp|board_modelpaper|upmsp\.edu\.in/i.test(text);
 }
 
 function isCaItem_(item) {
   if (!item) return false;
-  if (item.recipientEmail === 'moksh.sharma@pw.live' || item.targetEmail === 'moksh.sharma@pw.live') return true;
   const text = (
     String(item.category || '') + ' ' +
     String(item.exam || '') + ' ' +
@@ -495,13 +528,16 @@ function isCaItem_(item) {
     String(item.queryLabel || '')
   ).toLowerCase();
 
-  return /ca inter|ca foundation|ca final|icai|chartered accountant|caresults\.icai|resource\.cdn\.icai|icai\.org/i.test(text);
+  // Guard: if it mentions State PSCs, Commissions or Judiciary, it is NEVER a CA item!
+  if (/\b(uppsc|bpsc|mppsc|rpsc|opsc|mpsc|judiciary|high court|supreme court)\b/i.test(text)) {
+    return false;
+  }
+
+  return /\b(ca inter|ca intermediate|ca foundation|ca final|icai|chartered accountant|chartered accountants)\b|caresults\.icai|resource\.cdn\.icai|icai\.org/i.test(text);
 }
 
 function isGateItem_(item) {
   if (!item) return false;
-  const emails = String(item.recipientEmail || '') + ' ' + String(item.targetEmail || '');
-  if (/falguni\.gupta|kashif\.ahmed|harsh\.ayush1/i.test(emails) && /gate/i.test(String(item.category || '') + ' ' + String(item.sheetTab || '') + ' ' + String(item.exam || ''))) return true;
   const text = (
     String(item.category || '') + ' ' +
     String(item.exam || '') + ' ' +
@@ -511,14 +547,16 @@ function isGateItem_(item) {
     String(item.url || '') + ' ' +
     String(item.queryLabel || '')
   ).toLowerCase();
+
+  if (/\b(uppsc|bpsc|mppsc|rpsc|opsc|mpsc|judiciary)\b/i.test(text) && !/\bgate\b/i.test(text)) {
+    return false;
+  }
 
   return /\bgate\b|graduate aptitude test in engineering|gate 202[5-7]|gate cse|gate da|gate ece/i.test(text);
 }
 
 function isAeJeItem_(item) {
   if (!item) return false;
-  const emails = String(item.recipientEmail || '') + ' ' + String(item.targetEmail || '');
-  if (/falguni\.gupta|kashif\.ahmed|ananya\.rajak/i.test(emails) && /ae[- ]?je/i.test(String(item.category || '') + ' ' + String(item.sheetTab || ''))) return true;
   const text = (
     String(item.category || '') + ' ' +
     String(item.exam || '') + ' ' +
@@ -534,8 +572,6 @@ function isAeJeItem_(item) {
 
 function isAgricultureItem_(item) {
   if (!item) return false;
-  const emails = String(item.recipientEmail || '') + ' ' + String(item.targetEmail || '');
-  if (/falguni\.gupta|kashif\.ahmed|ananya\.rajak/i.test(emails) && /agri/i.test(String(item.category || '') + ' ' + String(item.sheetTab || ''))) return true;
   const text = (
     String(item.category || '') + ' ' +
     String(item.exam || '') + ' ' +
@@ -551,7 +587,6 @@ function isAgricultureItem_(item) {
 
 function isGitijBoardItem_(item) {
   if (!item) return false;
-  if (item.recipientEmail === 'gitij.kumar@pw.live' || item.targetEmail === 'gitij.kumar@pw.live') return true;
   const text = (
     String(item.category || '') + ' ' +
     String(item.exam || '') + ' ' +
@@ -561,6 +596,11 @@ function isGitijBoardItem_(item) {
     String(item.url || '') + ' ' +
     String(item.queryLabel || '')
   ).toLowerCase();
+
+  // Guard: MPPSC / RPSC / UPPSC are NOT State Boards!
+  if (/\b(uppsc|bpsc|mppsc|rpsc|opsc|mpsc|judiciary)\b/i.test(text)) {
+    return false;
+  }
 
   return /mp board|mpbse|rajasthan board|rbse|bser|chhattisgarh board|cgbse|cg board|madhya pradesh board/i.test(text);
 }
@@ -696,6 +736,11 @@ function getCmmEmailForCategory_(item) {
     return 'gitij.kumar@pw.live';
   }
 
+  // 7. State PSC and Judiciary items ALWAYS route to Leadership (CFG.EMAIL_TO), NEVER to any CMM!
+  if (isStatePscOrJudiciaryItem_(item)) {
+    return getEmailTo_();
+  }
+
   if (item.targetEmail && item.targetEmail.includes('@') && item.targetEmail !== getEmailTo_()) {
     return item.targetEmail.trim();
   }
@@ -703,7 +748,7 @@ function getCmmEmailForCategory_(item) {
     return item.recipientEmail.trim();
   }
 
-  // Match dynamic CMM scopes
+  // Match other dynamic CMM scopes from sheet (guarding against 2-letter acronym substring false matches like 'ca')
   try {
     const text = (
       String(item.category || '') + ' ' +
@@ -716,7 +761,12 @@ function getCmmEmailForCategory_(item) {
     for (const scope of activeScopes) {
       const scopeName = (scope.name || '').toLowerCase();
       const tabName = (scope.sheetTab || '').toLowerCase();
-      if (text.includes(scopeName) || text.includes(tabName)) {
+      // Skip known built-in categories already strictly handled above
+      if (/ca|icai|up board|upmsp|gate|ae[- ]?je|agri|mp board|rajasthan|rbse|chhattisgarh|cgbse/i.test(scopeName + ' ' + tabName)) {
+        continue;
+      }
+      // Require at least 3 chars and word-boundary matching to prevent substring bugs
+      if (scopeName.length >= 3 && new RegExp('\\b' + scopeName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b', 'i').test(text)) {
         if (scope.recipientEmail && scope.recipientEmail.includes('@')) {
           return scope.recipientEmail.trim();
         }
@@ -1216,14 +1266,20 @@ function sendCategorizedExecutiveEmails_(items, spreadsheetUrl) {
   const coreEmail = getEmailTo_();
 
   items.forEach(item => {
+    // 0. State PSC & Judiciary items ALWAYS go to pscJudiciaryItems (Leadership), NEVER to CMMs!
+    if (isStatePscOrJudiciaryItem_(item)) {
+      pscJudiciaryItems.push(item);
+      return;
+    }
+
     // 1. Check UP Board
-    if (isUpBoardItem_(item) || item.targetEmail === 'anshu.mishra@pw.live' || item.recipientEmail === 'anshu.mishra@pw.live') {
+    if (isUpBoardItem_(item)) {
       upBoardItems.push(item);
       return;
     }
 
     // 2. Check CA
-    if (isCaItem_(item) || item.targetEmail === 'moksh.sharma@pw.live' || item.recipientEmail === 'moksh.sharma@pw.live') {
+    if (isCaItem_(item)) {
       caItems.push(item);
       return;
     }
@@ -1247,26 +1303,14 @@ function sendCategorizedExecutiveEmails_(items, spreadsheetUrl) {
     }
 
     // 6. Check Gitij State Boards (MP, Rajasthan, CG)
-    if (isGitijBoardItem_(item) || item.targetEmail === 'gitij.kumar@pw.live' || item.recipientEmail === 'gitij.kumar@pw.live') {
+    if (isGitijBoardItem_(item)) {
       gitijBoardItems.push(item);
       return;
     }
 
     // 7. Dynamic CMM or State PSC routing
     const email = getCmmEmailForCategory_(item);
-    if (email === 'anshu.mishra@pw.live') {
-      upBoardItems.push(item);
-    } else if (email === 'moksh.sharma@pw.live') {
-      caItems.push(item);
-    } else if (/harsh\.ayush1/i.test(email) || (email.includes('falguni.gupta') && /gate/i.test(item.category || item.exam || ''))) {
-      gateItems.push(item);
-    } else if (/ae[- ]?je/i.test(item.category || item.exam || '')) {
-      aeJeItems.push(item);
-    } else if (/agri/i.test(item.category || item.exam || '')) {
-      agriItems.push(item);
-    } else if (email === 'gitij.kumar@pw.live') {
-      gitijBoardItems.push(item);
-    } else if (email === coreEmail) {
+    if (email === coreEmail) {
       pscJudiciaryItems.push(item);
     } else {
       if (!otherCmmGroups[email]) otherCmmGroups[email] = [];

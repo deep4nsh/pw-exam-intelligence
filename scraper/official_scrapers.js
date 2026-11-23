@@ -1650,7 +1650,7 @@ async function scrapeICAI() {
       exam: exam,
       title: rawTitle,
       url: fullUrl,
-      category: 'CA Inter & Fond Online',
+      category: 'CA (Foundation & Intermediate)',
       priority: priority,
       marketingAction: marketingAction,
       targetEmail: 'moksh.sharma@pw.live',
@@ -1658,6 +1658,59 @@ async function scrapeICAI() {
       hash: generateHash(rawTitle, fullUrl)
     });
   }
+
+  // Also query Google News for real-time breaking ICAI / CA announcements
+  try {
+    const query = '("CA Foundation" OR "CA Intermediate" OR "CA Inter" OR ICAI) AND (Notification OR Result OR "Admit Card" OR Dates OR Schedule OR Announcement OR "Answer Key" OR Registration) when:48h';
+    const feedUrl = `https://news.google.com/rss/search?q=${encodeURIComponent(query)}&hl=en-IN&gl=IN&ceid=IN:en`;
+    const res = await fetchHtml(feedUrl, 15000);
+    const itemRegex = /<item>[\s\S]*?<title>([\s\S]*?)<\/title>[\s\S]*?<link>([\s\S]*?)<\/link>[\s\S]*?<pubDate>([\s\S]*?)<\/pubDate>[\s\S]*?<\/item>/gi;
+    let match;
+    while ((match = itemRegex.exec(res)) !== null && items.length < 50) {
+      let rawTitle = cleanText(match[1]).replace(/ - [^-]+$/g, '').trim();
+      const link = match[2].trim();
+      if (seenUrls.has(link)) continue;
+      if (/mock test/i.test(rawTitle)) continue;
+
+      // Must explicitly mention CA exam / ICAI
+      if (!/\b(ca inter|ca intermediate|ca foundation|ca final|icai|chartered accountant|chartered accountants)\b/i.test(rawTitle)) continue;
+      // Filter out non-exam noise (recipes, lifestyle, bollywood, stock market generic)
+      if (/recipe|cricket|bollywood|movie|salary|colgate|dating|horoscope/i.test(rawTitle)) continue;
+
+      seenUrls.add(link);
+      let exam = 'Chartered Accountants (ICAI)';
+      if (/foundation/i.test(rawTitle)) exam = 'CA Foundation';
+      else if (/intermediate|inter\b/i.test(rawTitle)) exam = 'CA Intermediate';
+      else if (/final/i.test(rawTitle)) exam = 'CA Final';
+
+      let category = classifyCategory(rawTitle);
+      let priority = 'NORMAL';
+      if (/result|declared|likely to be declared/i.test(rawTitle)) {
+        category = 'Result';
+        priority = 'CRITICAL';
+      } else if (/schedule|examination|admit card|dates|registration/i.test(rawTitle)) {
+        category = 'Exam Schedule';
+        priority = 'HIGH';
+      }
+
+      items.push({
+        jurisdiction: 'ICAI / National',
+        state: 'Pan-India',
+        exam: exam,
+        title: rawTitle,
+        url: link,
+        category: 'CA (Foundation & Intermediate)',
+        priority: priority,
+        marketingAction: generateMarketingHook(category, exam + ' ' + rawTitle),
+        targetEmail: 'moksh.sharma@pw.live',
+        cmm: 'Moksh Sharma',
+        hash: generateHash(rawTitle, link)
+      });
+    }
+  } catch (err) {
+    console.error('ICAI Google News feed error:', err.message);
+  }
+
   return items;
 }
 
