@@ -341,7 +341,7 @@ function loadCategoryScopesFromTagsSheet_() {
 
     sheets.forEach(sheet => {
       const sheetName = sheet.getName().trim();
-      if (sheetName.toLowerCase() === 'sample' || sheetName === CFG.LOG_SHEET_NAME || sheetName === CFG.SHEET_NAME) return;
+      if (/^(sample|monitor logs?|system logs?|logs?|tracker.*|sheet\d+)$/i.test(sheetName) || sheetName === CFG.LOG_SHEET_NAME || sheetName === CFG.SHEET_NAME) return;
 
       const lastRow = sheet.getLastRow();
       if (lastRow < 2) return;
@@ -818,6 +818,9 @@ const EXAM_TERMS =
 
 const UPDATE_TERMS =
   /\b(notification|notifies|notified|advertisement|released|release|announces|announced|schedule|calendar|date|dates|postponed|rescheduled|cancelled|canceled|deferred|admit card|hall ticket|answer key|response sheet|result|results|cut.?off|merit list|selection list|final list|provisional list|document verification|dv schedule|omr sheet|scorecard|marksheet|marks statement|city intimation|call letter|viva-voce|viva voce|application|registration|last date|deadline|extended|extension|corrigendum|correction window|edit window|syllabus|eligibility|age limit|reservation|vacancy|vacancies|interview|court order|judgment|judgement|stay order|revised|objection window|recruitment rules|datesheet|timetable|scrutiny|model paper|परिणाम|प्रवेश पत्र|उत्तर कुंजी|विज्ञप्ति|शुद्धिपत्र|मॉडल पेपर|परीक्षाफल|समय सारणी)\b/i;
+
+const GENERIC_CLICKBAIT_TERMS =
+  /\b(expected cut.?off|safe score|exam analysis|paper analysis|salary|job profile|how to (?:check|download|apply|prepare|access)|preparation tips|formula sheets?|short notes|revision tools|bail granted|bail rejected|anticipatory bail|fir\b|murder|accident|quashes constable|quashes dismissal|expected soon|likely soon|expected shortly|likely to release|likely to be (?:released|out|declared)|expected today|expected anytime|check download steps|steps to (?:check|download|apply|access)|will be (?:released|announced|out) soon|tentative schedule|tentative date|date announced soon|link soon|awaited|waiting for|any moment now|anticipated soon|out today\?)\b/i;
 
 const EXCLUDE_TERMS =
   /\b(railway|railways|ntpc|rrb|coast guard|cgept|navik|yantrik|hygienist|gramin dak sevak|gds|post office|postal assistant|ibps(?!\s*so|\s*specialist|\s*law)|sbi po|sbi clerk|sbi apprentice|rbi grade|ssc cgl|ssc chsl|ssc gd|ssc mts|agniveer|army recruitment|navy recruitment|air force recruitment|nda\b|cds\b|afcat|gate\b|neet\b|jee main|expected cut.?off|safe score|exam analysis|salary|job profile|how to (?:check|download|apply|prepare|access)|preparation tips|bail granted|bail rejected|anticipatory bail|fir\b|murder|accident|quashes constable|quashes dismissal|expected soon|likely soon|expected shortly|likely to release|likely to be (?:released|out|declared)|expected today|expected anytime|check download steps|steps to (?:check|download|apply|access)|will be (?:released|announced|out) soon|tentative schedule|tentative date|date announced soon|link soon|awaited|waiting for|any moment now|anticipated soon|out today\?)\b/i;
@@ -1454,17 +1457,28 @@ function dispatchSingleCategoryEmail_(recipientEmail, items, spreadsheetUrl, tit
     </div>
   `;
 
+  const cleanRecipients = String(recipientEmail || '')
+    .split(',')
+    .map(e => e.trim())
+    .filter(e => e.includes('@'))
+    .join(', ');
+
+  if (!cleanRecipients) {
+    log_('WARN', `Skipped email dispatch for ${categoryTitle}: no valid recipient email provided.`);
+    return;
+  }
+
   try {
     MailApp.sendEmail({
-      to: recipientEmail,
+      to: cleanRecipients,
       subject: subject,
       body: `Exam Radar (${categoryTitle}): ${items.length} new updates found (${highPriority.length} urgent).\n\nOpen spreadsheet: ${spreadsheetUrl}`,
       htmlBody: htmlBody,
       name: 'PW Exam Radar'
     });
-    log_('INFO', `Dispatched category email for ${categoryTitle} to ${recipientEmail}`, `Items: ${items.length}`);
+    log_('INFO', `Dispatched category email for ${categoryTitle} to ${cleanRecipients}`, `Items: ${items.length}`);
   } catch (err) {
-    log_('ERROR', `Failed to send email to ${recipientEmail}: ${err.message}`, String(err));
+    log_('ERROR', `Failed to send email to ${cleanRecipients}: ${err.message}`, String(err));
   }
 }
 
@@ -1595,8 +1609,9 @@ function evaluateItem_(item) {
       return { keep: false };
     }
 
-    // National non-target spam gate
-    if (EXCLUDE_TERMS.test(text)) return { keep: false };
+    // National non-target spam gate: filter out generic clickbait and non-exam noise
+    // (Never block CMM exam keywords like GATE, RRB JE, or IBPS AFO)
+    if (GENERIC_CLICKBAIT_TERMS.test(text)) return { keep: false };
 
     const category = classifyCategory_(text);
     const priority = classifyPriority_(text, category);
