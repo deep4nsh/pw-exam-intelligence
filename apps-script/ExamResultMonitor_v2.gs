@@ -1556,7 +1556,7 @@ function buildFeedJobs_() {
 function fetchFeeds_(jobs) {
   const items = [];
   const failures = [];
-  const batchSize = 15;
+  const batchSize = 35;
 
   for (let i = 0; i < jobs.length; i += batchSize) {
     const batch = jobs.slice(i, i + batchSize);
