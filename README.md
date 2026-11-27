@@ -27,6 +27,9 @@ This repository operates on a **₹0 recurring cost stack** with zero server mai
    - **MP State Board (MPBSE):** Madhya Pradesh Class 10 & 12 timetables, admit cards, and circulars.
    - **RBSE State Board:** Rajasthan Board secondary & senior secondary examination notifications.
    - **CG State Board (CGBSE):** Chhattisgarh Board exam timetables, admit cards, and results.
+   - **MBA (CAT / XAT / OMETs):** IIM CAT, XLRI XAT, SNAP, NMAT, and CMAT notifications, percentiles, and results.
+   - **IPMAT & JIPMAT:** Integrated Program in Management Aptitude Tests for IIM Indore, IIM Rohtak, and NTA JIPMAT.
+   - **GMAT Focus Edition:** Graduate Management Admission Test updates, syllabus, score, and registration circulars.
 
 2. **Multi-Category CMM Routing & Central Sheet Sync:**
    - **Dynamic CMM Ingestion:** Reads categories, tags (`INCLUDE`, `ALIAS`, `EXCLUDE`), and emails directly from the central Google Sheet (`1IIdA-chEZvTRT4xPKmvFp_U-6mCv6t2VdPTXOOhooYQ`).
@@ -37,6 +40,9 @@ This repository operates on a **₹0 recurring cost stack** with zero server mai
      - **AE-JE:** Delivered exclusively to `falguni.gupta@pw.live`, `kashif.ahmed@pw.live`, `ananya.rajak@pw.live`
      - **Agriculture:** Delivered exclusively to `falguni.gupta@pw.live`, `kashif.ahmed@pw.live`, `ananya.rajak@pw.live`
      - **State Board (MP / RBSE / CG):** Delivered exclusively to `gitij.kumar@pw.live`
+     - **MBA (CAT / XAT / OMETs):** Delivered exclusively to `jatin.sharma2@pw.live`, `prince.kumar1@pw.live`
+     - **IPMAT & JIPMAT:** Delivered exclusively to `jatin.sharma2@pw.live`, `prince.kumar1@pw.live`
+     - **GMAT Focus Edition:** Delivered exclusively to `jatin.sharma2@pw.live`, `prince.kumar1@pw.live`
      - **State PSC & Judiciary:** Delivered to Marketing Leadership (`CFG.EMAIL_TO`)
    - **Tag Honor Rules:** Strict exclusion tags (such as `JAM`, `CUET` for GATE; `Diploma admission` for AE-JE; `NEET`, `JEE` for Agri; `Mock test` for CA) are enforced at ingestion time.
 

@@ -320,6 +320,28 @@ function generateMarketingHook(category, exam = '') {
     return 'Notify CA Community channel; launch revision webinar and batch push.';
   }
 
+  // 8. MBA (CAT / XAT / OMETs)
+  if (/mba|cat\b|xat|snap|nmat|cmat|omet/i.test(ex)) {
+    if (category === 'Result') return 'Host live CAT Score vs Percentile breakdown; launch IIM Call Predictor & GD-PI / WAT Bootcamp.';
+    if (category === 'Admit Card') return 'Send student push alert for CAT Admit Card; launch D-Day Strategy & Formula Sheet Marathon.';
+    if (category === 'Exam Schedule' || category === 'Notification / Recruitment') return 'Announce Comprehensive CAT Roadmap & Diagnostic Mock Test; launch 100-Day Sprint Batch.';
+    return 'Share CAT/OMETs Quantitative Aptitude & DILR cheat sheets; post topic-wise weightage analysis.';
+  }
+
+  // 9. IPMAT & JIPMAT
+  if (/ipmat|jipmat|iim indore|iim rohtak/i.test(ex)) {
+    if (category === 'Result') return 'Broadcast IPMAT qualifiers; open Personal Interview (PI) & Written Ability Test (WAT) prep batches.';
+    if (category === 'Exam Schedule' || category === 'Notification / Recruitment') return 'Launch IPMAT After-12th Masterclass; promote early-bird IPMAT & JIPMAT Foundation courses.';
+    return 'Distribute IPMAT Higher Math & Verbal Ability practice drills on student app.';
+  }
+
+  // 10. GMAT Focus Edition
+  if (/gmat|gmac/i.test(ex)) {
+    if (category === 'Result') return 'Celebrate top GMAT scorers (705+); open Global B-School Application & Essay Mentorship cohorts.';
+    if (category === 'Exam Schedule' || category === 'Notification / Recruitment') return 'Host GMAT Focus Edition webinar; offer free Data Insights & Critical Reasoning diagnostic tests.';
+    return 'Share GMAT Focus sectional scoring tips & time-management strategy guide.';
+  }
+
   switch (category) {
     case 'Notification / Recruitment':
       return `Schedule YouTube Live notification breakdown (<45m) and launch Target Batch ad creatives.`;
@@ -1546,6 +1568,33 @@ function applyMultiCategoryRouting(item) {
     return item;
   }
 
+  // 9. MBA (CAT / XAT / OMETs) check
+  if (/\b(cat\s*202[5-7]|cat exam|iim cat|cat syllabus|cat result|cat admit card|cat answer key|cat scorecard|cat percentile|common admission test|xat 202[5-7]|xat exam|snap exam|nmat|cmat|omets exam|omets)\b/i.test(fullText) && !/cat 2027 online coaching|cat 2027 batch|caterpillar|category/i.test(fullText)) {
+    item.category = 'MBA';
+    item.targetEmail = 'jatin.sharma2@pw.live, prince.kumar1@pw.live';
+    item.cmm = 'Jatin Sharma, Prince Kumar';
+    item.marketingAction = generateMarketingHook(item.category, item.exam || 'MBA (CAT / XAT / OMETs)');
+    return item;
+  }
+
+  // 10. IPMAT & JIPMAT check
+  if (/\b(ipmat|jipmat|iim indore ipmat|iim rohtak ipmat|iim ranchi ipm|integrated program in management)\b/i.test(fullText) && !/jipmat 2027 result/i.test(fullText)) {
+    item.category = 'IPMAT';
+    item.targetEmail = 'jatin.sharma2@pw.live, prince.kumar1@pw.live';
+    item.cmm = 'Jatin Sharma, Prince Kumar';
+    item.marketingAction = generateMarketingHook(item.category, item.exam || 'IPMAT / JIPMAT');
+    return item;
+  }
+
+  // 11. GMAT Focus Edition check
+  if (/\b(gmat|gmac|gmat focus|gmat exam|gmat syllabus|gmat score|gmat result|graduate management admission)\b/i.test(fullText) && !/gmat vs gre/i.test(fullText)) {
+    item.category = 'GMAT';
+    item.targetEmail = 'jatin.sharma2@pw.live, prince.kumar1@pw.live';
+    item.cmm = 'Jatin Sharma, Prince Kumar';
+    item.marketingAction = generateMarketingHook(item.category, item.exam || 'GMAT Focus Edition');
+    return item;
+  }
+
   return item;
 }
 
@@ -1973,6 +2022,147 @@ async function scrapeCGBoard() {
   return items;
 }
 
+// 18. Scrape MBA (CAT, XAT & OMETs)
+async function scrapeMBA() {
+  const items = [];
+  try {
+    const query = '("IIM CAT" OR "CAT 2026" OR "CAT 2027" OR "XAT 2026" OR "XAT 2027" OR "Common Admission Test" OR "SNAP exam" OR "NMAT") AND (Notification OR Result OR "Admit Card" OR Percentile OR Registration OR "Answer Key" OR Dates OR Syllabus) when:24h';
+    const feedUrl = `https://news.google.com/rss/search?q=${encodeURIComponent(query)}&hl=en-IN&gl=IN&ceid=IN:en`;
+    const res = await fetchHtml(feedUrl, 15000);
+    const itemRegex = /<item>[\s\S]*?<title>([\s\S]*?)<\/title>[\s\S]*?<link>([\s\S]*?)<\/link>[\s\S]*?<pubDate>([\s\S]*?)<\/pubDate>[\s\S]*?<\/item>/gi;
+    let match;
+    while ((match = itemRegex.exec(res)) !== null && items.length < 30) {
+      let title = cleanText(match[1]).replace(/ - [^-]+$/g, '').trim();
+      const link = match[2].trim();
+      const pubDate = match[3].trim();
+
+      if (isClickbaitOrIrrelevantNews(title)) continue;
+      if (/cat 2027 online coaching|cat 2027 batch|caterpillar|category/i.test(title)) continue;
+      if (!/\b(cat\s*202[5-7]|cat exam|iim cat|cat syllabus|cat result|cat admit card|cat answer key|cat scorecard|cat percentile|common admission test|xat 202[5-7]|xat exam|snap exam|nmat|cmat|omets exam|omets)\b/i.test(title)) continue;
+
+      if (title.length > 5 && !items.some(i => i.title === title || i.url === link)) {
+        const category = classifyCategory(title);
+        let exam = 'CAT (Common Admission Test)';
+        if (/xat/i.test(title)) exam = 'XAT (XLRI Jamshedpur)';
+        else if (/snap/i.test(title)) exam = 'SNAP (Symbiosis)';
+        else if (/nmat/i.test(title)) exam = 'NMAT (GMAC)';
+        else if (/cmat/i.test(title)) exam = 'CMAT (NTA)';
+
+        items.push({
+          jurisdiction: 'National / IIMs & Top B-Schools',
+          state: 'Pan-India',
+          exam: exam,
+          title: title,
+          url: link,
+          date: pubDate ? pubDate.split(' ').slice(1, 4).join(' ') : '',
+          pubDate: pubDate,
+          publishedDate: pubDate,
+          category: 'MBA',
+          priority: category === 'Result' || category === 'Admit Card' || category === 'Notification / Recruitment' ? 'CRITICAL' : 'HIGH',
+          marketingAction: generateMarketingHook(category, exam),
+          targetEmail: 'jatin.sharma2@pw.live, prince.kumar1@pw.live',
+          cmm: 'Jatin Sharma, Prince Kumar',
+          hash: generateHash(title, link)
+        });
+      }
+    }
+  } catch (e) {
+    console.error('Error scraping MBA news feed:', e.message);
+  }
+  return items;
+}
+
+// 19. Scrape IPMAT & JIPMAT (Integrated Program in Management)
+async function scrapeIPMAT() {
+  const items = [];
+  try {
+    const query = '("IPMAT" OR "JIPMAT" OR "IIM Indore IPMAT" OR "IIM Rohtak IPMAT" OR "Integrated Program in Management") AND (Registration OR Notification OR Exam OR "Admit Card" OR Result OR Dates OR Syllabus) when:24h';
+    const feedUrl = `https://news.google.com/rss/search?q=${encodeURIComponent(query)}&hl=en-IN&gl=IN&ceid=IN:en`;
+    const res = await fetchHtml(feedUrl, 15000);
+    const itemRegex = /<item>[\s\S]*?<title>([\s\S]*?)<\/title>[\s\S]*?<link>([\s\S]*?)<\/link>[\s\S]*?<pubDate>([\s\S]*?)<\/pubDate>[\s\S]*?<\/item>/gi;
+    let match;
+    while ((match = itemRegex.exec(res)) !== null && items.length < 30) {
+      let title = cleanText(match[1]).replace(/ - [^-]+$/g, '').trim();
+      const link = match[2].trim();
+      const pubDate = match[3].trim();
+
+      if (isClickbaitOrIrrelevantNews(title)) continue;
+      if (/jipmat 2027 result/i.test(title)) continue;
+      if (!/\b(ipmat|jipmat|iim indore ipmat|iim rohtak ipmat|iim ranchi ipm|integrated program in management)\b/i.test(title)) continue;
+
+      if (title.length > 5 && !items.some(i => i.title === title || i.url === link)) {
+        const category = classifyCategory(title);
+        let exam = 'IPMAT (IIM Indore / Rohtak)';
+        if (/jipmat/i.test(title)) exam = 'JIPMAT (NTA / IIM Bodh Gaya & Jammu)';
+
+        items.push({
+          jurisdiction: 'National / IIMs & NTA',
+          state: 'Pan-India',
+          exam: exam,
+          title: title,
+          url: link,
+          date: pubDate ? pubDate.split(' ').slice(1, 4).join(' ') : '',
+          pubDate: pubDate,
+          publishedDate: pubDate,
+          category: 'IPMAT',
+          priority: category === 'Result' || category === 'Admit Card' || category === 'Notification / Recruitment' ? 'CRITICAL' : 'HIGH',
+          marketingAction: generateMarketingHook(category, exam),
+          targetEmail: 'jatin.sharma2@pw.live, prince.kumar1@pw.live',
+          cmm: 'Jatin Sharma, Prince Kumar',
+          hash: generateHash(title, link)
+        });
+      }
+    }
+  } catch (e) {
+    console.error('Error scraping IPMAT news feed:', e.message);
+  }
+  return items;
+}
+
+// 20. Scrape GMAT Focus Edition
+async function scrapeGMAT() {
+  const items = [];
+  try {
+    const query = '("GMAT" OR "GMAC" OR "GMAT Focus Edition" OR "Graduate Management Admission Test") AND (Registration OR Exam OR Dates OR Score OR Result OR Syllabus OR Announcement) when:24h';
+    const feedUrl = `https://news.google.com/rss/search?q=${encodeURIComponent(query)}&hl=en-IN&gl=IN&ceid=IN:en`;
+    const res = await fetchHtml(feedUrl, 15000);
+    const itemRegex = /<item>[\s\S]*?<title>([\s\S]*?)<\/title>[\s\S]*?<link>([\s\S]*?)<\/link>[\s\S]*?<pubDate>([\s\S]*?)<\/pubDate>[\s\S]*?<\/item>/gi;
+    let match;
+    while ((match = itemRegex.exec(res)) !== null && items.length < 30) {
+      let title = cleanText(match[1]).replace(/ - [^-]+$/g, '').trim();
+      const link = match[2].trim();
+      const pubDate = match[3].trim();
+
+      if (isClickbaitOrIrrelevantNews(title)) continue;
+      if (/gmat vs gre/i.test(title)) continue;
+      if (!/\b(gmat|gmac|gmat focus|graduate management admission)\b/i.test(title)) continue;
+
+      if (title.length > 5 && !items.some(i => i.title === title || i.url === link)) {
+        const category = classifyCategory(title);
+        items.push({
+          jurisdiction: 'GMAC / Global B-Schools',
+          state: 'Global / Pan-India',
+          exam: 'GMAT Focus Edition',
+          title: title,
+          url: link,
+          date: pubDate ? pubDate.split(' ').slice(1, 4).join(' ') : '',
+          pubDate: pubDate,
+          publishedDate: pubDate,
+          category: 'GMAT',
+          priority: category === 'Result' || category === 'Admit Card' || category === 'Notification / Recruitment' ? 'CRITICAL' : 'HIGH',
+          marketingAction: generateMarketingHook(category, 'GMAT Focus Edition'),
+          targetEmail: 'jatin.sharma2@pw.live, prince.kumar1@pw.live',
+          cmm: 'Jatin Sharma, Prince Kumar',
+          hash: generateHash(title, link)
+        });
+      }
+    }
+  } catch (e) {
+    console.error('Error scraping GMAT news feed:', e.message);
+  }
+  return items;
+}
+
 // Master Runner
 async function runAllOfficialScrapers() {
   console.log('===============================================================');
@@ -2098,6 +2288,27 @@ async function runAllOfficialScrapers() {
     const cgb = await scrapeCGBoard();
     console.log(`✅ Discovered ${cgb.length} notices`);
     allUpdates.push(...cgb);
+  } catch (e) { console.log(`❌ Failed: ${e.message || e.code || e}`); }
+
+  try {
+    process.stdout.write('18. Scraping MBA (CAT, XAT & OMETs)... ');
+    const mba = await scrapeMBA();
+    console.log(`✅ Discovered ${mba.length} notices`);
+    allUpdates.push(...mba);
+  } catch (e) { console.log(`❌ Failed: ${e.message || e.code || e}`); }
+
+  try {
+    process.stdout.write('19. Scraping IPMAT & JIPMAT (Integrated Management)... ');
+    const ipmat = await scrapeIPMAT();
+    console.log(`✅ Discovered ${ipmat.length} notices`);
+    allUpdates.push(...ipmat);
+  } catch (e) { console.log(`❌ Failed: ${e.message || e.code || e}`); }
+
+  try {
+    process.stdout.write('20. Scraping GMAT Focus Edition (GMAC / Top B-Schools)... ');
+    const gmat = await scrapeGMAT();
+    console.log(`✅ Discovered ${gmat.length} notices`);
+    allUpdates.push(...gmat);
   } catch (e) { console.log(`❌ Failed: ${e.message || e.code || e}`); }
 
   console.log('\n===============================================================');
@@ -2297,6 +2508,9 @@ module.exports = {
   scrapeMPBoard,
   scrapeRBSE,
   scrapeCGBoard,
+  scrapeMBA,
+  scrapeIPMAT,
+  scrapeGMAT,
   applySmartLegalRouting,
   applyMultiCategoryRouting,
   isClickbaitOrIrrelevantNews,

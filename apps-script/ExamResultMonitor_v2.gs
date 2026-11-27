@@ -330,6 +330,127 @@ const BUILTIN_CMM_SCOPES = [
     excludes: [],
     queries: ['CGBSE Class 10 12 time table date sheet', 'CG Board admit card model paper result', 'Chhattisgarh board pariksha timetable'],
     kind: 'cmm_category'
+  },
+  {
+    name: 'MBA',
+    sheetTab: 'MBA',
+    jurisdiction: 'National / IIMs & Top B-Schools',
+    exam: 'CAT, XAT & OMETs (MBA Entrance Exams)',
+    category: 'MBA',
+    recipientEmail: 'jatin.sharma2@pw.live, prince.kumar1@pw.live',
+    aliases: [
+      'CAT',
+      'IIM CAT',
+      'Common Admission Test',
+      'XAT',
+      'SNAP Exam',
+      'NMAT',
+      'CMAT',
+      'OMETs Exam',
+      'CAT 2026',
+      'CAT 2027'
+    ],
+    includes: [
+      'cat 2027 syllabus',
+      'cat 2027 roadmap',
+      'cat 2027 preparation',
+      'cat 2027',
+      'cat syllabus',
+      'cat preparation',
+      'cat exam pattern',
+      'cat exam full details',
+      'cat exam',
+      'OMETs Exam',
+      'cat 2026 Result',
+      'IIM CAT result',
+      'CAT percentile',
+      'CAT answer key',
+      'CAT admit card',
+      'https://iimcat.ac.in'
+    ],
+    excludes: [
+      'cat 2027 online coaching',
+      'cat 2027 batch',
+      'caterpillar',
+      'category'
+    ],
+    queries: [
+      'IIM CAT exam result percentile notification',
+      'CAT exam registration admit card date sheet',
+      'XAT MBA entrance exam notification schedule',
+      'OMETs SNAP NMAT CMAT exam update'
+    ],
+    kind: 'cmm_category'
+  },
+  {
+    name: 'IPMAT',
+    sheetTab: 'IPMAT',
+    jurisdiction: 'National / IIMs & NTA',
+    exam: 'IPMAT & JIPMAT (Integrated Program in Management)',
+    category: 'IPMAT',
+    recipientEmail: 'jatin.sharma2@pw.live, prince.kumar1@pw.live',
+    aliases: [
+      'IPMAT',
+      'JIPMAT',
+      'IIM Indore IPMAT',
+      'IIM Rohtak IPMAT',
+      'IIM Ranchi IPM',
+      'NTA JIPMAT',
+      'ipmat result'
+    ],
+    includes: [
+      'ipmat exam',
+      'ipmat exam 2027',
+      'ipmat registration 2027',
+      'ipmat exam date 2027',
+      'ipmat 2027 syllabus',
+      'jipmat syllabus',
+      'jipmat 2027',
+      'ipmat admit card',
+      'ipmat result',
+      'jipmat registration'
+    ],
+    excludes: [
+      'jipmat 2027 result'
+    ],
+    queries: [
+      'IIM Indore IPMAT registration exam date',
+      'NTA JIPMAT notification application datesheet',
+      'IPMAT IIM Rohtak Ranchi admit card result'
+    ],
+    kind: 'cmm_category'
+  },
+  {
+    name: 'GMAT',
+    sheetTab: 'GMAT',
+    jurisdiction: 'GMAC / Global B-Schools',
+    exam: 'GMAT Focus Edition (Graduate Management Admission Test)',
+    category: 'GMAT',
+    recipientEmail: 'jatin.sharma2@pw.live, prince.kumar1@pw.live',
+    aliases: [
+      'GMAT',
+      'GMAC',
+      'GMAT Focus',
+      'GMAT Focus Edition',
+      'Graduate Management Admission Test'
+    ],
+    includes: [
+      'gmat syllabus',
+      'gmat exam date 2026',
+      'gmat result',
+      'gmat score',
+      'gmat focus edition registration',
+      'https://www.mba.com'
+    ],
+    excludes: [
+      'gmat vs gre'
+    ],
+    queries: [
+      'GMAT Focus Edition exam date registration',
+      'GMAC GMAT exam pattern syllabus update',
+      'GMAT score percentile MBA admission announcement'
+    ],
+    kind: 'cmm_category'
   }
 ];
 
@@ -605,10 +726,67 @@ function isGitijBoardItem_(item) {
   return /mp board|mpbse|rajasthan board|rbse|bser|chhattisgarh board|cgbse|cg board|madhya pradesh board/i.test(text);
 }
 
+function isMbaItem_(item) {
+  if (!item) return false;
+  const text = (
+    String(item.category || '') + ' ' +
+    String(item.exam || '') + ' ' +
+    String(item.jurisdiction || '') + ' ' +
+    String(item.scope || '') + ' ' +
+    String(item.title || '') + ' ' +
+    String(item.url || '') + ' ' +
+    String(item.queryLabel || '')
+  ).toLowerCase();
+
+  // Guard: Never confuse State PSC, Commissions, Judiciary or Law with MBA!
+  if (/\b(uppsc|bpsc|mppsc|rpsc|opsc|mpsc|judiciary|high court|supreme court|advocate|judicial)\b/i.test(text) && !/\b(cat\s*20\d{2}|iim cat|xat)\b/i.test(text)) {
+    return false;
+  }
+
+  // Guard: Avoid subwords like category, application, location, certificate
+  if (/cat 2027 online coaching|cat 2027 batch/i.test(text)) return false;
+
+  return /\b(cat\s*202[5-7]|cat exam|iim cat|cat syllabus|cat result|cat admit card|cat answer key|cat scorecard|cat percentile|common admission test|xat 202[5-7]|xat exam|snap exam|nmat|cmat|iim\b|omets exam|omets)\b/i.test(text);
+}
+
+function isIpmatItem_(item) {
+  if (!item) return false;
+  const text = (
+    String(item.category || '') + ' ' +
+    String(item.exam || '') + ' ' +
+    String(item.jurisdiction || '') + ' ' +
+    String(item.scope || '') + ' ' +
+    String(item.title || '') + ' ' +
+    String(item.url || '') + ' ' +
+    String(item.queryLabel || '')
+  ).toLowerCase();
+
+  if (/jipmat 2027 result/i.test(text)) return false;
+
+  return /\b(ipmat|jipmat|iim indore ipmat|iim rohtak ipmat|iim ranchi ipm|ipm program|integrated program in management)\b/i.test(text);
+}
+
+function isGmatItem_(item) {
+  if (!item) return false;
+  const text = (
+    String(item.category || '') + ' ' +
+    String(item.exam || '') + ' ' +
+    String(item.jurisdiction || '') + ' ' +
+    String(item.scope || '') + ' ' +
+    String(item.title || '') + ' ' +
+    String(item.url || '') + ' ' +
+    String(item.queryLabel || '')
+  ).toLowerCase();
+
+  if (/gmat vs gre/i.test(text)) return false;
+
+  return /\b(gmat|gmac|gmat focus|gmat exam|gmat syllabus|gmat score|gmat result|graduate management admission)\b/i.test(text);
+}
+
 function isCmmOnlyItem_(item) {
   if (!item) return false;
   if (item.kind === 'cmm_category') return true;
-  if (isUpBoardItem_(item) || isCaItem_(item) || isGateItem_(item) || isAeJeItem_(item) || isAgricultureItem_(item) || isGitijBoardItem_(item)) return true;
+  if (isUpBoardItem_(item) || isCaItem_(item) || isGateItem_(item) || isAeJeItem_(item) || isAgricultureItem_(item) || isGitijBoardItem_(item) || isMbaItem_(item) || isIpmatItem_(item) || isGmatItem_(item)) return true;
   const emails = String(item.recipientEmail || '') + ' ' + String(item.targetEmail || '');
   if (emails && emails.includes('@pw.live') && !emails.includes(getEmailTo_())) return true;
   return false;
@@ -736,7 +914,22 @@ function getCmmEmailForCategory_(item) {
     return 'gitij.kumar@pw.live';
   }
 
-  // 7. State PSC and Judiciary items ALWAYS route to Leadership (CFG.EMAIL_TO), NEVER to any CMM!
+  // 7. Strict Category Isolation: MBA items ALWAYS route to Jatin Sharma & Prince Kumar
+  if (isMbaItem_(item)) {
+    return 'jatin.sharma2@pw.live, prince.kumar1@pw.live';
+  }
+
+  // 8. Strict Category Isolation: IPMAT items ALWAYS route to Jatin Sharma & Prince Kumar
+  if (isIpmatItem_(item)) {
+    return 'jatin.sharma2@pw.live, prince.kumar1@pw.live';
+  }
+
+  // 9. Strict Category Isolation: GMAT items ALWAYS route to Jatin Sharma & Prince Kumar
+  if (isGmatItem_(item)) {
+    return 'jatin.sharma2@pw.live, prince.kumar1@pw.live';
+  }
+
+  // 10. State PSC and Judiciary items ALWAYS route to Leadership (CFG.EMAIL_TO), NEVER to any CMM!
   if (isStatePscOrJudiciaryItem_(item)) {
     return getEmailTo_();
   }
@@ -1261,6 +1454,9 @@ function sendCategorizedExecutiveEmails_(items, spreadsheetUrl) {
   const aeJeItems = [];
   const agriItems = [];
   const gitijBoardItems = [];
+  const mbaItems = [];
+  const ipmatItems = [];
+  const gmatItems = [];
   const pscJudiciaryItems = [];
   const otherCmmGroups = {};
   const coreEmail = getEmailTo_();
@@ -1308,7 +1504,25 @@ function sendCategorizedExecutiveEmails_(items, spreadsheetUrl) {
       return;
     }
 
-    // 7. Dynamic CMM or State PSC routing
+    // 7. Check MBA (CAT / XAT / OMETs)
+    if (isMbaItem_(item)) {
+      mbaItems.push(item);
+      return;
+    }
+
+    // 8. Check IPMAT & JIPMAT
+    if (isIpmatItem_(item)) {
+      ipmatItems.push(item);
+      return;
+    }
+
+    // 9. Check GMAT Focus Edition
+    if (isGmatItem_(item)) {
+      gmatItems.push(item);
+      return;
+    }
+
+    // 10. Dynamic CMM or State PSC routing
     const email = getCmmEmailForCategory_(item);
     if (email === coreEmail) {
       pscJudiciaryItems.push(item);
@@ -1348,12 +1562,27 @@ function sendCategorizedExecutiveEmails_(items, spreadsheetUrl) {
     dispatchSingleCategoryEmail_('gitij.kumar@pw.live', gitijBoardItems, spreadsheetUrl, 'State Board (MP / RBSE / CG)');
   }
 
-  // 7. Dispatch any other dynamic CMM categories to their respective CMM only
+  // 7. Dispatch MBA (CAT / XAT / OMETs) strictly to Jatin Sharma & Prince Kumar ONLY
+  if (mbaItems.length > 0) {
+    dispatchSingleCategoryEmail_('jatin.sharma2@pw.live, prince.kumar1@pw.live', mbaItems, spreadsheetUrl, 'MBA (CAT / XAT / OMETs)');
+  }
+
+  // 8. Dispatch IPMAT & JIPMAT strictly to Jatin Sharma & Prince Kumar ONLY
+  if (ipmatItems.length > 0) {
+    dispatchSingleCategoryEmail_('jatin.sharma2@pw.live, prince.kumar1@pw.live', ipmatItems, spreadsheetUrl, 'IPMAT / JIPMAT');
+  }
+
+  // 9. Dispatch GMAT Focus Edition strictly to Jatin Sharma & Prince Kumar ONLY
+  if (gmatItems.length > 0) {
+    dispatchSingleCategoryEmail_('jatin.sharma2@pw.live, prince.kumar1@pw.live', gmatItems, spreadsheetUrl, 'GMAT Focus Edition');
+  }
+
+  // 10. Dispatch any other dynamic CMM categories to their respective CMM only
   Object.keys(otherCmmGroups).forEach(email => {
     dispatchSingleCategoryEmail_(email, otherCmmGroups[email], spreadsheetUrl);
   });
 
-  // 8. Dispatch State PSC & Judiciary strictly to CFG.EMAIL_TO (ZERO UP Board, ZERO CA, ZERO GATE/AE-JE/Agri/MP/RBSE/CG)
+  // 11. Dispatch State PSC & Judiciary strictly to CFG.EMAIL_TO (ZERO UP Board, ZERO CA, ZERO GATE/AE-JE/Agri/MP/RBSE/CG/MBA/IPMAT/GMAT)
   if (pscJudiciaryItems.length > 0) {
     dispatchSingleCategoryEmail_(coreEmail, pscJudiciaryItems, spreadsheetUrl, 'State PSC & Judiciary');
   }
@@ -1374,7 +1603,26 @@ function dispatchSingleCategoryEmail_(recipientEmail, items, spreadsheetUrl, tit
       categoryTitle = 'CA (Foundation & Intermediate)';
     } else if (recipientEmail === 'gitij.kumar@pw.live') {
       categoryTitle = 'State Board (MP / RBSE / CG)';
+    } else if (recipientEmail.includes('jatin.sharma2') || recipientEmail.includes('prince.kumar1')) {
+      if (items.some(i => /gmat/i.test(i.category || i.exam || ''))) {
+        categoryTitle = 'GMAT Focus Edition';
+      } else if (items.some(i => /ipmat|jipmat/i.test(i.category || i.exam || ''))) {
+        categoryTitle = 'IPMAT / JIPMAT';
+      } else {
+        categoryTitle = 'MBA (CAT / XAT / OMETs)';
+      }
     } else if (recipientEmail.includes('harsh.ayush1')) {
+      categoryTitle = 'GATE';
+    } else if (items.some(i => /ae[- ]?je/i.test(i.category || i.exam || ''))) {
+      categoryTitle = 'AE-JE';
+    } else if (items.some(i => /agri/i.test(i.category || i.exam || ''))) {
+      categoryTitle = 'Agriculture';
+    } else if (items.every(i => i.jurisdiction === items[0].jurisdiction)) {
+      categoryTitle = items[0].jurisdiction;
+    } else {
+      categoryTitle = 'PW Exam Intelligence';
+    }
+  }
       categoryTitle = 'GATE';
     } else if (items.some(i => /ae[- ]?je/i.test(i.category || i.exam || ''))) {
       categoryTitle = 'AE-JE';
@@ -2350,10 +2598,10 @@ function sendTagsConfirmationToCMMs(categoriesFilter) {
 }
 
 /**
- * Utility: Sends confirmation email specifically for the 3 newly added categories
+ * Utility: Sends confirmation email specifically for the newly added categories (MBA, IPMAT, GMAT)
  */
 function sendTagsConfirmationToNewCMMs() {
-  return sendTagsConfirmationToCMMs(['GATE', 'AE-JE', 'Agriculture']);
+  return sendTagsConfirmationToCMMs(['MBA', 'IPMAT', 'GMAT']);
 }
 
 /**
@@ -2377,7 +2625,7 @@ function onOpen() {
     const ui = SpreadsheetApp.getUi();
     ui.createMenu('🏛️ PW Exam Intelligence')
       .addItem('📧 Send Tags Confirmation (All CMMs)', 'sendTagsConfirmationToCMMs')
-      .addItem('📧 Send Tags Confirmation (3 New: GATE, AE-JE, Agri)', 'sendTagsConfirmationToNewCMMs')
+      .addItem('📧 Send Tags Confirmation (New CMMs: MBA, IPMAT, GMAT)', 'sendTagsConfirmationToNewCMMs')
       .addItem('🔄 Refresh & Sync Tags from Sheet', 'syncTagsFromSheet')
       .addSeparator()
       .addItem('⚡ Sync Official Notices Now', 'syncOfficialNoticesNow')
