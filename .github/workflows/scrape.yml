@@ -40,7 +40,7 @@ jobs:
           cp scraper/latest_official_notices.json dashboard/public/notices.json 2>/dev/null || true
           cp scraper/latest_official_notices.json dashboard/src/data/notices.json 2>/dev/null || true
           cp scraper/latest_official_notices.json dist/notices.json 2>/dev/null || true
-          git add scraper/seen_hashes.json scraper/latest_official_notices.json dashboard/public/notices.json dashboard/src/data/notices.json dist/notices.json
+          git add scraper/seen_hashes.json scraper/seen_hashes_praphul.json scraper/latest_official_notices.json dashboard/public/notices.json dashboard/src/data/notices.json dist/notices.json
           if ! git diff --cached --quiet; then
             git commit -m "chore(radar): sync verified official circulars [skip ci]"
             git pull --rebase origin main || true

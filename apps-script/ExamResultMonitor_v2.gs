@@ -35,6 +35,43 @@ const CFG = {
   ENABLE_DYNAMIC_CMM_TAGS: true // Auto-load CMM categories, tags & emails directly from Sheet
 };
 
+/**
+ * PRAPHUL SINGH — DEDICATED OFFICIAL PORTALS INTELLIGENCE RADAR
+ * Recipient: praphul.singh@pw.live
+ * Completely separate and decoupled official portal monitoring (119+ official domains).
+ */
+const PRAPHUL_CONFIG = {
+  EMAIL: 'praphul.singh@pw.live',
+  TITLE: '🏛️ Official Portals Radar',
+  ENABLED: true,
+  HOSTNAMES: [
+    'accaglobal.com', 'afcat.cdac.in', 'afmc.nic.in', 'agnipathvayu.cdac.in', 'ahsec.assam.gov.in',
+    'aiimsexams.ac.in', 'allindiabarexamination.com', 'bankofbaroda.in', 'bankofindia.co.in', 'bie.ap.gov.in',
+    'biharboardonline.com', 'biharcetbed-brabu.in', 'bpsc.bihar.gov.in', 'bpssc.bihar.gov.in', 'bse.ap.gov.in',
+    'bse.telangana.gov.in', 'bsebdeled.com', 'bseodisha.nic.in', 'canarabank.com', 'cbse.gov.in',
+    'centralbankofindia.co.in', 'cetcell.mahacet.org', 'cfainstitute.org', 'cgbse.nic.in', 'chse.odisha.gov.in',
+    'consortiumofnlus.ac.in', 'csbc.bihar.gov.in', 'csirnet.nta.nic.in', 'ctet.nic.in', 'cuet.nta.nic.in',
+    'dhsekerala.in', 'dpue-exam.karnataka.gov.in', 'drdo.gov.in', 'exams.nta.nic.in', 'gate2027.iitm.ac.in',
+    'gpat.nta.nic.in', 'gseb.org', 'gsebeservice.com', 'iapt.org.in', 'ibps.in',
+    'icai.org', 'icsi.edu', 'idp.com', 'iibf.org.in', 'iimcat.ac.in',
+    'indianbank.in', 'indiancoastguard.gov.in', 'intermediate.biharboardonline.com', 'iob.in', 'ioqm.mtai.org.in',
+    'irdai.gov.in', 'jac.jharkhand.gov.in', 'jam.iitkgp.ac.in', 'jeeadv.ac.in', 'jeemain.nta.nic.in',
+    'jkbose.jk.gov.in', 'joinindianarmy.nic.in', 'joinindiannavy.gov.in', 'keralaboard.net', 'kseeb.karnataka.gov.in',
+    'licindia.in', 'mahahsscboard.in', 'mba.com', 'mcc.nic.in', 'mpbse.nic.in',
+    'mppsc.mp.gov.in', 'mpsc.gov.in', 'nabard.org', 'nata.in', 'nationalinsurance.nic.co.in',
+    'nationallawuniversitydelhi.in', 'nbe.edu.in', 'neet.nta.nic.in', 'newindia.co.in', 'nid.edu',
+    'nift.ac.in', 'nimcet.admissions.nic.in', 'nmat.nmims.edu', 'ojee.nic.in', 'opsc.gov.in',
+    'ouat.ac.in', 'pfrda.org.in', 'pnbindia.in', 'portal.iibf.org.in', 'rajeduboard.rajasthan.gov.in',
+    'rbi.org.in', 'recruitment.uplegisassembly.gov.in', 'rpsc.rajasthan.gov.in', 'rrb.indianrailways.gov.in', 'rrbapply.gov.in',
+    'rssb.rajasthan.gov.in', 'ruhsraj.org', 'sbi.co.in', 'sebi.gov.in', 'sidbi.in',
+    'site.sebaonline.org', 'slat-test.org', 'snaptest.org', 'sofworld.org', 'ssc.gov.in',
+    'tamilnadustateboard.org', 'territorialarmy.in', 'tgbienew.cgg.gov.in', 'uceed.iitb.ac.in', 'ugcnet.nta.nic.in',
+    'uiic.co.in', 'unionbankofindia.co.in', 'upessc.up.gov.in', 'upmsp.edu.in', 'uppbpb.gov.in',
+    'uppsc.up.nic.in', 'upsc.gov.in', 'upsssc.gov.in', 'vidhanparishad.bihar.gov.in', 'wbbse.wb.gov.in',
+    'wbchse.wb.gov.in', 'wbjeeb.nic.in', 'wbmcc.nic.in', 'xatonline.in'
+  ]
+};
+
 const HEADERS = [
   'Date & Time',
   'State / Body',
@@ -783,6 +820,19 @@ function isGmatItem_(item) {
   return /\b(gmat|gmac|gmat focus|gmat exam|gmat syllabus|gmat score|gmat result|graduate management admission)\b/i.test(text);
 }
 
+function isPraphulOfficialPortalItem_(item) {
+  if (!item) return false;
+  const url = String(item.url || '').toLowerCase();
+  const jur = String(item.jurisdiction || '').toLowerCase();
+  for (let i = 0; i < PRAPHUL_CONFIG.HOSTNAMES.length; i++) {
+    const host = PRAPHUL_CONFIG.HOSTNAMES[i];
+    if (url.includes(host) || jur.includes(host.split('.')[0])) {
+      return true;
+    }
+  }
+  return false;
+}
+
 function isCmmOnlyItem_(item) {
   if (!item) return false;
   if (item.kind === 'cmm_category') return true;
@@ -1457,11 +1507,17 @@ function sendCategorizedExecutiveEmails_(items, spreadsheetUrl) {
   const mbaItems = [];
   const ipmatItems = [];
   const gmatItems = [];
+  const praphulItems = [];
   const pscJudiciaryItems = [];
   const otherCmmGroups = {};
   const coreEmail = getEmailTo_();
 
   items.forEach(item => {
+    // 🏛️ Mirror notice to Praphul Singh if it originates from any of the 119 Official Portals
+    if (isPraphulOfficialPortalItem_(item)) {
+      praphulItems.push(item);
+    }
+
     // 0. State PSC & Judiciary items ALWAYS go to pscJudiciaryItems (Leadership), NEVER to CMMs!
     if (isStatePscOrJudiciaryItem_(item)) {
       pscJudiciaryItems.push(item);
@@ -1586,6 +1642,11 @@ function sendCategorizedExecutiveEmails_(items, spreadsheetUrl) {
   if (pscJudiciaryItems.length > 0) {
     dispatchSingleCategoryEmail_(coreEmail, pscJudiciaryItems, spreadsheetUrl, 'State PSC & Judiciary');
   }
+
+  // 12. Dispatch Dedicated Official Portals Digest strictly to Praphul Singh ONLY (119+ Portals)
+  if (praphulItems.length > 0) {
+    dispatchSingleCategoryEmail_(PRAPHUL_CONFIG.EMAIL, praphulItems, spreadsheetUrl, PRAPHUL_CONFIG.TITLE);
+  }
 }
 
 function dispatchSingleCategoryEmail_(recipientEmail, items, spreadsheetUrl, titleOverride) {
@@ -1597,7 +1658,9 @@ function dispatchSingleCategoryEmail_(recipientEmail, items, spreadsheetUrl, tit
   // Determine Category Title
   let categoryTitle = titleOverride;
   if (!categoryTitle) {
-    if (recipientEmail === 'anshu.mishra@pw.live') {
+    if (recipientEmail === PRAPHUL_CONFIG.EMAIL) {
+      categoryTitle = PRAPHUL_CONFIG.TITLE;
+    } else if (recipientEmail === 'anshu.mishra@pw.live') {
       categoryTitle = 'UP State Board';
     } else if (recipientEmail === 'moksh.sharma@pw.live') {
       categoryTitle = 'CA (Foundation & Intermediate)';
@@ -1612,17 +1675,6 @@ function dispatchSingleCategoryEmail_(recipientEmail, items, spreadsheetUrl, tit
         categoryTitle = 'MBA (CAT / XAT / OMETs)';
       }
     } else if (recipientEmail.includes('harsh.ayush1')) {
-      categoryTitle = 'GATE';
-    } else if (items.some(i => /ae[- ]?je/i.test(i.category || i.exam || ''))) {
-      categoryTitle = 'AE-JE';
-    } else if (items.some(i => /agri/i.test(i.category || i.exam || ''))) {
-      categoryTitle = 'Agriculture';
-    } else if (items.every(i => i.jurisdiction === items[0].jurisdiction)) {
-      categoryTitle = items[0].jurisdiction;
-    } else {
-      categoryTitle = 'PW Exam Intelligence';
-    }
-  }
       categoryTitle = 'GATE';
     } else if (items.some(i => /ae[- ]?je/i.test(i.category || i.exam || ''))) {
       categoryTitle = 'AE-JE';
@@ -2315,6 +2367,21 @@ function doPost(e) {
       })).setMimeType(ContentService.MimeType.JSON);
     }
 
+    if (postData.action === 'dispatchPraphulAlerts') {
+      const notices = postData.notices || [];
+      const ss = getSpreadsheet_();
+      const sheetUrl = ss ? ss.getUrl() : '';
+      if (notices.length > 0) {
+        dispatchSingleCategoryEmail_(PRAPHUL_CONFIG.EMAIL, notices, sheetUrl, PRAPHUL_CONFIG.TITLE);
+        log_('INFO', `Dispatched dedicated official portals digest to ${PRAPHUL_CONFIG.EMAIL}`, `Items: ${notices.length}`);
+      }
+      return ContentService.createTextOutput(JSON.stringify({
+        status: 'ok',
+        message: 'Official portals alerts dispatched to Praphul Singh',
+        count: notices.length
+      })).setMimeType(ContentService.MimeType.JSON);
+    }
+
     const incoming = Array.isArray(postData) ? postData : (postData.notices || [postData]);
     if (!incoming || incoming.length === 0) {
       return ContentService.createTextOutput(JSON.stringify({ status: 'ok', inserted: 0 }))
@@ -2485,6 +2552,15 @@ function doGet(e) {
     })).setMimeType(ContentService.MimeType.JSON);
   }
 
+  if (e && e.parameter && e.parameter.action === 'sendPraphulConfirmation') {
+    const res = sendPraphulOnboardingEmail_();
+    return ContentService.createTextOutput(JSON.stringify({
+      status: 'ok',
+      message: 'Confirmation email dispatched to praphul.singh@pw.live',
+      result: res
+    })).setMimeType(ContentService.MimeType.JSON);
+  }
+
   const targetUrl = (e && e.parameter && e.parameter.url);
   if (!targetUrl) {
     return ContentService.createTextOutput(JSON.stringify({
@@ -2618,6 +2694,59 @@ function syncTagsFromSheet() {
 }
 
 /**
+ * Utility: Sends confirmation email specifically to Praphul Singh detailing the 119+ official portals
+ */
+function sendPraphulOnboardingEmail_() {
+  const toEmail = PRAPHUL_CONFIG.EMAIL;
+  const subject = `🏛️ Welcome to PW Official Portals Intelligence Radar — Active Monitoring Confirmed`;
+  const portalListHtml = PRAPHUL_CONFIG.HOSTNAMES.slice(0, 30).map(h => `<li style="margin-bottom:4px;"><code>${escapeHtml_(h)}</code></li>`).join('') +
+    `<li style="margin-top:6px;color:#5f6368;"><i>...and ${PRAPHUL_CONFIG.HOSTNAMES.length - 30} more official government & entrance exam websites</i></li>`;
+
+  const htmlBody = `
+    <div style="font-family:Arial,sans-serif;background:#f8f9fa;padding:24px;color:#202124;">
+      <div style="max-width:640px;margin:0 auto;background:#ffffff;border-radius:8px;border:1px solid #dadce0;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,0.08);">
+        <div style="background:#0f172a;color:#ffffff;padding:20px 24px;">
+          <div style="font-size:11px;font-weight:bold;text-transform:uppercase;letter-spacing:1px;color:#38bdf8;margin-bottom:4px;">Physics Wallah Growth & Marketing Intelligence</div>
+          <h2 style="margin:0;font-size:18px;">🏛️ Official Portals Radar Activated</h2>
+          <div style="font-size:13px;color:#94a3b8;margin-top:4px;">Direct Feed for <b>${escapeHtml_(toEmail)}</b></div>
+        </div>
+        <div style="padding:24px;">
+          <p style="font-size:14px;color:#3c4043;">Hello Praphul,</p>
+          <p style="font-size:14px;color:#3c4043;line-height:1.6;">
+            Your dedicated <b>Official Portals Intelligence Radar</b> is now active.
+            Our automated 24/7 scrapers and news crawlers are monitoring <b>${PRAPHUL_CONFIG.HOSTNAMES.length}+ official websites</b> (including SSC, RRB, NTA, UPSC, Banking, Defence, State Boards, and National Entrances).
+          </p>
+          <div style="background:#e8f0fe;border-left:4px solid #1a73e8;padding:12px 16px;border-radius:4px;margin:16px 0;">
+            <b>📬 Routing Confirmation:</b> All breaking notices, official circulars, admit cards, and results from these official portals will be delivered directly to: <code>${escapeHtml_(toEmail)}</code>.
+          </div>
+          <h4 style="font-size:14px;color:#0f172a;margin:20px 0 8px 0;border-bottom:1px solid #e2e8f0;padding-bottom:4px;">
+            📋 Monitored Official Portals Sample (${PRAPHUL_CONFIG.HOSTNAMES.length} registered):
+          </h4>
+          <ul style="font-size:13px;line-height:1.6;padding-left:20px;">
+            ${portalListHtml}
+          </ul>
+        </div>
+      </div>
+    </div>
+  `;
+
+  try {
+    MailApp.sendEmail({
+      to: toEmail,
+      subject: subject,
+      body: `Your official portals radar is active. Alerts will be delivered directly to: ${toEmail}`,
+      htmlBody: htmlBody,
+      name: 'PW Official Portals Radar'
+    });
+    log_('INFO', 'Dispatched official portals onboarding confirmation to ' + toEmail, '');
+    return { status: 'SENT', email: toEmail, portalsCount: PRAPHUL_CONFIG.HOSTNAMES.length };
+  } catch (e) {
+    log_('ERROR', 'Failed to dispatch official portals confirmation: ' + e.message, '');
+    return { status: 'FAILED', email: toEmail, error: e.message };
+  }
+}
+
+/**
  * Automatically creates custom menu in Google Sheets UI
  */
 function onOpen() {
@@ -2626,6 +2755,7 @@ function onOpen() {
     ui.createMenu('🏛️ PW Exam Intelligence')
       .addItem('📧 Send Tags Confirmation (All CMMs)', 'sendTagsConfirmationToCMMs')
       .addItem('📧 Send Tags Confirmation (New CMMs: MBA, IPMAT, GMAT)', 'sendTagsConfirmationToNewCMMs')
+      .addItem('🏛️ Send Confirmation to Praphul Singh', 'sendPraphulOnboardingEmail_')
       .addItem('🔄 Refresh & Sync Tags from Sheet', 'syncTagsFromSheet')
       .addSeparator()
       .addItem('⚡ Sync Official Notices Now', 'syncOfficialNoticesNow')

@@ -2419,6 +2419,20 @@ async function runAllOfficialScrapers() {
     console.log('\n✅ All official portals checked. 0 new notices since last check.');
   }
 
+  // 🏛️ Isolated Official Portals Mirror for Praphul Singh (Untouched & Decoupled)
+  try {
+    const praphulModule = require('./praphul_official_portals');
+    const praphulNotices = praphulModule.processNoticesForPraphul(allUpdates);
+    if (praphulNotices.length > 0) {
+      console.log(`\n🏛️ Discovered ${praphulNotices.length} official notices for praphul.singh@pw.live. Dispatching...`);
+      const targetWebAppUrl = process.env.GOOGLE_WEBAPP_URL || GOOGLE_WEBAPP_CONFIG.url;
+      await praphulModule.dispatchPraphulAlerts(praphulNotices, targetWebAppUrl);
+      console.log(`✅ Dedicated official portals dispatch to praphul.singh@pw.live complete.`);
+    }
+  } catch (e) {
+    console.error('[PraphulRadar] Error in notice mirroring:', e.message);
+  }
+
   return allUpdates;
 }
 

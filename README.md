@@ -44,6 +44,7 @@ This repository operates on a **₹0 recurring cost stack** with zero server mai
      - **IPMAT & JIPMAT:** Delivered exclusively to `jatin.sharma2@pw.live`, `prince.kumar1@pw.live`
      - **GMAT Focus Edition:** Delivered exclusively to `jatin.sharma2@pw.live`, `prince.kumar1@pw.live`
      - **State PSC & Judiciary:** Delivered to Marketing Leadership (`CFG.EMAIL_TO`)
+     - **Dedicated Official Portals Feed:** Delivered exclusively to `praphul.singh@pw.live` (119+ official portals: SSC, RRB, NTA NEET/JEE/CUET, UPSC, IBPS, Banking, Defence, State Education Boards, National Entrances). Decoupled and isolated from all other CMM workflows.
    - **Tag Honor Rules:** Strict exclusion tags (such as `JAM`, `CUET` for GATE; `Diploma admission` for AE-JE; `NEET`, `JEE` for Agri; `Mock test` for CA) are enforced at ingestion time.
 
 3. **24/7 Automation via GitHub Actions & Webhook Triggers:**
