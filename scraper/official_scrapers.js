@@ -84,12 +84,12 @@ async function fetchHtml(url, timeoutMs = 25000) {
   try {
     const res = await fetch(url, {
       headers: {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36",
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
         "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
         "Accept-Language": "en-US,en;q=0.9,hi;q=0.8"
       },
       redirect: 'follow',
-      signal: AbortSignal.timeout(timeoutMs)
+      signal: AbortSignal.timeout(timeoutMs > 10000 ? 10000 : timeoutMs)
     });
     if (res.ok) {
       const text = await res.text();
@@ -97,10 +97,11 @@ async function fetchHtml(url, timeoutMs = 25000) {
     }
   } catch (err) {}
 
-  // Tier 2: curl fallback with SSL flexibility
+  // Tier 2: curl fallback with SSL flexibility (-k allows Indian govt portals with self-signed SSL chains)
   try {
     const { execSync } = require('child_process');
-    const stdout = execSync(`curl -s -k -L --max-time ${Math.round(timeoutMs / 1000)} "${url}" -H "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64)"`, { encoding: 'utf8', maxBuffer: 10 * 1024 * 1024 });
+    const curlTimeout = Math.min(Math.round(timeoutMs / 1000), 15);
+    const stdout = execSync(`curl -s -k -L --max-time ${curlTimeout} "${url}" -H "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36" -H "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"`, { encoding: 'utf8', maxBuffer: 10 * 1024 * 1024 });
     if (stdout && stdout.length > 200) return stdout;
   } catch (e2) {}
 
@@ -108,7 +109,7 @@ async function fetchHtml(url, timeoutMs = 25000) {
   try {
     const proxyUrl = `https://pw-exam-intelligence.deepansh-gup124.workers.dev/api/proxy?url=${encodeURIComponent(url)}`;
     const pRes = await fetch(proxyUrl, {
-      signal: AbortSignal.timeout(timeoutMs)
+      signal: AbortSignal.timeout(timeoutMs > 15000 ? 15000 : timeoutMs)
     });
     if (pRes.ok) {
       const pText = await pRes.text();
@@ -117,6 +118,34 @@ async function fetchHtml(url, timeoutMs = 25000) {
   } catch (e3) {}
 
   throw new Error(`Failed to fetch HTML from ${url} across all direct & proxy tiers`);
+}
+
+/**
+ * Intelligent PDF and Official Circular Identification
+ */
+function isPdfNotice(url, title = '') {
+  if (!url) return false;
+  const u = String(url).toLowerCase();
+  const t = String(title || '').toLowerCase();
+  return u.includes('.pdf') || 
+         /open_pdf_db\.aspx|downloadfileimage|download\.ashx|viewpdf/i.test(u) ||
+         /\b(pdf|official circular pdf|gazette pdf)\b/i.test(t);
+}
+
+function tagNoticeFormat(item) {
+  if (!item) return item;
+  const isPdf = item.isPdf !== undefined ? item.isPdf : isPdfNotice(item.url, item.title);
+  item.isPdf = isPdf;
+  item.format = isPdf ? 'PDF' : 'WEB';
+  if (isPdf && !item.pdfUrl) {
+    item.pdfUrl = item.url;
+  }
+  return item;
+}
+
+function tagAllNotices(items) {
+  if (!Array.isArray(items)) return items;
+  return items.map(tagNoticeFormat);
 }
 
 function generateHash(title, url) {
@@ -473,7 +502,7 @@ async function scrapeBPSC() {
       }
     } catch (e2) {}
   }
-  return items;
+  return tagAllNotices(items);
 }
 
 // 2. Scrape UPPSC (Uttar Pradesh) - Uncapped Direct Extractor
@@ -524,7 +553,7 @@ async function scrapeUPPSC() {
       });
     }
   }
-  return items;
+  return tagAllNotices(items);
 }
 
 // 3. Scrape MPPSC (Madhya Pradesh)
@@ -600,7 +629,7 @@ async function scrapeMPPSC() {
     } catch (feedErr) {}
   }
 
-  return items;
+  return tagAllNotices(items);
 }
 
 // 4. Scrape RPSC (Rajasthan)
@@ -619,20 +648,26 @@ async function scrapeRPSC() {
   }
 
   if (html && html.length > 500) {
-    const regex = /<a\s+href=['"](Static\/News\/[^'"]+\.pdf)['"][^>]*>([\s\S]*?)<\/a>/gi;
+    const regex = /<a\s+[^>]*href=['"](\/?Static\/(?:Result|PressNotes|AnswerKeys|News|InformationForCandidates)\/[^'"]+\.pdf)['"][^>]*>([\s\S]*?)<\/a>/gi;
     let match;
     while ((match = regex.exec(html)) !== null && items.length < 50) {
-      const pdfPath = match[1];
+      const pdfPath = match[1].replace(/^\//, '');
       const rawContent = match[2];
       const title = cleanText(rawContent);
+      if (/^FAQ$/i.test(title) || title.length <= 5) continue;
       const pdfUrl = `https://rpsc.rajasthan.gov.in/${pdfPath}`;
 
-      if (title.length > 5 && !items.some(i => i.url === pdfUrl)) {
+      if (!items.some(i => i.url === pdfUrl)) {
         const category = classifyCategory(title);
         let exam = "RPSC State Recruitment";
-        if (title.includes("RAS")) exam = "RPSC RAS / RTS Exam";
+        if (title.includes("RAS") || /state and sub.*services/i.test(title)) exam = "RPSC RAS / RTS Exam";
+        else if (/school lecturer/i.test(title)) exam = "RPSC School Lecturer";
+        else if (/sr\.?\s*teacher/i.test(title)) exam = "RPSC Senior Teacher";
         else if (/jlo|junior legal/i.test(title)) exam = "Rajasthan Junior Legal Officer (JLO)";
         else if (/app|prosecut/i.test(title)) exam = "Rajasthan Assistant Public Prosecutor (APP)";
+
+        const dateMatch = title.match(/^([0-3]?\d\/[0-1]?\d\/\d{4})/);
+        const pubDate = dateMatch ? dateMatch[1] : '';
 
         items.push({
           jurisdiction: "RPSC",
@@ -640,10 +675,14 @@ async function scrapeRPSC() {
           exam: exam,
           title: title,
           url: pdfUrl,
+          date: pubDate,
           category: category,
           priority: category === "Result" || category === "Admit Card" ? "CRITICAL" : "HIGH",
           marketingAction: generateMarketingHook(category, "RPSC"),
-          hash: generateHash(title, pdfUrl)
+          hash: generateHash(title, pdfUrl),
+          isPdf: true,
+          pdfUrl: pdfUrl,
+          format: 'PDF'
         });
       }
     }
@@ -687,7 +726,7 @@ async function scrapeRPSC() {
     } catch (e) {}
   }
 
-  return items;
+  return tagAllNotices(items);
 }
 
 // 5. Scrape Pan-India Judiciary (Direct Official High Court Circulars + Clean Feeds)
@@ -945,7 +984,7 @@ async function scrapePanIndiaJudiciary() {
     }
   } catch (e) {}
 
-  return items;
+  return tagAllNotices(items);
 }
 
 // 6. Scrape ADA & State Prosecution Services (Assistant District Attorney / APO / ADPO / APP)
@@ -1071,7 +1110,7 @@ async function scrapeADAAndProsecution() {
     console.error("Error scraping ADA & Prosecution:", e.message);
   }
 
-  return items;
+  return tagAllNotices(items);
 }
 
 // 7. Scrape Bar Advocacy, AIBE & Regulatory Law (All India Bar Examination, SEBI Legal & IBPS SO Law)
@@ -1277,7 +1316,7 @@ async function scrapeBarAdvocacyAndAIBE() {
     console.error("Error scraping BCI/AOR news feed:", e.message);
   }
 
-  return items;
+  return tagAllNotices(items);
 }
 
 // 8. Scrape OPSC (Odisha)
@@ -1323,7 +1362,7 @@ async function scrapeOPSC() {
       });
     }
   }
-  return items;
+  return tagAllNotices(items);
 }
 
 // 7. Scrape MPSC (Maharashtra)
@@ -1422,7 +1461,7 @@ async function scrapeMPSC() {
       });
     }
   }
-  return items;
+  return tagAllNotices(items);
 }
 
 // Smart Cross-Commission Legal Router
@@ -1499,6 +1538,14 @@ function applySmartLegalRouting(item) {
 // Smart Cross-Commission Multi-Category Router (Legal, UPMSP, ICAI, GATE, AE-JE, Agriculture)
 function applyMultiCategoryRouting(item) {
   if (!item) return item;
+
+  // Universal PDF Identification & Resolution
+  const isPdf = item.isPdf !== undefined ? item.isPdf : isPdfNotice(item.url, item.title);
+  item.isPdf = isPdf;
+  item.format = isPdf ? 'PDF' : 'WEB';
+  if (isPdf && !item.pdfUrl) {
+    item.pdfUrl = item.url;
+  }
 
   // 1. First apply legal routing
   item = applySmartLegalRouting(item);
@@ -1652,7 +1699,7 @@ async function scrapeUPMSP() {
       hash: generateHash(rawTitle, fullUrl)
     });
   }
-  return items;
+  return tagAllNotices(items);
 }
 
 // 11. Scrape ICAI (Chartered Accountants - https://www.icai.org/category/announcements)
@@ -1763,7 +1810,7 @@ async function scrapeICAI() {
     console.error('ICAI Google News feed error:', err.message);
   }
 
-  return items;
+  return tagAllNotices(items);
 }
 
 // 12. Scrape GATE (Graduate Aptitude Test in Engineering)
@@ -1805,7 +1852,7 @@ async function scrapeGATE() {
   } catch (e) {
     console.error('Error scraping GATE news feed:', e.message);
   }
-  return items;
+  return tagAllNotices(items);
 }
 
 // 13. Scrape AE-JE (Assistant Engineer & Junior Engineer)
@@ -1850,7 +1897,7 @@ async function scrapeAEJE() {
   } catch (e) {
     console.error('Error scraping AE-JE news feed:', e.message);
   }
-  return items;
+  return tagAllNotices(items);
 }
 
 // 14. Scrape Agriculture (ICAR, ASRB, IBPS AFO & State Agriculture Bodies)
@@ -1896,7 +1943,7 @@ async function scrapeAgriculture() {
   } catch (e) {
     console.error('Error scraping Agriculture news feed:', e.message);
   }
-  return items;
+  return tagAllNotices(items);
 }
 
 // 15. Scrape MP State Board (MPBSE Class 10 & 12)
@@ -1937,7 +1984,7 @@ async function scrapeMPBoard() {
   } catch (e) {
     console.error('Error scraping MP Board news feed:', e.message);
   }
-  return items;
+  return tagAllNotices(items);
 }
 
 // 16. Scrape RBSE State Board (Rajasthan Board Class 10 & 12)
@@ -1978,7 +2025,7 @@ async function scrapeRBSE() {
   } catch (e) {
     console.error('Error scraping RBSE news feed:', e.message);
   }
-  return items;
+  return tagAllNotices(items);
 }
 
 // 17. Scrape CG State Board (CGBSE Class 10 & 12)
@@ -2019,7 +2066,7 @@ async function scrapeCGBoard() {
   } catch (e) {
     console.error('Error scraping CGBSE news feed:', e.message);
   }
-  return items;
+  return tagAllNotices(items);
 }
 
 // 18. Scrape MBA (CAT, XAT & OMETs)
@@ -2069,7 +2116,7 @@ async function scrapeMBA() {
   } catch (e) {
     console.error('Error scraping MBA news feed:', e.message);
   }
-  return items;
+  return tagAllNotices(items);
 }
 
 // 19. Scrape IPMAT & JIPMAT (Integrated Program in Management)
@@ -2116,7 +2163,7 @@ async function scrapeIPMAT() {
   } catch (e) {
     console.error('Error scraping IPMAT news feed:', e.message);
   }
-  return items;
+  return tagAllNotices(items);
 }
 
 // 20. Scrape GMAT Focus Edition
@@ -2160,7 +2207,7 @@ async function scrapeGMAT() {
   } catch (e) {
     console.error('Error scraping GMAT news feed:', e.message);
   }
-  return items;
+  return tagAllNotices(items);
 }
 
 // Master Runner

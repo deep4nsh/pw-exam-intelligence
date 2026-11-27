@@ -199,6 +199,18 @@ function matchesPraphulPortal(url) {
 }
 
 /**
+ * Intelligent PDF and Official Circular Identification
+ */
+function isPdfUrl(url, title = '') {
+  if (!url) return false;
+  const u = String(url).toLowerCase();
+  const t = String(title || '').toLowerCase();
+  return u.includes('.pdf') || 
+         /open_pdf_db\.aspx|downloadfileimage|download\.ashx|viewpdf/i.test(u) ||
+         /\b(pdf|official circular pdf|gazette pdf)\b/i.test(t);
+}
+
+/**
  * Generates an MD5/SHA-256 hash for deduplication
  */
 function generateHash(title, url) {
@@ -310,12 +322,16 @@ async function crawlPraphulOfficialPortals() {
         }
 
         const category = classifyCategory(title);
+        const isPdf = isPdfUrl(link, title);
         items.push({
           jurisdiction: matchedHost ? matchedHost.toUpperCase() : 'Official Portal',
           state: 'National / Official',
           exam: title.split(/[-–|:]/)[0].trim().slice(0, 40) || 'Official Notice',
           title: title,
           url: link,
+          isPdf: isPdf,
+          pdfUrl: isPdf ? link : null,
+          format: isPdf ? 'PDF' : 'WEB',
           date: pubDate ? pubDate.split(' ').slice(1, 4).join(' ') : '',
           pubDate: pubDate,
           publishedDate: pubDate,
@@ -352,8 +368,12 @@ function processNoticesForPraphul(allNotices) {
       if (!seenCache.has(hash)) {
         seenCache.add(hash);
         newlyDiscovered++;
+        const isPdf = notice.isPdf !== undefined ? notice.isPdf : isPdfUrl(notice.url, notice.title);
         praphulMatches.push({
           ...notice,
+          isPdf: isPdf,
+          pdfUrl: isPdf ? (notice.pdfUrl || notice.url) : null,
+          format: isPdf ? 'PDF' : 'WEB',
           targetEmail: PRAPHUL_RECIPIENT,
           recipientEmail: PRAPHUL_RECIPIENT,
           cmm: 'Praphul Singh',

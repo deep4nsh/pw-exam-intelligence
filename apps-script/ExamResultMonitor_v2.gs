@@ -922,6 +922,18 @@ function extractNoticeDate_(item) {
 }
 
 /**
+ * Intelligent PDF and Official Circular Identification
+ */
+function isPdfUrl_(url, title) {
+  if (!url) return false;
+  const u = String(url).toLowerCase();
+  const t = String(title || '').toLowerCase();
+  return u.includes('.pdf') || 
+         /open_pdf_db\.aspx|downloadfileimage|download\.ashx|viewpdf/i.test(u) ||
+         /\b(pdf|official circular pdf|gazette pdf)\b/i.test(t);
+}
+
+/**
  * Strict date filter: checks if article/notice was issued/published TODAY in IST.
  * If older than today, returns false.
  */
@@ -1694,6 +1706,10 @@ function dispatchSingleCategoryEmail_(recipientEmail, items, spreadsheetUrl, tit
   items.forEach(item => {
     const tagBg = item.priority === 'CRITICAL' ? '#fce8e6' : (item.priority === 'HIGH' ? '#fef7e0' : '#f1f3f4');
     const tagColor = item.priority === 'CRITICAL' ? '#c5221f' : (item.priority === 'HIGH' ? '#b06000' : '#5f6368');
+    const isPdf = item.isPdf || isPdfUrl_(item.url, item.summary || item.title);
+    const linkBadge = isPdf
+      ? `<a href="${item.url}" style="color:#d93025;background:#fce8e6;padding:2px 8px;border-radius:4px;text-decoration:none;font-weight:bold;font-size:11px;margin-left:6px;border:1px solid #fad2cf;display:inline-block;">📄 Official PDF ↗</a>`
+      : `<a href="${item.url}" style="color:#1a73e8;text-decoration:none;font-weight:bold;margin-left:4px;">Link ↗</a>`;
     
     pointersHtml += `
       <li style="margin-bottom:8px;">
@@ -1703,7 +1719,7 @@ function dispatchSingleCategoryEmail_(recipientEmail, items, spreadsheetUrl, tit
         <span style="font-weight:bold;color:#1a73e8;">[${escapeHtml_(item.jurisdiction)}]</span>
         <b>${escapeHtml_(item.exam)}</b> — ${escapeHtml_(item.summary)}
         <span style="color:#5f6368;font-size:12px;">(${escapeHtml_(item.category)})</span>
-        <a href="${item.url}" style="color:#1a73e8;text-decoration:none;font-weight:bold;margin-left:4px;">Link ↗</a>
+        ${linkBadge}
       </li>
     `;
   });
@@ -1712,6 +1728,11 @@ function dispatchSingleCategoryEmail_(recipientEmail, items, spreadsheetUrl, tit
   // 2. Build High-Impact Action Cards for Urgent Items
   let cardsHtml = '';
   highPriority.slice(0, 6).forEach(item => {
+    const isPdf = item.isPdf || isPdfUrl_(item.url, item.title || item.summary);
+    const ctaBtn = isPdf
+      ? `<a href="${item.url}" style="background:#d93025;color:#ffffff;padding:8px 16px;text-decoration:none;border-radius:5px;font-size:12px;font-weight:bold;display:inline-block;box-shadow:0 1px 2px rgba(217,48,37,0.3);">📄 Download Official PDF (Gazette) ↗</a>`
+      : `<a href="${item.url}" style="background:#1a73e8;color:#ffffff;padding:8px 16px;text-decoration:none;border-radius:5px;font-size:12px;font-weight:bold;display:inline-block;">🌐 Open Source Notice ↗</a>`;
+
     cardsHtml += `
       <div style="background:#ffffff;border-left:4px solid #ea4335;border-radius:6px;padding:14px;margin-bottom:12px;box-shadow:0 1px 3px rgba(0,0,0,0.06);border:1px solid #e8eaed;border-left:4px solid #ea4335;">
         <div style="font-size:11px;font-weight:bold;color:#ea4335;text-transform:uppercase;margin-bottom:4px;">
@@ -1727,9 +1748,7 @@ function dispatchSingleCategoryEmail_(recipientEmail, items, spreadsheetUrl, tit
           🎯 <b>Suggested Marketing Play:</b> ${escapeHtml_(item.marketingAction)}
         </div>
         <div>
-          <a href="${item.url}" style="background:#1a73e8;color:#ffffff;padding:6px 14px;text-decoration:none;border-radius:4px;font-size:12px;font-weight:bold;display:inline-block;">
-            Open Source Notice ↗
-          </a>
+          ${ctaBtn}
         </div>
       </div>
     `;
@@ -2139,9 +2158,15 @@ function formatDataRows_(sheet, startRow, count) {
     .setBackground('#f1f8e9')
     .setFontColor('#1b5e20');
 
-  // Col 8: Clickable Link `=HYPERLINK(url, "Open Link ↗")`
+  // Col 8: Clickable Link `=HYPERLINK(url, "Open Link ↗")` or `📄 Open PDF ↗`
   const urlVals = sheet.getRange(startRow, 8, count, 1).getValues();
-  const formulas = urlVals.map(r => [r[0] ? `=HYPERLINK("${String(r[0]).replace(/"/g, '""')}","Open Link ↗")` : '']);
+  const formulas = urlVals.map(r => {
+    const u = r[0] ? String(r[0]) : '';
+    if (!u) return [''];
+    const isPdf = isPdfUrl_(u);
+    const label = isPdf ? '📄 Open PDF ↗' : 'Open Link ↗';
+    return [`=HYPERLINK("${u.replace(/"/g, '""')}","${label}")`];
+  });
   sheet.getRange(startRow, 8, count, 1)
     .setFormulas(formulas)
     .setHorizontalAlignment('center')
@@ -2408,9 +2433,13 @@ function doPost(e) {
       known.add(n.url);
       if (cleanU) known.add(cleanU);
 
+      const isPdf = n.isPdf !== undefined ? n.isPdf : isPdfUrl_(n.url, n.title);
       newItems.push({
         title: n.title,
         url: n.url,
+        isPdf: isPdf,
+        pdfUrl: isPdf ? (n.pdfUrl || n.url) : null,
+        format: isPdf ? 'PDF' : 'WEB',
         uniqueId: uid,
         publishedDate: n.publishedDate ? new Date(n.publishedDate) : (n.pubDate ? new Date(n.pubDate) : (parseSingleDate_(n.date) ? new Date(parseSingleDate_(n.date).y, parseSingleDate_(n.date).m - 1, parseSingleDate_(n.date).d) : new Date())),
         jurisdiction: n.jurisdiction || n.state || 'State Commission',
