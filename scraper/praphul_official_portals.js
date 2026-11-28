@@ -182,20 +182,55 @@ const PRAPHUL_CRAWL_QUERIES = [
   'site:bseodisha.nic.in OR site:mahahsscboard.in OR site:jac.jharkhand.gov.in (Time Table OR Notification OR Result) when:24h'
 ];
 
+const THIRD_PARTY_NEWS_DOMAINS = [
+  'news.google.com', 'google.com', 'hindustantimes.com', 'timesofindia.indiatimes.com',
+  'indiatimes.com', 'jagranjosh.com', 'jagran.com', 'ndtv.com', 'indianexpress.com',
+  'news18.com', 'livemint.com', 'shiksha.com', 'careers360.com', 'adda247.com',
+  'testbook.com', 'collegedunia.com', 'indiatoday.in', 'zeenews.india.com',
+  'abplive.com', 'amarujala.com', 'bhaskar.com', 'dainikbhaskar.com', 'livehindustan.com',
+  'patrika.com', 'thehindu.com', 'financialexpress.com', 'economictimes.indiatimes.com',
+  'etvbharat.com', 'oneindia.com', 'careerpower.in', 'prepp.in', 'byjus.com',
+  'unacademy.com', 'vedantu.com', 'geeksforgeeks.org', 'wikipedia.org', 'youtube.com'
+];
+
 /**
- * Checks if a given URL or text matches any of Praphul's official websites
+ * Strictly verifies that a given notice URL originates directly from one of the 119 official websites.
+ * Rejects 100% of 3rd party news sites, aggregators, blogs, and redirect links.
  */
 function matchesPraphulPortal(url) {
-  if (!url) return false;
-  try {
-    const raw = String(url).toLowerCase();
-    for (const host of PRAPHUL_OFFICIAL_HOSTNAMES) {
-      if (raw.includes(host)) return true;
-    }
-    return false;
-  } catch (e) {
-    return false;
+  if (!url || typeof url !== 'string') return false;
+  const raw = url.trim().toLowerCase();
+
+  // 1. Instantly reject all 3rd party news, aggregator, or search engine domains
+  for (const badDomain of THIRD_PARTY_NEWS_DOMAINS) {
+    if (raw.includes(badDomain)) return false;
   }
+
+  // 2. Extract clean hostname
+  let hostname = '';
+  try {
+    const parsed = new URL(raw.startsWith('http') ? raw : `https://${raw}`);
+    hostname = parsed.hostname.replace(/^www\./, '');
+  } catch (e) {
+    const m = raw.match(/^(?:https?:\/\/)?(?:www\.)?([^/?#]+)/i);
+    hostname = m ? m[1] : '';
+  }
+
+  if (!hostname) return false;
+
+  // 3. Strict match against the 119 official hostnames
+  for (const host of PRAPHUL_OFFICIAL_HOSTNAMES) {
+    if (hostname === host || hostname.endsWith('.' + host)) {
+      return true;
+    }
+  }
+
+  // 4. Special verified official CDNs (e.g. resource.cdn.icai.org)
+  if (hostname.includes('cdn.icai.org') || hostname === 'icai.org') {
+    return true;
+  }
+
+  return false;
 }
 
 /**
@@ -292,69 +327,70 @@ function classifyCategory(title) {
 }
 
 /**
- * Crawls official announcements matching the 119 official portals
+ * Direct official portal scraper for CBSE (cbse.gov.in)
+ */
+async function scrapeCBSEOfficial() {
+  const items = [];
+  try {
+    const { execSync } = require('child_process');
+    const html = execSync('curl -s -k -L --max-time 15 "https://www.cbse.gov.in/cbsenew/cbse.html" -H "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"', { encoding: 'utf8', maxBuffer: 10 * 1024 * 1024 });
+    const matches = [...html.matchAll(/<a[^>]+href=[\'\"]([^\'\"]+\.pdf)[\'\"][^>]*>([\s\S]*?)<\/a>/gi)];
+    for (const m of matches.slice(0, 30)) {
+      const rel = m[1].trim();
+      const title = cleanText(m[2]);
+      if (!title || title.length < 8) continue;
+      const pdfUrl = rel.startsWith('http') ? rel : `https://www.cbse.gov.in/cbsenew/${rel.replace(/^\//, '')}`;
+      items.push({
+        jurisdiction: 'CBSE (Central Board)',
+        state: 'National',
+        exam: 'CBSE Board Examinations',
+        title: title,
+        url: pdfUrl,
+        isPdf: true,
+        pdfUrl: pdfUrl,
+        format: 'PDF',
+        date: 'Recent',
+        category: classifyCategory(title),
+        priority: /datesheet|timetable|result/i.test(title) ? 'CRITICAL' : 'HIGH',
+        marketingAction: 'Publish official CBSE circular analysis; upload PDF to PW App for Class 10/12 students.',
+        targetEmail: PRAPHUL_RECIPIENT,
+        recipientEmail: PRAPHUL_RECIPIENT,
+        cmm: 'Praphul Singh',
+        hash: generateHash(title, pdfUrl),
+        isOfficialPortalFeed: true
+      });
+    }
+  } catch (e) {
+    console.error('[PraphulRadar] CBSE direct scrape error:', e.message);
+  }
+  return items;
+}
+
+/**
+ * Crawls official announcements strictly from verified official portal sources
  */
 async function crawlPraphulOfficialPortals() {
   const items = [];
   const seenUrls = new Set();
 
-  for (const query of PRAPHUL_CRAWL_QUERIES) {
-    try {
-      const feedUrl = `https://news.google.com/rss/search?q=${encodeURIComponent(query)}&hl=en-IN&gl=IN&ceid=IN:en`;
-      const res = await fetchHtml(feedUrl, 12000);
-      const itemRegex = /<item>[\s\S]*?<title>([\s\S]*?)<\/title>[\s\S]*?<link>([\s\S]*?)<\/link>[\s\S]*?<pubDate>([\s\S]*?)<\/pubDate>[\s\S]*?<\/item>/gi;
-      let match;
-      while ((match = itemRegex.exec(res)) !== null && items.length < 150) {
-        let title = cleanText(match[1]).replace(/ - [^-]+$/g, '').trim();
-        const link = match[2].trim();
-        const pubDate = match[3].trim();
-
-        if (seenUrls.has(link)) continue;
-        seenUrls.add(link);
-
-        // Check against official hostnames
-        let matchedHost = null;
-        for (const h of PRAPHUL_OFFICIAL_HOSTNAMES) {
-          if (link.toLowerCase().includes(h) || title.toLowerCase().includes(h.split('.')[0])) {
-            matchedHost = h;
-            break;
-          }
-        }
-
-        const category = classifyCategory(title);
-        const isPdf = isPdfUrl(link, title);
-        items.push({
-          jurisdiction: matchedHost ? matchedHost.toUpperCase() : 'Official Portal',
-          state: 'National / Official',
-          exam: title.split(/[-–|:]/)[0].trim().slice(0, 40) || 'Official Notice',
-          title: title,
-          url: link,
-          isPdf: isPdf,
-          pdfUrl: isPdf ? link : null,
-          format: isPdf ? 'PDF' : 'WEB',
-          date: pubDate ? pubDate.split(' ').slice(1, 4).join(' ') : '',
-          pubDate: pubDate,
-          publishedDate: pubDate,
-          category: category,
-          priority: category === 'Result' || category === 'Admit Card' || category === 'Notification / Recruitment' ? 'CRITICAL' : 'HIGH',
-          marketingAction: `Review official portal circular and distribute key student updates.`,
-          targetEmail: PRAPHUL_RECIPIENT,
-          recipientEmail: PRAPHUL_RECIPIENT,
-          cmm: 'Praphul Singh',
-          hash: generateHash(title, link),
-          isOfficialPortalFeed: true
-        });
+  // Direct CBSE official portal scrape (cbse.gov.in)
+  try {
+    const cbseItems = await scrapeCBSEOfficial();
+    for (const item of cbseItems) {
+      if (!seenUrls.has(item.url) && matchesPraphulPortal(item.url)) {
+        seenUrls.add(item.url);
+        items.push(item);
       }
-    } catch (err) {
-      // Non-blocking query failure
     }
-  }
+  } catch (e) {}
 
   return items;
 }
 
 /**
  * Mirrors/tags matching official notices from other scrapers into Praphul's isolated stream
+ * STRICT: Only accepts notices whose URL directly originates from one of the 119 official portals!
+ * Zero 3rd party news articles or aggregator links allowed.
  */
 function processNoticesForPraphul(allNotices) {
   if (!allNotices || !Array.isArray(allNotices)) return [];
@@ -363,7 +399,9 @@ function processNoticesForPraphul(allNotices) {
   let newlyDiscovered = 0;
 
   allNotices.forEach(notice => {
-    if (matchesPraphulPortal(notice.url) || matchesPraphulPortal(notice.jurisdiction)) {
+    // STRICT RULE: Validate ONLY notice.url against official portal whitelist.
+    // NEVER match based on jurisdiction or title.
+    if (matchesPraphulPortal(notice.url)) {
       const hash = notice.hash || generateHash(notice.title, notice.url);
       if (!seenCache.has(hash)) {
         seenCache.add(hash);

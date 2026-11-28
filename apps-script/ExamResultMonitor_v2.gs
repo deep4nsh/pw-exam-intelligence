@@ -592,6 +592,8 @@ function loadCategoryScopesFromTagsSheet_() {
       let queries = [];
       if (/^ca$|^icai$/i.test(sheetName) || /ca |icai/i.test(categoryName)) {
         categoryName = 'CA (Foundation & Intermediate)';
+        // Sanitize aliases for CA: strip generic single-word aliases that cause false matches
+        aliases = aliases.filter(a => !/^(foundation|intermediate)$/i.test(a.trim()));
         queries = [
           'ICAI CA Foundation result announcement date',
           'ICAI CA Intermediate result exam schedule',
@@ -648,10 +650,13 @@ function isStatePscOrJudiciaryItem_(item) {
     String(item.exam || '') + ' ' +
     String(item.jurisdiction || '') + ' ' +
     String(item.scope || '') + ' ' +
-    String(item.title || '')
+    String(item.title || '') + ' ' +
+    String(item.url || '') + ' ' +
+    String(item.description || '') + ' ' +
+    String(item.publisher || '')
   ).toLowerCase();
 
-  return /\b(uppsc|bpsc|mppsc|rpsc|opsc|mpsc|ras\b|judiciary|high court|supreme court|civil judge|judicial service|apo\b|adpo\b|ada\b)\b/i.test(text);
+  return /\b(uppsc|bpsc|mppsc|rpsc|opsc|mpsc|ukpsc|hpsc|cgpsc|jpsc|apsc|tspsc|appsc|kpsc|wbpsc|gpsc|spsc|upsssc|rssb|bssc|hssc|dsssb|ras\b|judiciary|high court|supreme court|civil judge|judicial service|apo\b|adpo\b|ada\b|public service commission)\b/i.test(text);
 }
 
 function isUpBoardItem_(item) {
@@ -667,7 +672,7 @@ function isUpBoardItem_(item) {
   ).toLowerCase();
 
   // Guard: Never confuse State PSC with State Board!
-  if (/\b(uppsc|bpsc|mppsc|rpsc|opsc|mpsc|judiciary)\b/i.test(text)) {
+  if (/\b(uppsc|bpsc|mppsc|rpsc|opsc|mpsc|ukpsc|hpsc|cgpsc|jpsc|apsc|tspsc|appsc|kpsc|wbpsc|gpsc|spsc|upsssc|rssb|bssc|hssc|dsssb|judiciary)\b/i.test(text)) {
     return false;
   }
 
@@ -683,11 +688,12 @@ function isCaItem_(item) {
     String(item.scope || '') + ' ' +
     String(item.title || '') + ' ' +
     String(item.url || '') + ' ' +
+    String(item.description || '') + ' ' +
     String(item.queryLabel || '')
   ).toLowerCase();
 
   // Guard: if it mentions State PSCs, Commissions or Judiciary, it is NEVER a CA item!
-  if (/\b(uppsc|bpsc|mppsc|rpsc|opsc|mpsc|judiciary|high court|supreme court)\b/i.test(text)) {
+  if (/\b(uppsc|bpsc|mppsc|rpsc|opsc|mpsc|ukpsc|hpsc|cgpsc|jpsc|apsc|tspsc|appsc|kpsc|wbpsc|gpsc|spsc|upsssc|rssb|bssc|hssc|dsssb|judiciary|high court|supreme court|civil judge|public service commission)\b/i.test(text)) {
     return false;
   }
 
@@ -820,16 +826,50 @@ function isGmatItem_(item) {
   return /\b(gmat|gmac|gmat focus|gmat exam|gmat syllabus|gmat score|gmat result|graduate management admission)\b/i.test(text);
 }
 
+const THIRD_PARTY_NEWS_DOMAINS_ = [
+  'news.google.com', 'google.com', 'hindustantimes.com', 'timesofindia.indiatimes.com',
+  'indiatimes.com', 'jagranjosh.com', 'jagran.com', 'ndtv.com', 'indianexpress.com',
+  'news18.com', 'livemint.com', 'shiksha.com', 'careers360.com', 'adda247.com',
+  'testbook.com', 'collegedunia.com', 'indiatoday.in', 'zeenews.india.com',
+  'abplive.com', 'amarujala.com', 'bhaskar.com', 'dainikbhaskar.com', 'livehindustan.com',
+  'patrika.com', 'thehindu.com', 'financialexpress.com', 'economictimes.indiatimes.com',
+  'etvbharat.com', 'oneindia.com', 'careerpower.in', 'prepp.in', 'byjus.com',
+  'unacademy.com', 'vedantu.com', 'geeksforgeeks.org', 'wikipedia.org', 'youtube.com'
+];
+
 function isPraphulOfficialPortalItem_(item) {
-  if (!item) return false;
-  const url = String(item.url || '').toLowerCase();
-  const jur = String(item.jurisdiction || '').toLowerCase();
+  if (!item || !item.url) return false;
+  const raw = String(item.url).trim().toLowerCase();
+
+  // 1. Strictly block 3rd party news websites, aggregators, and search engine links
+  for (let i = 0; i < THIRD_PARTY_NEWS_DOMAINS_.length; i++) {
+    if (raw.indexOf(THIRD_PARTY_NEWS_DOMAINS_[i]) !== -1) {
+      return false;
+    }
+  }
+
+  // 2. Extract clean hostname from the URL (without protocol and www.)
+  let hostname = '';
+  const match = raw.match(/^(?:https?:\/\/)?(?:www\.)?([^/?#]+)/i);
+  if (match) {
+    hostname = match[1];
+  }
+
+  if (!hostname) return false;
+
+  // 3. Strict match against 119 Official Hostnames ONLY (never match on jurisdiction or title)
   for (let i = 0; i < PRAPHUL_CONFIG.HOSTNAMES.length; i++) {
     const host = PRAPHUL_CONFIG.HOSTNAMES[i];
-    if (url.includes(host) || jur.includes(host.split('.')[0])) {
+    if (hostname === host || hostname.endsWith('.' + host)) {
       return true;
     }
   }
+
+  // 4. Special verified official CDNs (e.g. resource.cdn.icai.org)
+  if (hostname.indexOf('cdn.icai.org') !== -1 || hostname.indexOf('icai.org') !== -1) {
+    return true;
+  }
+
   return false;
 }
 
@@ -997,9 +1037,15 @@ function getCmmEmailForCategory_(item) {
   }
 
   if (item.targetEmail && item.targetEmail.includes('@') && item.targetEmail !== getEmailTo_()) {
+    if (item.targetEmail.includes('moksh') && !isCaItem_(item)) {
+      return getEmailTo_();
+    }
     return item.targetEmail.trim();
   }
   if (item.recipientEmail && item.recipientEmail.includes('@') && item.recipientEmail !== getEmailTo_()) {
+    if (item.recipientEmail.includes('moksh') && !isCaItem_(item)) {
+      return getEmailTo_();
+    }
     return item.recipientEmail.trim();
   }
 
@@ -1225,6 +1271,27 @@ function setupExamNewsMonitor() {
 
   log_('INFO', 'Setup complete. Hourly monitor trigger installed.', '');
   Logger.log('Setup complete. Run monitorExamNews() to test.');
+}
+
+/**
+ * Installs a native Google Apps Script 10-minute trigger.
+ * Eliminates cron-job.org 302 redirect issues, external network limits, and 30s timeouts!
+ * Runs reliably 24x7 within Google Workspace infrastructure.
+ */
+function setupTenMinuteTrigger() {
+  ScriptApp.getProjectTriggers().forEach(trigger => {
+    if (trigger.getHandlerFunction() === 'monitorExamNews') {
+      ScriptApp.deleteTrigger(trigger);
+    }
+  });
+
+  ScriptApp.newTrigger('monitorExamNews')
+    .timeBased()
+    .everyMinutes(10)
+    .create();
+
+  log_('INFO', 'Native 10-minute monitor trigger installed.', '');
+  Logger.log('✅ Native 10-minute trigger installed successfully! No more cron-job.org timeouts or 302 errors.');
 }
 
 
@@ -2393,7 +2460,9 @@ function doPost(e) {
     }
 
     if (postData.action === 'dispatchPraphulAlerts') {
-      const notices = postData.notices || [];
+      const rawNotices = postData.notices || [];
+      // Strict guard: ensure only genuine official portal notices are sent to Praphul Singh (zero 3rd party news)
+      const notices = rawNotices.filter(isPraphulOfficialPortalItem_);
       const ss = getSpreadsheet_();
       const sheetUrl = ss ? ss.getUrl() : '';
       if (notices.length > 0) {
@@ -2552,11 +2621,23 @@ function syncOfficialNoticesNow() {
  * Allows cloud runners to fetch Indian portals through Google Workspace IPs
  */
 function doGet(e) {
+  if (e && e.parameter && e.parameter.action === 'setupTrigger') {
+    setupTenMinuteTrigger();
+    return ContentService.createTextOutput(JSON.stringify({
+      status: 'ok',
+      message: 'Native 10-minute trigger installed successfully inside Google Apps Script',
+      timestamp: new Date().toISOString()
+    })).setMimeType(ContentService.MimeType.JSON);
+  }
+
   if (e && e.parameter && e.parameter.action === 'runMonitor') {
+    const started = new Date().getTime();
     monitorExamNews();
+    const duration = ((new Date().getTime() - started) / 1000).toFixed(1);
     return ContentService.createTextOutput(JSON.stringify({
       status: 'ok',
       message: 'Monitor execution cycle completed',
+      durationSeconds: duration,
       timestamp: new Date().toISOString()
     })).setMimeType(ContentService.MimeType.JSON);
   }
